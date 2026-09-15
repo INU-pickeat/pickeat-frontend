@@ -2,5 +2,11 @@
 @import "tailwindcss";
 
 @theme {
+  /* 폰트 설정 */
   --font-sans: "Pretendard", sans-serif;
+
+  /* pickeat 대표 컬러 */
+  --color-pickeat-orange: #f87816;
+  --color-pickeat-light: #fab47a;
+  --color-pickeat-white: #fcf1df;
 }
