@@ -5,7 +5,10 @@ import Intro from "./pages/Intro";
 import Login from "./pages/Login";
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true); // 스플래시 화면 표시 상태
+  // 스플래시 애니메이션 상태
+  const [showSplash, setShowSplash] = useState(() => {
+    return window.location.pathname === "/";
+  });
 
   return (
     <div className="min-h-dvh w-full bg-white sm:bg-neutral-100 flex justify-center items-start sm:items-center scrollbar-hide">
