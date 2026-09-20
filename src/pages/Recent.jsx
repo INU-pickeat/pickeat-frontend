@@ -56,7 +56,7 @@ export default function Recent() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="w-full h-24 bg-[#FFECCD] rounded-2xl flex items-center justify-between p-4 shadow-sm"
+                  className="w-full h-22 bg-[#FFECCD] rounded-2xl flex items-center justify-between p-4 shadow-sm"
                 >
                   <div className="flex flex-col h-full justify-center space-y-2">
                     <h4 className="text-[17px] font-bold text-[#F86516]">{item.name}</h4>

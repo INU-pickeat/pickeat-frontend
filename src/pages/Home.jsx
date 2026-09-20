@@ -65,7 +65,7 @@ export default function Home() {
             {recentPicks.map((pick) => (
               <div
                 key={pick.id}
-                className="w-full h-20 bg-[#FFECCD] rounded-2xl flex items-center justify-between p-4 shadow-sm"
+                className="w-full h-22 bg-[#FFECCD] rounded-2xl flex items-center justify-between p-4 shadow-sm"
               >
                 <div className="flex flex-col h-full justify-center space-y-2">
                   <h4 className="text-base font-bold text-[#F86516]">{pick.name}</h4>
