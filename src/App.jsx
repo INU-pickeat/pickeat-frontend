@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Splash from "./components/Splash";
 import Intro from "./pages/Intro";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 export default function App() {
   // 스플래시 애니메이션 상태
@@ -20,6 +21,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Intro />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
             </Routes>
           </BrowserRouter>
         )}
