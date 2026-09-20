@@ -97,7 +97,7 @@ export default function Login() {
           계정이 없으신가요?{" "}
           <button
             onClick={() => navigate("/signup")}
-            className="text-[#FF8223] font-bold hover:underline ml-1 active:opacity-70"
+            className="text-[#FF8223] font-bold hover:underline ml-1 active:opacity-70 cursor-pointer"
           >
             회원가입
           </button>
