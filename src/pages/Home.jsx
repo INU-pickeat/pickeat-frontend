@@ -29,7 +29,7 @@ export default function Home() {
         {/* 헤더 영역 */}
         <div className="flex justify-between items-center mb-8">
           <img src={logoImg} alt="pickeat 로고" className="w-22" />
-          <button className="text-[#F86516] cursor-pointer" onClick={() => alert("준비 중입니다.")}>
+          <button className="text-[#F86516] cursor-pointer" onClick={() => alert("추가 예정입니다.")}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
               <path
                 strokeLinecap="round"
