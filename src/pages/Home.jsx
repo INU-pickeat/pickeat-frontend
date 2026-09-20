@@ -61,7 +61,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="flex flex-col space-y-3">
+          <div className="flex flex-col space-y-4">
             {recentPicks.map((pick) => (
               <div
                 key={pick.id}
