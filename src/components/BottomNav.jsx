@@ -11,14 +11,17 @@ export default function BottomNav() {
   const tabs = [
     {
       path: "/home",
+      activePaths: ["/home", "/recent"],
       icon: <img src={HomeIcon} alt="홈 아이콘" className="w-6 h-6" />,
     },
     {
       path: "/calendar",
+      activePaths: ["/calendar"],
       icon: <img src={MarkIcon} alt="마크 아이콘" className="w-6 h-6" />,
     },
     {
       path: "/mypage",
+      activePaths: ["/mypage"],
       icon: <img src={ProfileIcon} alt="프로필 아이콘" className="w-6 h-6" />,
     },
   ];
@@ -27,7 +30,8 @@ export default function BottomNav() {
     // 위치 고정
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-68 h-12 bg-[#FFECCDE5] rounded-full flex items-center justify-between px-2 shadow-sm z-50">
       {tabs.map((tab) => {
-        const isActive = location.pathname === tab.path;
+        const isActive = tab.activePaths.includes(location.pathname);
+
         return (
           <button
             key={tab.path}
