@@ -5,6 +5,7 @@ import Intro from "./pages/Intro";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
+import Home from "./pages/Home";
 
 export default function App() {
   // 스플래시 애니메이션 상태
@@ -24,6 +25,7 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/home" element={<Home />} />
             </Routes>
           </BrowserRouter>
         )}
