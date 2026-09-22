@@ -32,18 +32,39 @@ export default function LocationConfirm() {
 
         const geocoder = new window.google.maps.Geocoder();
         geocoder.geocode({ location: { lat: currentLat, lng: currentLng } }, (results, status) => {
-          if (status === "OK" && results.length > 0) {
-            const fullAddress = results[0].formatted_address;
-            const match = fullAddress.match(/\S+(동|읍|면)\b/);
+          if (status === "OK" && results && results.length > 0) {
+            let detectedDong = "";
 
-            if (match) {
-              setNeighborhood(match[0]);
-            } else {
-              const backup = results[0].address_components.find((c) => c.types.includes("sublocality"));
-              setNeighborhood(backup ? backup.short_name : "현재 위치");
+            // 1순위: '동'
+            for (const result of results) {
+              const dongComp = result.address_components.find((c) => c.types.includes("sublocality_level_2"));
+              if (dongComp) {
+                detectedDong = dongComp.short_name;
+                break;
+              }
             }
+
+            // 2순위: 여러 주소 표현 중 '동/읍/면' 단어 추출
+            if (!detectedDong) {
+              for (const result of results) {
+                const match = result.formatted_address.match(/([가-힣]+(동|읍|면))\b/);
+                if (match) {
+                  detectedDong = match[1];
+                  break;
+                }
+              }
+            }
+
+            // 3순위: '구'
+            if (!detectedDong) {
+              const guComp = results[0].address_components.find((c) => c.types.includes("sublocality_level_1"));
+              detectedDong = guComp ? guComp.short_name : "현재 위치";
+            }
+
+            setNeighborhood(detectedDong);
           } else {
-            console.error("주소 변환 실패 사유:", status);
+            console.error("주소 변환 실패:", status);
+            setNeighborhood("현재 위치");
           }
         });
       },
