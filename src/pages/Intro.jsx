@@ -1,24 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import logoImg from "../assets/pickeat_logo.svg";
-import CharacterImg from "../assets/character.png";
+import CharacterImg from "../assets/intro_character.png";
 import Button from "../components/Button";
 
 export default function Intro() {
   const navigate = useNavigate();
 
   return (
-    <PageTransition className="flex-1 w-full flex flex-col bg-gradient-to-b from-[#FAB47A95] to-[#ffffff] pb-18">
+    <PageTransition className="flex-1 w-full flex flex-col bg-gradient-to-b from-[#FAB47A95] to-[#ffffff] pb-14">
       <div className="flex-1 flex flex-col justify-center items-center gap-6">
         <img src={logoImg} alt="pickeat 로고" className="w-36" />
-        <p className="text-[#fd772e] text-[16px] text-center font-medium leading-relaxed">
-          고민 없이 취향대로
-          <br />내 현재 위치의 맛집을 PICK
+        <p className="text-[#fd772e] text-[14px] text-center font-medium leading-relaxed">
+          맛집은 많으니까,
+          <br />
+          고민은 pickeat이 줄여드릴게요.
         </p>
-        <img src={CharacterImg} alt="캐릭터" className="w-40 mt-8" />
+        <img src={CharacterImg} alt="캐릭터" className="w-32 mt-8" />
       </div>
 
-      <div className="w-full px-6 flex flex-col items-center space-y-6">
+      <div className="w-full px-6 flex flex-col items-center space-y-9">
         {/* 로그인 버튼 */}
         <Button onClick={() => navigate("/login")}>로그인</Button>
 

@@ -37,7 +37,7 @@ export default function BottomNav() {
             key={tab.path}
             onClick={() => navigate(tab.path)}
             // 현재 페이지일 경우 배경색 진하게
-            className={`flex justify-center items-center w-18 h-10 rounded-full transition-colors text-[#FF9639] ${
+            className={`flex justify-center items-center w-18 h-10 rounded-full transition-colors text-[#F86516] ${
               isActive ? "bg-[#FFD5B1]" : "bg-transparent"
             } cursor-pointer`}
           >
