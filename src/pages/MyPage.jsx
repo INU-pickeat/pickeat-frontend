@@ -10,11 +10,10 @@ export default function MyPage() {
   const menuGroup1 = [
     { id: 1, title: "알림 설정" },
     { id: 2, title: "화면 테마" },
-    { id: 3, title: "서비스 정보" },
-    { id: 4, title: "이용약관" },
+    { id: 3, title: "이용약관" },
   ];
 
-  const menuGroup2 = [{ id: 5, title: "로그아웃" }];
+  const menuGroup2 = [{ id: 4, title: "서비스 정보" }, , { id: 5, title: "로그아웃" }];
 
   // 공통 메뉴 렌더링 함수
   const renderMenu = (menuList) => (

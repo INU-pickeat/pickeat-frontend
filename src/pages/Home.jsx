@@ -3,6 +3,7 @@ import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import BottomNav from "../components/BottomNav";
 import logoImg from "../assets/pickeat_logo.svg";
+import CharacterImg from "../assets/home_character.png";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -14,18 +15,18 @@ export default function Home() {
   ];
 
   const popularSpots = [
-    { id: 1, name: "성수동", imgUrl: "" },
-    { id: 2, name: "연남동", imgUrl: "" },
-    { id: 3, name: "신사동", imgUrl: "" },
-    { id: 4, name: "서촌", imgUrl: "" },
-    { id: 5, name: "을지로3가", imgUrl: "" },
+    { id: 1, name: "신사", imgUrl: "" },
+    { id: 2, name: "혜화", imgUrl: "" },
+    { id: 3, name: "서촌", imgUrl: "" },
+    { id: 4, name: "한남", imgUrl: "" },
+    { id: 5, name: "종로", imgUrl: "" },
   ];
 
   return (
     <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
       {/* 배경 블러 & 스크롤 영역 */}
       <div className="absolute -top-20 -left-20 w-75 h-75 bg-[#FAB47A] opacity-60 blur-[70px] rounded-full pointer-events-none z-0"></div>
-      <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide px-5 pt-10 pb-24">
+      <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide px-6 pt-10 pb-24">
         {/* 헤더 영역 */}
         <div className="flex justify-between items-center mb-8">
           <img src={logoImg} alt="pickeat 로고" className="w-22" />
@@ -39,14 +40,24 @@ export default function Home() {
             </svg>
           </button>
         </div>
-        {/* 인사말 */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-[#F86516] mb-2">안녕하세요, 픽잇님!</h2>
-          <p className="text-[16px] font-semibold text-[#434343] ">오늘은 어디신가요?</p>
+
+        {/* 인사말 & 캐릭터 */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-bold text-[#F86516] mb-2">안녕하세요, 픽잇님!</h2>
+            <p className="text-[16px] font-semibold text-[#434343]">오늘은 어디신가요?</p>
+          </div>
+          <img src={CharacterImg} alt="캐릭터" className="w-20" />
         </div>
+
         {/* 시작 버튼 */}
         <div className="text-[15px] font-semibold text-[#FFFBF2] mb-10">
-          <Button onClick={() => navigate("/location")}>위치기반 맛집추천 시작</Button>
+          <Button
+            onClick={() => navigate("/location")}
+            className="bg-linear-to-r from-[#FF9639] to-[#F86516] border-none"
+          >
+            위치기반 맛집추천 시작
+          </Button>
         </div>
 
         {/* 최근 pick 영역 */}
@@ -65,7 +76,7 @@ export default function Home() {
             {recentPicks.map((pick) => (
               <div
                 key={pick.id}
-                className="w-full h-22 bg-[#FFECCD] rounded-2xl flex items-center justify-between p-4 shadow-sm"
+                className="w-full h-20 bg-[#FFECCD] rounded-2xl flex items-center justify-between p-5 shadow-sm"
               >
                 <div className="flex flex-col h-full justify-center space-y-2">
                   <h4 className="text-base font-bold text-[#F86516]">{pick.name}</h4>
@@ -86,11 +97,11 @@ export default function Home() {
 
         {/* 인기 탐색 스팟 영역 */}
         <div>
-          <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 인기 맛집 탐색 스팟</h3>
+          <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 지역별 인기 맛집</h3>
           <div className="flex justify-between items-start w-full pb-2 px-1">
             {popularSpots.map((spot) => (
               <div key={spot.id} className="flex flex-col items-center space-y-2">
-                <div className="w-14 h-14 rounded-full bg-black/20 overflow-hidden shadow-sm cursor-pointer">
+                <div className="w-14 h-14 rounded-full border-3 border-[#FFECCD] active:border-[#FF9639] transition-colors duration-200 bg-black/20 overflow-hidden shadow-sm cursor-pointer hover:border-[#FF9639]">
                   {spot.imgUrl && <img src={spot.imgUrl} alt={spot.name} className="w-full h-full object-cover" />}
                 </div>
                 <span className="text-[12px] font-semibold text-[#434343]">{spot.name}</span>
