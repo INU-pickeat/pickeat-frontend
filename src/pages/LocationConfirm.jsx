@@ -28,36 +28,29 @@ export default function LocationConfirm() {
         const currentLat = position.coords.latitude;
         const currentLng = position.coords.longitude;
 
-        // 내 위치로 지도 중심 이동
         setCenter({ lat: currentLat, lng: currentLng });
 
-        // 좌표를 주소로 변환
         const geocoder = new window.google.maps.Geocoder();
         geocoder.geocode({ location: { lat: currentLat, lng: currentLng } }, (results, status) => {
-          if (status === "OK" && results[0]) {
-            const addressComponents = results[0].address_components;
-            const dongComponent = addressComponents.find(
-              (component) =>
-                component.types.includes("sublocality_level_2") ||
-                component.types.includes("sublocality_level_1") ||
-                component.types.includes("neighborhood"),
-            );
+          if (status === "OK" && results.length > 0) {
+            const fullAddress = results[0].formatted_address;
+            const match = fullAddress.match(/\S+(동|읍|면)\b/);
 
-            if (dongComponent) {
-              setNeighborhood(dongComponent.short_name);
+            if (match) {
+              setNeighborhood(match[0]);
             } else {
-              setNeighborhood("혜화동");
+              const backup = results[0].address_components.find((c) => c.types.includes("sublocality"));
+              setNeighborhood(backup ? backup.short_name : "현재 위치");
             }
           } else {
-            console.error("주소 변환 실패:", status);
-            setNeighborhood("알 수 없는 위치");
+            console.error("주소 변환 실패 사유:", status);
           }
         });
       },
       (error) => {
-        console.error("위치 권한 거부됨", error);
-        setNeighborhood("기본 위치");
+        console.error("위치 가져오기 실패:", error);
       },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
     );
   }, [isLoaded]);
 
