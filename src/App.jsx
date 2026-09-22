@@ -8,6 +8,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Home from "./pages/Home";
 import Recent from "./pages/Recent";
 import MyPage from "./pages/MyPage";
+import LocationConfirm from "./pages/LocationConfirm";
 
 export default function App() {
   // 스플래시 애니메이션 상태
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/recent" element={<Recent />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/location" element={<LocationConfirm />} />
             </Routes>
           </BrowserRouter>
         )}
