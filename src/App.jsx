@@ -11,6 +11,7 @@ import MyPage from "./pages/MyPage";
 import LocationConfirm from "./pages/LocationConfirm";
 import LocationSearch from "./pages/LocationSearch";
 import SituationSelect from "./pages/SituationSelect";
+import CategorySelect from "./pages/CategorySelect";
 
 export default function App() {
   // 스플래시 애니메이션 상태
@@ -36,6 +37,7 @@ export default function App() {
               <Route path="/location" element={<LocationConfirm />} />
               <Route path="/location/custom" element={<LocationSearch />} />
               <Route path="/recommend/situation" element={<SituationSelect />} />
+              <Route path="/recommend/category" element={<CategorySelect />} />
             </Routes>
           </BrowserRouter>
         )}
