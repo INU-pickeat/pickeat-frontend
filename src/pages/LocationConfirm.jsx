@@ -9,7 +9,7 @@ export default function LocationConfirm() {
   const navigate = useNavigate();
 
   const [neighborhood, setNeighborhood] = useState("위치 확인 중...");
-  const [center, setCenter] = useState({ lat: 37.5764, lng: 127.0015 }); // 최초 중심 좌표 (혜화역)
+  const [center, setCenter] = useState({ lat: 37.5764, lng: 127.0015 }); // 중심 좌표 (최초 혜화역)
 
   // 구글맵 API 로드 상태 확인
   const { isLoaded } = useJsApiLoader({
@@ -117,7 +117,7 @@ export default function LocationConfirm() {
           네, 맞아요
         </Button>
         <button
-          onClick={() => navigate("/loaction/custom")}
+          onClick={() => navigate("/location/custom")}
           className="text-[14px] font-semibold text-[#FF8000] active:opacity-60 transition-opacity cursor-pointer py-2"
         >
           아니요, 다른 위치로 설정하기
