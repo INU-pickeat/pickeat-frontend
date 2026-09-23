@@ -5,6 +5,8 @@ import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import LeftArrow from "../assets/arrow_left.svg";
 
+const libraries = ["places"];
+
 export default function LocationConfirm() {
   const navigate = useNavigate();
 
@@ -17,6 +19,7 @@ export default function LocationConfirm() {
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
     language: "ko",
     region: "KR",
+    libraries,
   });
 
   // 현재 위치 가져오기

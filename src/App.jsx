@@ -10,6 +10,7 @@ import Recent from "./pages/Recent";
 import MyPage from "./pages/MyPage";
 import LocationConfirm from "./pages/LocationConfirm";
 import LocationSearch from "./pages/LocationSearch";
+import SituationSelect from "./pages/SituationSelect";
 
 export default function App() {
   // 스플래시 애니메이션 상태
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/location" element={<LocationConfirm />} />
               <Route path="/location/custom" element={<LocationSearch />} />
+              <Route path="/recommend/situation" element={<SituationSelect />} />
             </Routes>
           </BrowserRouter>
         )}
