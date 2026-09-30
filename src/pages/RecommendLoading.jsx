@@ -27,13 +27,13 @@ export default function RecommendLoading() {
     const updateProgress = () => {
       setProgress((prev) => {
         // 무작위 퍼센트 증가
-        const increment = Math.floor(Math.random() * 10) + 3;
+        const increment = Math.floor(Math.random() * 16) + 5;
         const nextProgress = prev + increment;
 
         if (nextProgress >= 100) return 100;
 
         // 무작위 딜레이
-        const randomDelay = Math.floor(Math.random() * 800) + 1000;
+        const randomDelay = Math.floor(Math.random() * 500) + 500;
         timeoutId = setTimeout(updateProgress, randomDelay);
 
         return nextProgress;
