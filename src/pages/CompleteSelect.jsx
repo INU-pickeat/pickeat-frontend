@@ -25,10 +25,10 @@ export default function CompleteSelect() {
       {/* 각 버튼들 */}
       <div className="w-full px-6 flex flex-col items-center space-y-4">
         <div className="flex w-full gap-3">
-          <Button onClick={() => alert("추가 예정입니다.")} className="flex-1 shadow-none">
+          <Button onClick={() => alert("구현 예정입니다.")} className="flex-1 shadow-none">
             길안내
           </Button>
-          <Button onClick={() => alert("추가 예정입니다.")} className="flex-1 shadow-none">
+          <Button onClick={() => alert("구현 예정입니다.")} className="flex-1 shadow-none">
             pick 공유
           </Button>
         </div>
