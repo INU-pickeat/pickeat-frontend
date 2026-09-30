@@ -55,9 +55,9 @@ export default function RecommendResult() {
   return (
     <PageTransition className="min-h-dvh w-full bg-[#FFFDF8] relative overflow-x-hidden overflow-y-auto scrollbar-none">
       {/* 배경 그라데이션 */}
-      <div className="fixed top-0 right-0 w-80 h-80 bg-[#FF9639] rounded-full blur-[100px] opacity-40 -translate-y-1/4 translate-x-1/4 pointer-events-none z-0" />{" "}
-      <div className="fixed top-1/2 left-0 w-64 h-64 bg-[#F87816] rounded-full blur-[100px] opacity-25 -translate-y-1/2 -translate-x-1/4 pointer-events-none z-0" />{" "}
-      <div className="fixed bottom-0 right-0 w-72 h-72 bg-[#FFECCD] rounded-full blur-[90px] opacity-60 translate-y-1/4 translate-x-1/4 pointer-events-none z-0" />{" "}
+      <div className="fixed top-0 -right-10 w-60 h-60 bg-[#F87816] rounded-full blur-[40px] opacity-60 -translate-y-1/4 translate-x-1/4 pointer-events-none z-0" />{" "}
+      <div className="fixed top-1/2 left-0 w-60 h-60 bg-[#F87816] rounded-full blur-[40px] opacity-60 -translate-y-1/2 -translate-x-1/4 pointer-events-none z-0" />{" "}
+      <div className="fixed bottom-0 right-0 w-60 h-60 bg-[#F87816] rounded-full blur-[40px] opacity-60 translate-y-1/4 translate-x-1/4 pointer-events-none z-0" />{" "}
       {/* 헤더 영역 */}
       <div className="pt-12 px-8 pb-4 relative z-10 mb-8">
         <img
