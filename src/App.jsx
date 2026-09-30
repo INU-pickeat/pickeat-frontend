@@ -15,6 +15,7 @@ import CategorySelect from "./pages/CategorySelect";
 import CompleteSelect from "./pages/CompleteSelect";
 import PriceSelect from "./pages/PriceSelect";
 import RecommendLoading from "./pages/RecommendLoading";
+import RecommendResult from "./pages/RecommendResult";
 
 export default function App() {
   // 스플래시 애니메이션 상태
@@ -44,6 +45,7 @@ export default function App() {
               <Route path="/recommend/complete" element={<CompleteSelect />} />
               <Route path="/recommend/price" element={<PriceSelect />} />
               <Route path="/recommend/loading" element={<RecommendLoading />} />
+              <Route path="/recommend/result" element={<RecommendResult />} />
             </Routes>
           </BrowserRouter>
         )}
