@@ -33,7 +33,7 @@ export default function RecommendLoading() {
         if (nextProgress >= 100) return 100;
 
         // 무작위 딜레이
-        const randomDelay = Math.floor(Math.random() * 1000) + 1500;
+        const randomDelay = Math.floor(Math.random() * 800) + 1000;
         timeoutId = setTimeout(updateProgress, randomDelay);
 
         return nextProgress;
