@@ -120,7 +120,7 @@ export default function PriceSelect() {
               category,
               price: isAnyPrice ? "any" : { min: minPrice, max: maxPrice },
             };
-            navigate("/recommend/result", { state: finalData });
+            navigate("/recommend/loading", { state: finalData });
           }}
           className="shadow-none"
         >
