@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
@@ -25,9 +25,33 @@ export default function CategorySelect() {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const situation = location.state?.situation || null; // 이전 상황 선택 페이지에서 넘겨준 데이터 (선택)
 
-  // 이전 상황 선택 페이지에서 넘겨준 데이터 (선택)
-  const situation = location.state?.situation || null;
+  // 스크롤 애니메이션 관련 상태
+  const scrollRef = useRef(null);
+  const cardRefs = useRef([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setSelectedCategory(entry.target.dataset.id);
+          }
+        });
+      },
+      {
+        root: scrollRef.current,
+        threshold: 0.6,
+      },
+    );
+
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <PageTransition className="h-dvh w-full flex flex-col relative overflow-hidden bg-[#FFFDF8]">
@@ -55,15 +79,18 @@ export default function CategorySelect() {
       {/* 카드 스와이프 영역 */}
       <div className="flex-1 w-full flex flex-col justify-center relative z-10 -translate-y-2">
         <div
+          ref={scrollRef}
           className="flex w-full overflow-x-auto snap-x snap-mandatory gap-6 py-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none scroll-smooth"
-          style={{ paddingLeft: "calc(50% - 110px)", paddingRight: "calc(50% - 110px)" }}
+          style={{ paddingLeft: "calc(50% - 112px)", paddingRight: "calc(50% - 112px)" }}
         >
-          {categories.map((item) => {
+          {categories.map((item, index) => {
             const isSelected = selectedCategory === item.id;
 
             return (
               <button
                 key={item.id}
+                data-id={item.id}
+                ref={(el) => (cardRefs.current[index] = el)}
                 onClick={() => setSelectedCategory(item.id)}
                 className={`snap-center snap-always shrink-0 w-56 aspect-[3/4.2] rounded-[30px] flex flex-col items-center justify-center transition-all duration-300 ${
                   isSelected ? "bg-[#FFFDF8] scale-105" : "bg-[#FFFDF8] shadow-md scale-95"

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import LeftArrow from "../assets/arrow_left.svg";
@@ -21,27 +21,6 @@ export default function LocationSearch() {
     region: "KR",
     libraries,
   });
-
-  // 연관 장소 자동완성 관련 상태
-  const [autocomplete, setAutocomplete] = useState(null);
-  const onLoad = (autoC) => setAutocomplete(autoC);
-  const onPlaceChanged = () => {
-    if (autocomplete !== null) {
-      const place = autocomplete.getPlace();
-
-      if (place.geometry && place.geometry.location) {
-        // 지도 중심 이동
-        setCenter({
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-        });
-
-        // 검색창과 하단 버튼 텍스트를 선택한 장소 이름으로 업데이트
-        setSearchInput(place.name);
-        setTargetLocation(place.name);
-      }
-    }
-  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -83,26 +62,13 @@ export default function LocationSearch() {
           onSubmit={handleSearch}
           className="flex items-center w-full bg-[#FFECCD] rounded-full px-2.5 py-1 shadow-sm"
         >
-          {isLoaded && (
-            <Autocomplete
-              onLoad={onLoad}
-              onPlaceChanged={onPlaceChanged}
-              // 한국 안에서만 검색되도록 제한
-              options={{
-                bounds: new window.google.maps.LatLngBounds({ lat: 33, lng: 124 }, { lat: 39, lng: 132 }),
-                strictBounds: false,
-              }}
-              className="flex-1 min-w-0"
-            >
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="지하철역명으로 검색 (ex. 혜화역)"
-                className="flex-1 min-w-0 bg-transparent text-[#FF8839] placeholder-[#F86516]/60 font-medium outline-none px-2"
-              />
-            </Autocomplete>
-          )}
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="지하철역명으로 검색 (ex. 혜화역)"
+            className="flex-1 min-w-0 bg-transparent text-[#FF8839] placeholder-[#F86516]/60 font-medium outline-none px-2"
+          />
           {/* 검색 아이콘 버튼 */}
           <button
             type="submit"
