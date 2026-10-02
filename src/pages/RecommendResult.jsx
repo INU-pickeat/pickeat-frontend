@@ -73,7 +73,7 @@ export default function RecommendResult() {
   // 최종 제외 처리 함수
   const handleExclude = () => {
     closeModal();
-    alert("구현 예정입니다.");
+    alert("서버 연동 구현 예정입니다.");
   };
 
   // 이전 페이지들에서 넘겨받은 데이터 파싱 (없을 경우 기본값)
