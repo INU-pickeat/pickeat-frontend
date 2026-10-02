@@ -12,23 +12,23 @@ export default function BottomNav() {
     {
       path: "/home",
       activePaths: ["/home", "/recent"],
-      icon: <img src={HomeIcon} alt="홈 아이콘" className="w-6 h-6" />,
+      icon: <img src={HomeIcon} alt="홈 아이콘" className="w-5 h-5" />,
     },
     {
       path: "/calendar",
       activePaths: ["/calendar"],
-      icon: <img src={MarkIcon} alt="마크 아이콘" className="w-6 h-6" />,
+      icon: <img src={MarkIcon} alt="마크 아이콘" className="w-5 h-5" />,
     },
     {
       path: "/mypage",
       activePaths: ["/mypage"],
-      icon: <img src={ProfileIcon} alt="프로필 아이콘" className="w-6 h-6" />,
+      icon: <img src={ProfileIcon} alt="프로필 아이콘" className="w-5 h-5" />,
     },
   ];
 
   return (
     // 위치 고정
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-68 h-12 bg-[#FFECCDE5] rounded-full flex items-center justify-between px-2 shadow-sm z-50">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-68 h-12 bg-[#FFECCD]/90 rounded-full flex items-center justify-between px-2 shadow-sm z-50">
       {tabs.map((tab) => {
         const isActive = tab.activePaths.includes(location.pathname);
 
@@ -37,7 +37,7 @@ export default function BottomNav() {
             key={tab.path}
             onClick={() => navigate(tab.path)}
             // 현재 페이지일 경우 배경색 진하게
-            className={`flex justify-center items-center w-18 h-10 rounded-full transition-colors text-[#F86516] ${
+            className={`flex justify-center items-center w-18 h-9 rounded-full transition-colors text-[#F86516] ${
               isActive ? "bg-[#FFD5B1]" : "bg-transparent"
             } cursor-pointer`}
           >

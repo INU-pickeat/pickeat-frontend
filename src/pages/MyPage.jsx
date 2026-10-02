@@ -44,34 +44,36 @@ export default function MyPage() {
   );
 
   return (
-    <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
-      {/* 내부 스크롤 영역 */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-6 pt-16 pb-28">
-        {/* 상단 프로필 영역 */}
-        <div className="flex items-center space-x-4 mb-10">
-          {/* 프로필 이미지 */}
-          <div className="w-14 h-14 rounded-full bg-[#F86516] flex items-center justify-center shrink-0 shadow-sm">
-            <img src={DefaultProfile} alt="프로필 이미지" className="w-full h-full object-cover" />
+    <>
+      <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
+        {/* 내부 스크롤 영역 */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-6 pt-16 pb-28">
+          {/* 상단 프로필 영역 */}
+          <div className="flex items-center space-x-4 mb-10">
+            {/* 프로필 이미지 */}
+            <div className="w-14 h-14 rounded-full bg-[#F86516] flex items-center justify-center shrink-0 shadow-sm">
+              <img src={DefaultProfile} alt="프로필 이미지" className="w-full h-full object-cover" />
+            </div>
+
+            {/* 유저 이름 및 정보 수정 */}
+            <div className="flex flex-col justify-center">
+              <h2 className="text-[19px] font-bold text-[#F86516] mb-1">픽잇님 안녕하세요.</h2>
+              <button className="text-[12px] text-[#FF8839] font-semibold text-left hover:underline w-fit cursor-pointer">
+                내 정보 수정
+              </button>
+            </div>
           </div>
 
-          {/* 유저 이름 및 정보 수정 */}
-          <div className="flex flex-col justify-center">
-            <h2 className="text-[19px] font-bold text-[#F86516] mb-1">픽잇님 안녕하세요.</h2>
-            <button className="text-[12px] text-[#FF8839] font-semibold text-left hover:underline w-fit cursor-pointer">
-              내 정보 수정
-            </button>
+          {/* 메뉴 리스트 영역 */}
+          <div className="flex flex-col space-y-5">
+            {renderMenu(menuGroup1)}
+            {renderMenu(menuGroup2)}
           </div>
         </div>
+      </PageTransition>
 
-        {/* 메뉴 리스트 영역 */}
-        <div className="flex flex-col space-y-5">
-          {renderMenu(menuGroup1)}
-          {renderMenu(menuGroup2)}
-        </div>
-      </div>
-
-      {/* 하단 네비게이션 바 */}
+      {/* 네비게이션 바 */}
       <BottomNav />
-    </PageTransition>
+    </>
   );
 }
