@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import PageTransition from "../components/PageTransition";
+import searchingCharacter from "../assets/searching_character.png";
 
 export default function RecommendLoading() {
   const navigate = useNavigate();
@@ -78,6 +79,8 @@ export default function RecommendLoading() {
           {neighborhood} 최적의 맛집 선택 중!
         </h1>
       </div>
+
+      <img src={searchingCharacter} className="w-[50%] z-999" />
 
       {/* 프로그레스 바 영역 */}
       <div className="w-full flex flex-col items-center relative z-10">
