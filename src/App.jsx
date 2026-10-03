@@ -20,6 +20,8 @@ import Calendar from "./pages/Calendar";
 import Write from "./pages/Write";
 import History from "./pages/History";
 
+import Map from "./pages/Map";
+
 export default function App() {
   // 스플래시 애니메이션 상태
   const [showSplash, setShowSplash] = useState(() => {
@@ -52,6 +54,7 @@ export default function App() {
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/history/write" element={<Write />} />
               <Route path="/history" element={<History />} />
+              <Route path="/map" element={<Map />} />
             </Routes>
           </BrowserRouter>
         )}
