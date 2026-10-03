@@ -43,7 +43,9 @@ export default function Login() {
       {/* 로그인 버튼 */}
       <div className="w-full mt-8">
         <p className="text-[#FF2339] text-xs font-medium mb-3 text-center">에러 메시지 영역</p>
-        <Button onClick={() => navigate("/home")}>로그인</Button>
+        <Button onClick={() => navigate("/home")} className="shadow-none">
+          로그인
+        </Button>
       </div>
 
       {/* 구분선 */}

@@ -162,7 +162,9 @@ export default function Signup() {
       </div>
 
       <div className="mt-12 mb-8">
-        <Button onClick={handleSignup}>회원가입</Button>
+        <Button onClick={handleSignup} className="shadow-none">
+          회원가입
+        </Button>
       </div>
     </PageTransition>
   );

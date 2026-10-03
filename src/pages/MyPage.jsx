@@ -58,7 +58,10 @@ export default function MyPage() {
             {/* 유저 이름 및 정보 수정 */}
             <div className="flex flex-col justify-center">
               <h2 className="text-[19px] font-bold text-[#F86516] mb-1">픽잇님 안녕하세요.</h2>
-              <button className="text-[12px] text-[#FF8839] font-semibold text-left hover:underline w-fit cursor-pointer">
+              <button
+                onClick={() => alert("구현 예정입니다.")}
+                className="text-[12px] text-[#FF8839] font-semibold text-left hover:underline w-fit cursor-pointer"
+              >
                 내 정보 수정
               </button>
             </div>

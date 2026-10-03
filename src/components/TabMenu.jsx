@@ -20,7 +20,7 @@ export default function TabMenu() {
           <button
             key={tab.name}
             onClick={() => navigate(tab.path)}
-            className={`px-4 py-2 rounded-full font-semibold text-[13px] shrink-0 transition-colors ${
+            className={`px-4 py-2 rounded-full font-semibold text-[13px] cursor-pointer shrink-0 transition-colors ${
               isActive ? "bg-[#F87816] text-[#FFF0DD] shadow-md font-bold" : "bg-[#FFECCD] text-[#F87816]"
             }`}
           >

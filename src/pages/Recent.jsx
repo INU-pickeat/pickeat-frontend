@@ -33,10 +33,26 @@ export default function Recent() {
       category: "일식",
       desc: "5월 14일",
       visit: "3번째 방문",
-      imgUrl: "",
+      imgUrl: "/public/assets/dummy.jpg",
     },
-    { id: 2, date: "2026-07-20", name: "초원", category: "한식", desc: "5월 12일 방문", visit: "", imgUrl: "" },
-    { id: 3, date: "2026-07-18", name: "동래정 본점", category: "한식", desc: "5월 12일 방문", visit: "", imgUrl: "" },
+    {
+      id: 2,
+      date: "2026-07-20",
+      name: "초원",
+      category: "한식",
+      desc: "5월 12일 방문",
+      visit: "",
+      imgUrl: "/public/assets/dummy.jpg",
+    },
+    {
+      id: 3,
+      date: "2026-07-18",
+      name: "동래정 본점",
+      category: "한식",
+      desc: "5월 12일 방문",
+      visit: "",
+      imgUrl: "/public/assets/dummy.jpg",
+    },
   ];
 
   // 날짜별로 데이터 그룹화
@@ -54,7 +70,7 @@ export default function Recent() {
       <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
         <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide px-6 pt-10 pb-24">
           {/* 뒤로가기 버튼 */}
-          <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6 mb-6 cursor-pointer" onClick={() => navigate(-1)} />
+          <img src={LeftArrow} className="w-6 h-6 mb-6 cursor-pointer" onClick={() => navigate("/home")} />
 
           {/* 타이틀 & 정렬 토글 */}
           <div className="flex justify-between mb-8">
@@ -107,12 +123,13 @@ export default function Recent() {
               <div className="flex flex-col space-y-4">
                 {items.map((item) => (
                   <div
+                    onClick={() => alert("구현 예정입니다.")}
                     key={item.id}
-                    className="w-full h-20 bg-[#FFECCD] rounded-2xl flex items-center justify-between p-4 shadow-sm"
+                    className="w-full h-[82px] bg-[#FFECCD] rounded-2xl flex items-center justify-between shadow-sm overflow-hidden"
                   >
-                    <div className="flex flex-col h-full justify-center space-y-2">
-                      <h4 className="text-[17px] font-bold text-[#F86516]">{item.name}</h4>
-                      <div className="flex space-x-3 text-[12px] text-[#434343] font-medium">
+                    <div className="flex flex-col h-full justify-center space-y-2 pl-5 pr-2 py-3 flex-1">
+                      <h4 className="text-[16px] font-bold text-[#F86516] truncate">{item.name}</h4>
+                      <div className="flex space-x-3 text-[13px] text-[#434343] font-medium">
                         <span>{item.category}</span>
                         <span>{item.desc}</span>
                         {item.visit && <span>{item.visit}</span>}
@@ -120,7 +137,7 @@ export default function Recent() {
                     </div>
 
                     {/* 식당 썸네일 */}
-                    <div className="w-16 h-16 bg-black/20 rounded-lg shrink-0 overflow-hidden">
+                    <div className="w-[82px] h-full bg-black/10 shrink-0">
                       {item.imgUrl && <img src={item.imgUrl} alt={item.name} className="w-full h-full object-cover" />}
                     </div>
                   </div>

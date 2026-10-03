@@ -98,145 +98,147 @@ export default function Calendar() {
 
   return (
     <>
-      <PageTransition className="min-h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-auto pb-24">
-        {/* 헤더 영역 */}
-        <div className="pt-10 px-6 relative z-10">
-          <button
-            onClick={() => navigate("/home")}
-            className="mb-6 p-2 -ml-2 active:scale-90 transition-transform cursor-pointer"
-          >
-            <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6" />
-          </button>
+      <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
+        <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide pb-24">
+          {/* 헤더 영역 */}
+          <div className="pt-10 px-6 relative z-10">
+            <button
+              onClick={() => navigate("/home")}
+              className="mb-6 p-2 -ml-2 active:scale-90 transition-transform cursor-pointer"
+            >
+              <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6" />
+            </button>
 
-          {/* 탭 메뉴 */}
-          <TabMenu />
-        </div>
-        {/* 캘린더 영역 */}
-        <div className="px-6 relative z-10">
-          <div className="bg-[#FFECCD] rounded-[20px] p-5 shadow-sm">
-            <div className="flex items-center gap-1 mb-4">
-              <button onClick={prevMonth} className="p-1 active:scale-75 transition-transform">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#F86516"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
-
-              <h2 className="text-[#F86516] font-medium text-[16px]">
-                {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
-              </h2>
-
-              <button onClick={nextMonth} className="p-1 active:scale-75 transition-transform">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#F86516"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
-            </div>
-
-            {/* 요일 헤더 */}
-            <div className="grid grid-cols-7 text-center mb-4">
-              {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
-                <div key={day} className="font-medium text-[#000000] text-[14px]">
-                  {day}
-                </div>
-              ))}
-            </div>
-
-            {/* 날짜 그리드 */}
-            <div className="grid grid-cols-7 gap-y-1 text-center">
-              {cells.map((cell, idx) => {
-                const dayRecords = records[cell.dateStr];
-                const firstRecord = dayRecords ? dayRecords[0] : null;
-                const isSunday = idx % 7 === 0;
-
-                return (
-                  <div
-                    key={idx}
-                    onClick={() => cell.isCurrent && setSelectedDate(cell.dateStr)}
-                    className={`relative flex justify-center items-center h-10 w-10 mx-auto ${cell.isCurrent ? "cursor-pointer" : "cursor-default opacity-40"}`}
+            {/* 탭 메뉴 */}
+            <TabMenu />
+          </div>
+          {/* 캘린더 영역 */}
+          <div className="px-6 relative z-10">
+            <div className="bg-[#FFECCD] rounded-[20px] p-5 shadow-sm">
+              <div className="flex items-center gap-1 mb-4">
+                <button onClick={prevMonth} className="p-1 active:scale-75 transition-transform">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#F86516"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
-                    {/* 기록이 있는 날짜 */}
-                    {firstRecord && cell.isCurrent ? (
-                      <div className="relative w-9 h-9 rounded-full overflow-hidden">
-                        <img src={firstRecord.image} className="w-full h-full object-cover" />
-                      </div>
-                    ) : (
-                      /* 일반 날짜 */
-                      <span
-                        className={`text-[14px] font-medium ${
-                          !cell.isCurrent ? "text-[#C8C8C8]" : isSunday ? "text-[#F03232]" : "text-[#F87816]"
-                        }`}
-                      >
-                        {cell.day}
-                      </span>
-                    )}
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+
+                <h2 className="text-[#F86516] font-medium text-[16px]">
+                  {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
+                </h2>
+
+                <button onClick={nextMonth} className="p-1 active:scale-75 transition-transform">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#F86516"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* 요일 헤더 */}
+              <div className="grid grid-cols-7 text-center mb-4">
+                {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
+                  <div key={day} className="font-medium text-[#000000] text-[14px]">
+                    {day}
                   </div>
-                );
-              })}
+                ))}
+              </div>
+
+              {/* 날짜 그리드 */}
+              <div className="grid grid-cols-7 gap-y-1 text-center">
+                {cells.map((cell, idx) => {
+                  const dayRecords = records[cell.dateStr];
+                  const firstRecord = dayRecords ? dayRecords[0] : null;
+                  const isSunday = idx % 7 === 0;
+
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => cell.isCurrent && setSelectedDate(cell.dateStr)}
+                      className={`relative flex justify-center items-center h-10 w-10 mx-auto ${cell.isCurrent ? "cursor-pointer" : "cursor-default opacity-40"}`}
+                    >
+                      {/* 기록이 있는 날짜 */}
+                      {firstRecord && cell.isCurrent ? (
+                        <div className="relative w-9 h-9 rounded-full overflow-hidden">
+                          <img src={firstRecord.image} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        /* 일반 날짜 */
+                        <span
+                          className={`text-[14px] font-medium ${
+                            !cell.isCurrent ? "text-[#C8C8C8]" : isSunday ? "text-[#F03232]" : "text-[#F87816]"
+                          }`}
+                        >
+                          {cell.day}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* 기록 상세 카드 영역 */}
-        <div className="px-6 my-6 relative z-10">
-          <h3 className="text-[#F87816] font-semibold text-[16px] ml-3 mb-4">
-            {selectedDate.split("-")[0]}년 {selectedDate.split("-")[1].replace(/^0/, "")}월{" "}
-            {selectedDate.split("-")[2].replace(/^0/, "")}일
-          </h3>
+          {/* 기록 상세 카드 영역 */}
+          <div className="px-6 my-6 relative z-10">
+            <h3 className="text-[#F87816] font-semibold text-[16px] ml-3 mb-4">
+              {selectedDate.split("-")[0]}년 {selectedDate.split("-")[1].replace(/^0/, "")}월{" "}
+              {selectedDate.split("-")[2].replace(/^0/, "")}일
+            </h3>
 
-          {records[selectedDate] && records[selectedDate].length > 0 ? (
-            <div className="flex flex-col gap-4">
-              {records[selectedDate].map((record) => (
-                <div
-                  key={record.id}
-                  className="bg-[#FFECCD] rounded-[24px] px-5 py-4 flex justify-between items-center shadow-sm"
-                >
-                  <div>
-                    <h4 className="text-[#F86516] font-bold text-[16px] mb-1">{record.restaurantName}</h4>
-                    <p className="text-[#434343] font-medium text-[10px]">
-                      {record.category} &nbsp; &nbsp; {record.visitDate} 방문
-                    </p>
+            {records[selectedDate] && records[selectedDate].length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {records[selectedDate].map((record) => (
+                  <div
+                    key={record.id}
+                    className="bg-[#FFECCD] rounded-[24px] px-5 py-4 flex justify-between items-center shadow-sm"
+                  >
+                    <div>
+                      <h4 className="text-[#F86516] font-bold text-[16px] mb-1">{record.restaurantName}</h4>
+                      <p className="text-[#434343] font-medium text-[10px]">
+                        {record.category} &nbsp; &nbsp; {record.visitDate} 방문
+                      </p>
+                    </div>
+
+                    {/* 기록하기 영역 */}
+                    <button className="flex flex-col items-center gap-2">
+                      {record.isRecorded ? (
+                        <>
+                          <img src={CheckIcon} className="w-5 h-5" />
+                          <span className="text-[#434343] text-[10px] font-medium">기록 완료</span>
+                        </>
+                      ) : (
+                        <>
+                          <img src={WriteIcon} onClick={() => navigate("/history/write")} className="w-5 h-5" />
+                          <span className="text-[#434343] text-[10px] font-medium">기록하기</span>
+                        </>
+                      )}
+                    </button>
                   </div>
-
-                  {/* 기록하기 영역 */}
-                  <button className="flex flex-col items-center gap-2">
-                    {record.isRecorded ? (
-                      <>
-                        <img src={CheckIcon} className="w-5 h-5" />
-                        <span className="text-[#434343] text-[10px] font-medium">기록 완료</span>
-                      </>
-                    ) : (
-                      <>
-                        <img src={WriteIcon} onClick={() => navigate("/history/write")} className="w-5 h-5" />
-                        <span className="text-[#434343] text-[10px] font-medium">기록하기</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-[#FFFDF8] border-2 border-dashed border-[#FFECCD] rounded-[24px] p-6 flex justify-center items-center">
-              <p className="text-[#F87816] font-semibold text-[14px]">이 날은 픽한 맛집이 없어요.</p>
-            </div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <div className="bg-[#FFFDF8] border-2 border-dashed border-[#FFECCD] rounded-[24px] p-6 flex justify-center items-center">
+                <p className="text-[#F87816] font-semibold text-[14px]">이 날은 픽한 맛집이 없어요.</p>
+              </div>
+            )}
+          </div>
         </div>
       </PageTransition>
 
