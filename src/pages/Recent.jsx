@@ -63,9 +63,9 @@ export default function Recent() {
             <div className="relative mt-1">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-1 text-[#F86516] active:opacity-60 transition-opacity cursor-pointer"
+                className="flex items-center space-x-1 text-[#F87816] active:opacity-60 transition-opacity cursor-pointer"
               >
-                <span className="text-[14px] font-bold leading-none">{selectedFilter}</span>
+                <span className="text-[12px] font-semibold leading-none">{selectedFilter}</span>
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -79,25 +79,17 @@ export default function Recent() {
 
               {/* 드롭다운 메뉴 */}
               {isDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1 w-26 bg-[#FFFDF8] border-[1.5px] border-[#FF9639] rounded-xl shadow-lg z-50 flex flex-col overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-26 bg-[#FFFDF8] border-[1.5px] border-[#F86516] rounded-xl shadow-lg z-50 flex flex-col overflow-hidden">
                   <button
                     onClick={() => handleSelectFilter("일주일 기준")}
-                    className={`py-2 text-[14px] font-bold transition-colors ${
-                      selectedFilter === "일주일 기준"
-                        ? "text-[#F86516] bg-[#FFECCD]"
-                        : "text-[#434343] active:bg-gray-50"
-                    }`}
+                    className={`py-2 text-[14px] font-bold transition-colors ${selectedFilter === "일주일 기준" ? "text-[#F86516] bg-[#FFECCD]" : "text-[#434343] active:bg-gray-50"}`}
                   >
                     일주일 기준
                   </button>
-                  <div className="w-full h-px bg-[#FF9639]/30"></div>
+                  <div className="w-full h-px bg-[#F86516]/30"></div>
                   <button
                     onClick={() => handleSelectFilter("30일 기준")}
-                    className={`py-2.5 text-[14px] font-bold transition-colors ${
-                      selectedFilter === "30일 기준"
-                        ? "text-[#F86516] bg-[#FFECCD]"
-                        : "text-[#434343] active:bg-gray-50"
-                    }`}
+                    className={`py-2 text-[14px] font-bold transition-colors ${selectedFilter === "30일 기준" ? "text-[#F86516] bg-[#FFECCD]" : "text-[#434343] active:bg-gray-50"}`}
                   >
                     30일 기준
                   </button>

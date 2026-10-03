@@ -17,6 +17,8 @@ import PriceSelect from "./pages/PriceSelect";
 import RecommendLoading from "./pages/RecommendLoading";
 import RecommendResult from "./pages/RecommendResult";
 import Calendar from "./pages/Calendar";
+import Write from "./pages/Write";
+import History from "./pages/History";
 
 export default function App() {
   // 스플래시 애니메이션 상태
@@ -48,6 +50,8 @@ export default function App() {
               <Route path="/recommend/loading" element={<RecommendLoading />} />
               <Route path="/recommend/result" element={<RecommendResult />} />
               <Route path="/calendar" element={<Calendar />} />
+              <Route path="/history/write" element={<Write />} />
+              <Route path="/history" element={<History />} />
             </Routes>
           </BrowserRouter>
         )}
