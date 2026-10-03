@@ -16,7 +16,7 @@ export default function Home() {
       category: "일식",
       date: "5월 14일",
       visit: "3번째 방문",
-      imgUrl: "/public/assets/dummy.jpg",
+      imgUrl: "/assets/dummy.jpg",
     },
     {
       id: 2,
@@ -24,16 +24,16 @@ export default function Home() {
       category: "한식",
       date: "5월 14일",
       visit: "3번째 방문",
-      imgUrl: "/public/assets/dummy.jpg",
+      imgUrl: "/assets/dummy.jpg",
     },
   ];
 
   const popularSpots = [
-    { id: 1, name: "신사", imgUrl: "/public/assets/Sinsa.png" },
-    { id: 2, name: "혜화", imgUrl: "/public/assets/Hyehwa.png" },
-    { id: 3, name: "서촌", imgUrl: "/public/assets/Seochon.png" },
-    { id: 4, name: "한남", imgUrl: "/public/assets/Hannam.png" },
-    { id: 5, name: "종로", imgUrl: "/public/assets/Jongro.png" },
+    { id: 1, name: "신사", imgUrl: "/assets/Sinsa.png" },
+    { id: 2, name: "혜화", imgUrl: "/assets/Hyehwa.png" },
+    { id: 3, name: "서촌", imgUrl: "/assets/Seochon.png" },
+    { id: 4, name: "한남", imgUrl: "/assets/Hannam.png" },
+    { id: 5, name: "종로", imgUrl: "/assets/Jongro.png" },
   ];
 
   return (
