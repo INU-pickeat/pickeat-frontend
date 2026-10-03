@@ -12,7 +12,7 @@ export default function TabMenu() {
   const location = useLocation();
 
   return (
-    <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden mb-6">
+    <div className="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden mb-8">
       {TAB_MENU.map((tab) => {
         const isActive = location.pathname.includes(tab.path);
 

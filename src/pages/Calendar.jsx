@@ -216,7 +216,7 @@ export default function Calendar() {
                   </div>
 
                   {/* 기록하기 영역 */}
-                  <button onClick={() => alert("구현 예정입니다.")} className="flex flex-col items-center gap-2">
+                  <button className="flex flex-col items-center gap-2">
                     {record.isRecorded ? (
                       <>
                         <img src={CheckIcon} className="w-5 h-5" />
@@ -224,7 +224,7 @@ export default function Calendar() {
                       </>
                     ) : (
                       <>
-                        <img src={WriteIcon} className="w-5 h-5" />
+                        <img src={WriteIcon} onClick={() => navigate("/history/write")} className="w-5 h-5" />
                         <span className="text-[#434343] text-[10px] font-medium">기록하기</span>
                       </>
                     )}

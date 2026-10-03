@@ -16,7 +16,7 @@ export default function BottomNav() {
     },
     {
       path: "/calendar",
-      activePaths: ["/calendar"],
+      activePaths: ["/calendar", "/map", "/history", "/feed"],
       icon: <img src={MarkIcon} alt="마크 아이콘" className="w-5 h-5" />,
     },
     {
