@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import logoImg from "../assets/pickeat_logo.svg";
 
 export default function Splash({ onFinish }) {
-  const [isFadingOut, setIsFadingOut] = useState(false);
-
   useEffect(() => {
     // 일정 시간 뒤 로그인 화면으로 전환
     const finishTimer = setTimeout(() => onFinish(), 3500);
@@ -13,9 +11,7 @@ export default function Splash({ onFinish }) {
 
   return (
     <div
-      className={`w-full flex-1 flex justify-center items-center relative overflow-hidden bg-pickeat-white transition-opacity duration-300 ${
-        isFadingOut ? "opacity-0" : "opacity-100"
-      }`}
+      className="w-full flex-1 flex justify-center items-center relative overflow-hidden bg-pickeat-white transition-opacity duration-300 opacity-100"
     >
       {/* 원형 레이어 */}
       <motion.div

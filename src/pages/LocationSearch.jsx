@@ -5,7 +5,7 @@ import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import LeftArrow from "../assets/arrow_left.svg";
 
-const libraries = ["places"]; // 연관 장소 목록
+import { googleMapsLoaderOptions } from "../config/googleMaps";
 
 export default function LocationSearch() {
   const navigate = useNavigate();
@@ -14,13 +14,7 @@ export default function LocationSearch() {
   const [targetLocation, setTargetLocation] = useState("혜화역"); // 검색 완료된 타겟 지역
   const [center, setCenter] = useState({ lat: 37.5764, lng: 127.0015 }); // 중심 좌표 (최초 혜화역)
 
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
-    language: "ko",
-    region: "KR",
-    libraries,
-  });
+  const { isLoaded } = useJsApiLoader(googleMapsLoaderOptions);
 
   const handleSearch = (e) => {
     e.preventDefault();

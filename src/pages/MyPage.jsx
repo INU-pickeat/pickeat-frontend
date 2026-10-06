@@ -13,7 +13,7 @@ export default function MyPage() {
     { id: 3, title: "이용약관" },
   ];
 
-  const menuGroup2 = [{ id: 4, title: "서비스 정보" }, , { id: 5, title: "로그아웃" }];
+  const menuGroup2 = [{ id: 4, title: "서비스 정보" }, { id: 5, title: "로그아웃" }];
 
   // 공통 메뉴 렌더링 함수
   const renderMenu = (menuList) => (

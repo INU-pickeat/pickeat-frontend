@@ -33,7 +33,7 @@ export default function Recent() {
       category: "일식",
       desc: "5월 14일",
       visit: "3번째 방문",
-      imgUrl: "/public/assets/dummy.png",
+      imgUrl: "/assets/dummy.png",
     },
     {
       id: 2,
@@ -42,7 +42,7 @@ export default function Recent() {
       category: "한식",
       desc: "5월 12일 방문",
       visit: "",
-      imgUrl: "/public/assets/dummy.png",
+      imgUrl: "/assets/dummy.png",
     },
     {
       id: 3,
@@ -51,7 +51,7 @@ export default function Recent() {
       category: "한식",
       desc: "5월 12일 방문",
       visit: "",
-      imgUrl: "/public/assets/dummy.png",
+      imgUrl: "/assets/dummy.png",
     },
   ];
 
