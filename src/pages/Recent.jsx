@@ -33,7 +33,7 @@ export default function Recent() {
       category: "일식",
       desc: "5월 14일",
       visit: "3번째 방문",
-      imgUrl: "/public/assets/dummy.jpg",
+      imgUrl: "/public/assets/dummy.png",
     },
     {
       id: 2,
@@ -42,7 +42,7 @@ export default function Recent() {
       category: "한식",
       desc: "5월 12일 방문",
       visit: "",
-      imgUrl: "/public/assets/dummy.jpg",
+      imgUrl: "/public/assets/dummy.png",
     },
     {
       id: 3,
@@ -51,7 +51,7 @@ export default function Recent() {
       category: "한식",
       desc: "5월 12일 방문",
       visit: "",
-      imgUrl: "/public/assets/dummy.jpg",
+      imgUrl: "/public/assets/dummy.png",
     },
   ];
 
@@ -123,7 +123,6 @@ export default function Recent() {
               <div className="flex flex-col space-y-4">
                 {items.map((item) => (
                   <div
-                    onClick={() => alert("구현 예정입니다.")}
                     key={item.id}
                     className="w-full h-[82px] bg-[#FFECCD] rounded-2xl flex items-center justify-between shadow-sm overflow-hidden"
                   >

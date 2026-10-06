@@ -3,44 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
 
-// 더미데이터
-const mockRestaurants = [
-  {
-    id: 1,
-    rank: 1,
-    name: "앙지인띠",
-    category: "중식",
-    image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    rank: 2,
-    name: "푸드득현",
-    category: "중식",
-    image: "https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    rank: 3,
-    name: "임성우바보",
-    category: "중식",
-    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    rank: 4,
-    name: "더미4",
-    category: "중식",
-    image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    id: 5,
-    rank: 5,
-    name: "더미5",
-    category: "중식",
-    image: "https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?q=80&w=600&auto=format&fit=crop",
-  },
-];
+import { recommendedRestaurants } from "../data/recommendedRestaurants";
 
 // 제외 사유 리스트
 const exclusionReasons = [
@@ -59,7 +22,7 @@ export default function RecommendResult() {
   // 모달 관련 상태
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
-  const [targetRestaurantId, setTargetRestaurantId] = useState(null); // 제외할 식당 ID 저장
+  const [, setTargetRestaurantId] = useState(null); // 제외할 식당 ID 저장
   const [selectedReason, setSelectedReason] = useState(""); // 선택된 제외 사유
 
   // 모달 닫기 및 상태 초기화 함수
@@ -107,10 +70,10 @@ export default function RecommendResult() {
       </div>
       {/* 카드 리스트 영역 */}
       <div className="px-6 pb-14 flex flex-col gap-4 relative">
-        {mockRestaurants.map((restaurant) => (
+        {recommendedRestaurants.map((restaurant) => (
           <div
             key={restaurant.id}
-            onClick={() => navigate(`/restaurant/${restaurant.id}`)}
+            onClick={() => navigate(`/restaurant/${restaurant.id}?source=recommend`, { state: { returnTo: location.pathname + location.search, recommendationState: location.state } })}
             className="relative w-full h-[210px] rounded-[24px] overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.08)] group cursor-pointer"
           >
             {/* 식당 배경 이미지 */}
