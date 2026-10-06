@@ -4,11 +4,13 @@ import PageTransition from "../components/PageTransition";
 import TabMenu from "../components/TabMenu";
 import BottomNav from "../components/BottomNav";
 import FeedReviewCard from "../components/FeedReviewCard";
+import ReviewModal from "../components/ReviewModal";
 import LeftArrow from "../assets/arrow_left.svg";
 import { feedReviews } from "../data/feedReviews";
 
 export default function Feed() {
   const navigate = useNavigate();
+  const [selectedReview, setSelectedReview] = useState(null);
   const [likedIds, setLikedIds] = useState(() =>
     feedReviews.filter((review) => review.liked).map((review) => review.id),
   );
@@ -42,12 +44,14 @@ export default function Feed() {
                 review={review}
                 liked={likedIds.includes(review.id)}
                 onToggleLike={() => toggleLike(review.id)}
+                onOpen={setSelectedReview}
               />
             ))}
           </section>
         </div>
       </PageTransition>
       <BottomNav />
+      {selectedReview && <ReviewModal review={selectedReview} onClose={() => setSelectedReview(null)} />}
     </>
   );
 }

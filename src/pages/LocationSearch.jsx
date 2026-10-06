@@ -92,7 +92,7 @@ export default function LocationSearch() {
             mapContainerStyle={{ width: "100%", height: "100%" }}
             center={center}
             zoom={16}
-            options={{ disableDefaultUI: true }}
+            options={{ disableDefaultUI: true, clickableIcons: false }}
           >
             <Marker position={center} />
           </GoogleMap>
