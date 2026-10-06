@@ -6,6 +6,7 @@ import LeftArrow from "../assets/arrow_left.svg";
 import TabMenu from "../components/TabMenu";
 import BottomNav from "../components/BottomNav";
 import ReviewModal from "../components/ReviewModal";
+import { googleMapsLoaderOptions } from "../config/googleMaps";
 
 const containerStyle = {
   width: "100%",
@@ -52,12 +53,7 @@ const mockLocations = [
 export default function Map() {
   const navigate = useNavigate();
 
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
-    language: "ko",
-    region: "KR",
-  });
+  const { isLoaded } = useJsApiLoader(googleMapsLoaderOptions);
 
   const [selectedReview, setSelectedReview] = useState(null);
 

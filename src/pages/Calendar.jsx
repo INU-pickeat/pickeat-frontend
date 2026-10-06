@@ -6,21 +6,19 @@ import TabMenu from "../components/TabMenu";
 import WriteIcon from "../assets/icons/write.svg";
 import CheckIcon from "../assets/icons/check.svg";
 import BottomNav from "../components/BottomNav";
+import { formatCalendarDate, getCalendarCells } from "../utils/calendar";
 
 export default function Calendar() {
   const navigate = useNavigate();
 
   // 금일 기준으로 캘린더 표시
   const today = new Date();
-  const getFormattedDate = (date) => {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-  };
 
   const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedDate, setSelectedDate] = useState(getFormattedDate(today)); // 사용자가 클릭한 날짜 상태
+  const [selectedDate, setSelectedDate] = useState(formatCalendarDate(today)); // 사용자가 클릭한 날짜 상태
 
   // 기록 더미데이터
-  const [records, setRecords] = useState({
+  const [records] = useState({
     "2026-10-01": [
       {
         id: 1,
@@ -55,46 +53,7 @@ export default function Calendar() {
   const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
 
-  // 날짜 계산 로직
-  const getCalendarCells = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // 이번 달 총 일수
-    const daysInPrevMonth = new Date(year, month, 0).getDate(); // 저번 달 총 일수
-
-    const cells = [];
-
-    // 이전 달 날짜
-    for (let i = firstDay - 1; i >= 0; i--) {
-      cells.push({
-        day: daysInPrevMonth - i,
-        isCurrent: false,
-        dateStr: `${year}-${String(month).padStart(2, "0")}-${String(daysInPrevMonth - i).padStart(2, "0")}`,
-      });
-    }
-    // 이번 달 날짜
-    for (let i = 1; i <= daysInMonth; i++) {
-      cells.push({
-        day: i,
-        isCurrent: true,
-        dateStr: `${year}-${String(month + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`,
-      });
-    }
-    // 다음 달 날짜
-    const remaining = 35 - cells.length;
-    for (let i = 1; i <= remaining; i++) {
-      cells.push({
-        day: i,
-        isCurrent: false,
-        dateStr: `${year}-${String(month + 2).padStart(2, "0")}-${String(i).padStart(2, "0")}`,
-      });
-    }
-    return cells;
-  };
-
-  const cells = getCalendarCells();
-  const selectedRecord = records[selectedDate];
+  const cells = getCalendarCells(currentDate);
 
   return (
     <>

@@ -5,7 +5,7 @@ import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import LeftArrow from "../assets/arrow_left.svg";
 
-const libraries = ["places"];
+import { googleMapsLoaderOptions } from "../config/googleMaps";
 
 export default function LocationConfirm() {
   const navigate = useNavigate();
@@ -14,13 +14,7 @@ export default function LocationConfirm() {
   const [center, setCenter] = useState({ lat: 37.5764, lng: 127.0015 }); // 중심 좌표 (최초 혜화역)
 
   // 구글맵 API 로드 상태 확인
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
-    language: "ko",
-    region: "KR",
-    libraries,
-  });
+  const { isLoaded } = useJsApiLoader(googleMapsLoaderOptions);
 
   // 현재 위치 가져오기
   useEffect(() => {
