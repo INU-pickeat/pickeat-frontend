@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { exploreRegions } from "../data/exploreRegions";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import BottomNav from "../components/BottomNav";
@@ -16,7 +17,7 @@ export default function Home() {
       category: "일식",
       date: "5월 14일",
       visit: "3번째 방문",
-      imgUrl: "/assets/dummy.jpg",
+      imgUrl: "/assets/dummy.png",
     },
     {
       id: 2,
@@ -24,16 +25,8 @@ export default function Home() {
       category: "한식",
       date: "5월 14일",
       visit: "3번째 방문",
-      imgUrl: "/assets/dummy.jpg",
+      imgUrl: "/assets/dummy.png",
     },
-  ];
-
-  const popularSpots = [
-    { id: 1, name: "신사", imgUrl: "/assets/Sinsa.png" },
-    { id: 2, name: "혜화", imgUrl: "/assets/Hyehwa.png" },
-    { id: 3, name: "서촌", imgUrl: "/assets/Seochon.png" },
-    { id: 4, name: "한남", imgUrl: "/assets/Hannam.png" },
-    { id: 5, name: "종로", imgUrl: "/assets/Jongro.png" },
   ];
 
   return (
@@ -117,16 +110,13 @@ export default function Home() {
           <div>
             <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 지역별 인기 맛집</h3>
             <div className="flex justify-between items-start w-full pb-2">
-              {popularSpots.map((spot) => (
-                <div key={spot.id} className="flex flex-col items-center space-y-2">
-                  <div
-                    onClick={() => alert("구현 예정입니다.")}
-                    className="w-14 h-14 rounded-full border-3 border-[#FFECCD] active:border-[#FF9639] transition-colors duration-200 bg-black/20 overflow-hidden shadow-sm cursor-pointer hover:border-[#FF9639]"
-                  >
-                    {spot.imgUrl && <img src={spot.imgUrl} className="w-full h-full object-cover" />}
+              {exploreRegions.map((spot) => (
+                <Link key={spot.slug} to={`/explore/${spot.slug}`} className="flex flex-col items-center space-y-2">
+                  <div className="w-14 h-14 rounded-full border-3 border-[#FFECCD] active:border-[#FF9639] transition-colors duration-200 bg-black/20 overflow-hidden shadow-sm cursor-pointer hover:border-[#FF9639]">
+                    {spot.imgUrl && <img src={spot.imgUrl} alt="" className="w-full h-full object-cover" />}
                   </div>
                   <span className="text-[12px] font-semibold text-[#434343]">{spot.name}</span>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

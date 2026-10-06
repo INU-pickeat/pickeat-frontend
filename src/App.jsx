@@ -6,6 +6,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import Home from "./pages/Home";
+import Explore from "./pages/Explore";
+import Restaurant from "./pages/Restaurant";
 import Recent from "./pages/Recent";
 import MyPage from "./pages/MyPage";
 import LocationConfirm from "./pages/LocationConfirm";
@@ -41,6 +43,8 @@ export default function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/explore/:region" element={<Explore />} />
+              <Route path="/restaurant/:id" element={<Restaurant />} />
               <Route path="/recent" element={<Recent />} />
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/location" element={<LocationConfirm />} />
