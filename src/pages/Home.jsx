@@ -84,7 +84,7 @@ export default function Home() {
             <div className="flex flex-col space-y-4">
               {recentPicks.map((pick) => (
                 <div
-                  onClick={() => alert("구현 예정입니다.")}
+                  onClick={() => navigate("/recent")}
                   key={pick.id}
                   className="w-full h-[82px] bg-[#FFECCD] rounded-2xl flex items-center justify-between shadow-sm overflow-hidden"
                 >

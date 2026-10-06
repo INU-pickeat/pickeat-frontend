@@ -123,7 +123,6 @@ export default function Recent() {
               <div className="flex flex-col space-y-4">
                 {items.map((item) => (
                   <div
-                    onClick={() => alert("구현 예정입니다.")}
                     key={item.id}
                     className="w-full h-[82px] bg-[#FFECCD] rounded-2xl flex items-center justify-between shadow-sm overflow-hidden"
                   >
