@@ -11,7 +11,19 @@ import useFeed from "../hooks/useFeed";
 export default function Feed() {
   const navigate = useNavigate();
   const [selectedReview, setSelectedReview] = useState(null);
-  const { items, nextCursor, isLoading, isLoadingMore, error, needsLogin, retry, loadMore } = useFeed();
+  const {
+    items,
+    nextCursor,
+    isLoading,
+    isLoadingMore,
+    error,
+    needsLogin,
+    retry,
+    loadMore,
+    toggleLike,
+    pendingLikeIds,
+    likeErrors,
+  } = useFeed();
 
   return (
     <>
@@ -39,7 +51,15 @@ export default function Feed() {
               <p className="text-center text-sm text-[#777777]">아직 공개된 후기가 없어요.</p>
             )}
             {items.map((review) => (
-              <FeedReviewCard key={review.id} review={review} liked={review.liked} onOpen={setSelectedReview} />
+              <FeedReviewCard
+                key={review.id}
+                review={review}
+                liked={review.liked}
+                onOpen={setSelectedReview}
+                onToggleLike={() => toggleLike(review.id)}
+                isLikePending={pendingLikeIds.includes(review.id)}
+                likeError={likeErrors[review.id]}
+              />
             ))}
             {error && (
               <div role="alert" className="text-center text-sm text-[#777777]">

@@ -1,4 +1,4 @@
-export default function FeedReviewCard({ review, liked, onToggleLike, onOpen }) {
+export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, isLikePending = false, likeError }) {
   return (
     <article className="relative overflow-hidden rounded-[22px] bg-[#FFECCD]">
       {onOpen && (
@@ -20,7 +20,7 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen }) 
         <button
           type="button"
           onClick={onToggleLike}
-          disabled={!onToggleLike}
+          disabled={!onToggleLike || isLikePending}
           aria-label={
             onToggleLike
               ? liked
@@ -29,7 +29,8 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen }) 
               : `좋아요 ${review.likeCount ?? 0}개${liked ? ", 내가 좋아한 후기" : ""}`
           }
           aria-pressed={liked}
-          className="absolute right-5 top-5 z-20 flex h-5 w-5 items-center justify-center text-white cursor-pointer disabled:pointer-events-none disabled:cursor-default active:scale-90 transition-transform"
+          aria-busy={isLikePending}
+          className="absolute right-5 top-5 z-20 flex h-5 w-5 items-center justify-center text-white cursor-pointer disabled:cursor-default active:scale-90 transition-transform"
         >
           <svg
             aria-hidden="true"
@@ -63,6 +64,7 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen }) 
           </div>
         </div>
         <p className="mt-4 truncate text-[12px] font-medium text-[#686767]">{review.review}</p>
+        {likeError && <p role="alert" className="relative z-20 mt-3 text-xs text-[#FF5C5C]">{likeError}</p>}
       </div>
     </article>
   );

@@ -1,5 +1,31 @@
 import { api } from "./client";
 
+/** 후기 좋아요 */
+export async function addReviewLike(reviewId, signal) {
+  const { data } = await api.post(`/v1/reviews/${reviewId}/likes`, undefined, { signal });
+  if (
+    String(data?.reviewId) !== String(reviewId) ||
+    data.liked !== true ||
+    !Number.isInteger(data.likeCount) ||
+    data.likeCount < 0
+  )
+    throw new Error("INVALID_LIKE_RESPONSE");
+  return data;
+}
+
+/** 후기 좋아요 취소 */
+export async function cancelReviewLike(reviewId, signal) {
+  const { data } = await api.delete(`/v1/reviews/${reviewId}/likes`, { signal });
+  if (
+    String(data?.reviewId) !== String(reviewId) ||
+    data.liked !== false ||
+    !Number.isInteger(data.likeCount) ||
+    data.likeCount < 0
+  )
+    throw new Error("INVALID_LIKE_RESPONSE");
+  return data;
+}
+
 const foodNames = {
   KOREAN: "한식",
   JAPANESE: "일식",
@@ -10,6 +36,7 @@ const foodNames = {
   ALCOHOL: "펍·와인·술집",
   ETC: "기타",
 };
+
 const companionNames = {
   DATE: "데이트",
   FAMILY: "가족과 함께",

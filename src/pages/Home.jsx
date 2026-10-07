@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { getAccessToken, getNickname } from "../api/tokenStorage";
 import { exploreRegions } from "../data/exploreRegions";
 import useDiscoverySpots from "../hooks/useDiscoverySpots";
 import PageTransition from "../components/PageTransition";
@@ -9,6 +10,7 @@ import CharacterImg from "../assets/home_character.png";
 
 export default function Home() {
   const navigate = useNavigate();
+  const nickname = getAccessToken() ? getNickname() : null;
   const { spots, isLoading, error, retry } = useDiscoverySpots();
 
   // 더미데이터
@@ -54,7 +56,9 @@ export default function Home() {
           {/* 인사말 & 캐릭터 */}
           <div className="flex justify-between items-center mb-8">
             <div className="flex flex-col">
-              <h2 className="text-2xl font-bold text-[#F86516] mb-2">안녕하세요, 픽잇님!</h2>
+              <h2 className="text-2xl font-bold text-[#F86516] mb-2">
+                {nickname ? `안녕하세요, ${nickname}님!` : "안녕하세요!"}
+              </h2>
               <p className="text-[16px] font-semibold text-[#434343]">오늘은 어디신가요?</p>
             </div>
             <img src={CharacterImg} alt="캐릭터" className="w-20" />
