@@ -34,7 +34,7 @@ export default function PriceSelect() {
   // 금액 포맷팅 함수
   const formatPrice = (val) => {
     if (val === 0) return "0원";
-    if (val === 20) return "20만원+";
+    if (val === 20) return "20만원";
     return `${val}만원`;
   };
 
@@ -44,9 +44,7 @@ export default function PriceSelect() {
 
       {/* 헤더 영역 */}
       <div className="pt-6 flex flex-col items-center relative z-10 w-full">
-        <h1 className="text-[22px] font-bold text-[#F87816] mb-3 whitespace-nowrap">
-          1인당 원하는 가격대를 선택해주세요.
-        </h1>
+        <h1 className="text-[22px] font-bold text-[#F87816] mb-3 text-center">1인당 원하는 가격대를 선택해주세요.</h1>
         <p className="text-[16px] font-medium text-[#FF9639]">한 끼에 생각하고 있는 예산을 알려주세요.</p>
       </div>
 
@@ -90,7 +88,7 @@ export default function PriceSelect() {
         <div className="flex justify-between w-full mt-6 text-[10px] font-medium text-[#F87816]">
           <span>최소 금액 없음</span>
           <span>10만 원</span>
-          <span>20만 원+</span>
+          <span>20만 원</span>
         </div>
 
         {/* 현재 가격대 표시 박스 */}
@@ -116,6 +114,7 @@ export default function PriceSelect() {
         <Button
           onClick={() => {
             const finalData = {
+              ...location.state,
               situation,
               category,
               price: isAnyPrice ? "any" : { min: minPrice, max: maxPrice },

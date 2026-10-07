@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import LeftArrow from "../assets/arrow_left.svg";
@@ -21,6 +21,7 @@ const situations = [
 
 export default function SituationSelect() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedSituation, setSelectedSituation] = useState(null); // 현재 선택된 상황 상태
 
   return (
@@ -69,7 +70,7 @@ export default function SituationSelect() {
         <Button
           disabled={!selectedSituation}
           onClick={() => {
-            navigate("/recommend/category", { state: { situation: selectedSituation } });
+            navigate("/recommend/category", { state: { ...location.state, situation: selectedSituation } });
           }}
           className={!selectedSituation ? "opacity-50 cursor-not-allowed shadow-none" : "shadow-none"}
         >

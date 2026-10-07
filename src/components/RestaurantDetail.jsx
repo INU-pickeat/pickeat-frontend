@@ -6,12 +6,22 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
     ? restaurant.hours.filter((hour) => typeof hour?.time === "string" && hour.time.trim())
     : [];
   const phone = typeof restaurant.phone === "string" ? restaurant.phone.trim() : "";
+  const openingHoursText = restaurant.openingHoursText?.trim();
 
   return (
     <PageTransition className="h-dvh w-full flex flex-col overflow-hidden bg-[#FFFDF8]">
       {/* 식당 이미지 & 뒤로가기 버튼 */}
-      <div className="relative h-[34dvh] min-h-0 shrink-0">
-        <img src={restaurant.image} alt={restaurant.name} className="h-full w-full object-cover" />
+      <div className="relative h-[34dvh] min-h-0 shrink-0 bg-[#9A7759]">
+        {restaurant.image && (
+          <img
+            src={restaurant.image}
+            alt={restaurant.name}
+            className="h-full w-full object-cover"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+            }}
+          />
+        )}
         <button
           type="button"
           onClick={onBack}
@@ -28,26 +38,32 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
           <header className="border-b-[2.5px] border-[#FFECCD] pb-4">
             <h1 className="text-[24px] font-extrabold text-[#F86516]">{restaurant.name}</h1>
             <p className="mt-2 text-[13px] font-semibold text-[#434343]">
-              {restaurant.features.join(", ")} / {restaurant.category}
+              {[...(restaurant.features || []), restaurant.category].filter(Boolean).join(" / ")}
             </p>
           </header>
 
           {/* 한줄평 */}
-          <section className="mt-4 rounded-2xl border-2 border-[#FFB079] p-4">
-            <h2 className="flex items-center gap-2 text-[16px] font-semibold text-[#F86516]">
-              <img src="/assets/picker.svg" />
-              picker들의 한줄평
-            </h2>
-            <p className="mt-2 font-medium text-[12px] leading-relaxed text-[#434343]">{restaurant.review}</p>
-          </section>
+          {restaurant.review && (
+            <section className="mt-4 rounded-2xl border-2 border-[#FFB079] p-4">
+              <h2 className="flex items-center gap-2 text-[16px] font-semibold text-[#F86516]">
+                <img src="/assets/picker.svg" />
+                picker들의 한줄평
+              </h2>
+              <p className="mt-2 font-medium text-[12px] leading-relaxed text-[#434343]">{restaurant.review}</p>
+            </section>
+          )}
 
           <section className="mt-5 px-2 text-[14px] text-[#434343]">
             <h2 className="text-[16px] font-bold text-[#F86516]">식당 정보</h2>
-            <h3 className="mt-6 font-semibold">위치</h3>
-            <p className="mt-3 font-medium text-[12px] leading-relaxed">{restaurant.address}</p>
+            {restaurant.address && (
+              <>
+                <h3 className="mt-6 font-semibold">위치</h3>
+                <p className="mt-3 font-medium text-[12px] leading-relaxed">{restaurant.address}</p>
+              </>
+            )}
 
             {/* 영업시간 & 전화번호 */}
-            {hours.length > 0 && (
+            {(hours.length > 0 || openingHoursText) && (
               <details className="group mt-6">
                 <summary className="flex cursor-pointer list-none items-center justify-between py-2 font-semibold [&::-webkit-details-marker]:hidden">
                   영업시간
@@ -67,6 +83,12 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
                   </svg>
                 </summary>
                 <dl className="mt-3 space-y-4 pb-3 font-medium text-[12px]">
+                  {openingHoursText && (
+                    <div>
+                      <dt className="sr-only">영업시간 안내</dt>
+                      <dd className="whitespace-pre-wrap leading-relaxed">{openingHoursText}</dd>
+                    </div>
+                  )}
                   {hours.map(({ day, time }) => (
                     <div key={day} className="flex justify-between gap-4 leading-relaxed">
                       <dt className="shrink-0 font-semibold">{day}</dt>

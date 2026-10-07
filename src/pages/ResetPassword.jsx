@@ -105,7 +105,6 @@ export default function ResetPassword() {
 
       {/* 비밀번호 변경하기 버튼 */}
       <div className="mt-8">
-        <p className="text-[#FF2339] text-xs font-medium mb-3 text-center">에러 메시지 영역</p>
         <Button onClick={handleSubmit}>비밀번호 변경하기</Button>
       </div>
     </PageTransition>

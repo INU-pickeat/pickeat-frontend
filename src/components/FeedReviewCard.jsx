@@ -1,4 +1,4 @@
-export default function FeedReviewCard({ review, liked, onToggleLike, onOpen }) {
+export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, isLikePending = false, likeError }) {
   return (
     <article className="relative overflow-hidden rounded-[22px] bg-[#FFECCD]">
       {onOpen && (
@@ -9,18 +9,28 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen }) 
           className="absolute inset-0 z-10 cursor-pointer rounded-[22px] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#F87816]"
         />
       )}
-      <div className="relative h-[160px]">
+      <div className="relative h-[160px] bg-[#FAB47A]">
         {/* 식당 이미지 영역 */}
-        <img src={review.image} loading="lazy" className="h-full w-full object-cover" />
+        {review.image && (
+          <img src={review.image} alt={review.restaurantName} loading="lazy" className="h-full w-full object-cover" />
+        )}
         <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
 
         {/* 좋아요 버튼 */}
         <button
           type="button"
           onClick={onToggleLike}
-          aria-label={liked ? "좋아요 취소" : "좋아요"}
+          disabled={!onToggleLike || isLikePending}
+          aria-label={
+            onToggleLike
+              ? liked
+                ? "좋아요 취소"
+                : "좋아요"
+              : `좋아요 ${review.likeCount ?? 0}개${liked ? ", 내가 좋아한 후기" : ""}`
+          }
           aria-pressed={liked}
-          className="absolute right-5 top-5 z-20 flex h-5 w-5 items-center justify-center text-white cursor-pointer active:scale-90 transition-transform"
+          aria-busy={isLikePending}
+          className="absolute right-5 top-5 z-20 flex h-5 w-5 items-center justify-center text-white cursor-pointer disabled:cursor-default active:scale-90 transition-transform"
         >
           <svg
             aria-hidden="true"
@@ -54,6 +64,7 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen }) 
           </div>
         </div>
         <p className="mt-4 truncate text-[12px] font-medium text-[#686767]">{review.review}</p>
+        {likeError && <p role="alert" className="relative z-20 mt-3 text-xs text-[#FF5C5C]">{likeError}</p>}
       </div>
     </article>
   );

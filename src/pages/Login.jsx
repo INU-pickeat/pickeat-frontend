@@ -1,9 +1,43 @@
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/auth";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const requestInFlight = useRef(false);
+
+  /** 로그인 제출 */
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    if (requestInFlight.current) return;
+    requestInFlight.current = true;
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      await login({ email: email.trim(), password });
+      navigate("/home", { replace: true });
+    } catch (error) {
+      if (error.message === "ACCESS_TOKEN_MISSING") {
+        setErrorMessage("로그인 응답을 확인할 수 없어요. 다시 시도해주세요.");
+      } else if ([400, 401, 403].includes(error.response?.status)) {
+        setErrorMessage("이메일과 비밀번호를 확인해주세요.");
+      } else if (error.code === "ECONNABORTED") {
+        setErrorMessage("응답이 지연되고 있어요. 다시 시도해주세요.");
+      } else {
+        setErrorMessage("로그인하지 못했어요. 잠시 후 다시 시도해주세요.");
+      }
+    } finally {
+      requestInFlight.current = false;
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <PageTransition className="flex-1 w-full flex flex-col justify-center bg-[#FFFDF8] px-6 py-10">
@@ -11,42 +45,67 @@ export default function Login() {
         <h1 className="text-2xl font-bold text-[#F86516]">로그인</h1>
       </div>
 
-      <div className="w-full flex flex-col space-y-5">
-        {/* 이메일 입력 */}
-        <div className="flex flex-col space-y-2">
-          <label className="text-[#FF8223] text-sm font-semibold ml-4">이메일</label>
-          <input
-            type="email"
-            placeholder="이메일을 입력해주세요."
-            className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
-          />
-        </div>
+      <form onSubmit={handleLogin} aria-busy={isSubmitting}>
+        <div className="w-full flex flex-col space-y-5">
+          {/* 이메일 입력 */}
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="login-email" className="text-[#FF8223] text-sm font-semibold ml-4">
+              이메일
+            </label>
+            <input
+              type="email"
+              id="login-email"
+              autoComplete="username"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              disabled={isSubmitting}
+              placeholder="이메일을 입력해주세요."
+              className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
+            />
+          </div>
 
-        {/* 비밀번호 입력 */}
-        <div className="flex flex-col space-y-2">
-          <label className="text-[#FF8223] text-sm font-semibold ml-4">비밀번호</label>
-          <input
-            type="password"
-            placeholder="비밀번호를 입력해주세요."
-            className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
-          />
+          {/* 비밀번호 입력 */}
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="login-password" className="text-[#FF8223] text-sm font-semibold ml-4">
+              비밀번호
+            </label>
+            <input
+              type="password"
+              id="login-password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              disabled={isSubmitting}
+              placeholder="비밀번호를 입력해주세요."
+              className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
+            />
 
-          {/* 비밀번호 찾기 링크 */}
-          <div className="flex justify-end pt-1 pr-4" onClick={() => navigate("/reset-password")}>
-            <button className="text-xs text-[#f87816] hover:text-[#f87816] hover:underline transition-colors cursor-pointer">
-              비밀번호 찾기
-            </button>
+            {/* 비밀번호 찾기 링크 */}
+            <div className="flex justify-end pt-1 pr-4" onClick={() => navigate("/reset-password")}>
+              <button
+                type="button"
+                className="text-xs text-[#f87816] hover:text-[#f87816] hover:underline transition-colors cursor-pointer"
+              >
+                비밀번호 찾기
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 로그인 버튼 */}
-      <div className="w-full mt-8">
-        <p className="text-[#FF2339] text-xs font-medium mb-3 text-center">에러 메시지 영역</p>
-        <Button onClick={() => navigate("/home")} className="shadow-none">
-          로그인
-        </Button>
-      </div>
+        {/* 로그인 버튼 */}
+        <div className="w-full mt-8">
+          {errorMessage && (
+            <p role="alert" className="text-[#FF2339] text-xs font-medium mb-3 text-center">
+              {errorMessage}
+            </p>
+          )}
+          <Button type="submit" disabled={isSubmitting} className="shadow-none disabled:opacity-50">
+            {isSubmitting ? "로그인 중…" : "로그인"}
+          </Button>
+        </div>
+      </form>
 
       {/* 구분선 */}
       <div className="flex items-center my-10">

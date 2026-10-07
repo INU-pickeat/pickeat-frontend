@@ -10,7 +10,10 @@ import { googleMapsLoaderOptions } from "../config/googleMaps";
 export default function LocationConfirm() {
   const navigate = useNavigate();
 
-  const [neighborhood, setNeighborhood] = useState("위치 확인 중...");
+  const [neighborhood, setNeighborhood] = useState(() =>
+    navigator.geolocation ? "위치 확인 중..." : "위치 확인 불가",
+  );
+  const [hasLocation, setHasLocation] = useState(false);
   const [center, setCenter] = useState({ lat: 37.5764, lng: 127.0015 }); // 중심 좌표 (최초 혜화역)
 
   // 구글맵 API 로드 상태 확인
@@ -26,6 +29,7 @@ export default function LocationConfirm() {
         const currentLng = position.coords.longitude;
 
         setCenter({ lat: currentLat, lng: currentLng });
+        setHasLocation(true);
 
         const geocoder = new window.google.maps.Geocoder();
         geocoder.geocode({ location: { lat: currentLat, lng: currentLng } }, (results, status) => {
@@ -67,6 +71,7 @@ export default function LocationConfirm() {
       },
       (error) => {
         console.error("위치 가져오기 실패:", error);
+        setNeighborhood("위치 확인 불가");
       },
       { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
     );
@@ -103,14 +108,22 @@ export default function LocationConfirm() {
           </GoogleMap>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <p className="text-gray-500 font-semibold">지도를 불러오는 중...</p>
+            <p className="text-center text-gray-500 font-semibold">지도를 불러오는 중...</p>
           </div>
         )}
       </div>
 
       {/* 하단 버튼 영역 */}
       <div className="px-6 pt-8 pb-6 flex flex-col space-y-3 bg-[#FFFDF8] z-10 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
-        <Button onClick={() => navigate("/recommend/situation")} className="shadow-none">
+        <Button
+          disabled={!hasLocation}
+          onClick={() =>
+            navigate("/recommend/situation", {
+              state: { latitude: center.lat, longitude: center.lng, neighborhood: neighborhood },
+            })
+          }
+          className="shadow-none"
+        >
           네, 맞아요
         </Button>
         <button

@@ -1,12 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
-import { exploreRegions, popularRestaurantsByRegion } from "../data/exploreRegions";
+import useDiscoverySpots from "../hooks/useDiscoverySpots";
 
 export default function Explore() {
   const { region } = useParams();
-  const selectedRegion = exploreRegions.find((spot) => spot.slug === region);
-  const restaurants = selectedRegion ? popularRestaurantsByRegion[region] : [];
+  const { spots, isLoading, error, retry } = useDiscoverySpots();
+  const selectedRegion = spots.find((spot) => spot.slug === region);
+  const restaurants = selectedRegion?.restaurants || [];
 
   return (
     <PageTransition className="min-h-dvh w-full bg-[#FFFDF8] relative overflow-x-hidden overflow-y-auto scrollbar-none">
@@ -22,8 +23,16 @@ export default function Explore() {
         </Link>
 
         {/* 상단 텍스트 영역 */}
-        <h1 className="text-[24px] font-bold text-[#F86516] leading-snug">
-          {selectedRegion ? <>{selectedRegion.name} 인기 맛집</> : "지원하지 않는 지역이에요."}
+        <h1
+          className={`text-[24px] font-bold text-[#F86516] leading-snug ${!selectedRegion && !isLoading && !error ? "text-center" : ""}`}
+        >
+          {selectedRegion ? (
+            <>{selectedRegion.name} 인기 맛집</>
+          ) : isLoading || error ? (
+            "지역별 인기 맛집"
+          ) : (
+            "지원하지 않는 지역이에요."
+          )}
         </h1>
         {selectedRegion && (
           <div className="text-[16px] font-medium text-[#FF8839]">
@@ -34,6 +43,22 @@ export default function Explore() {
 
       {/* 카드 리스트 영역 */}
       <div className="px-6 pb-14 flex flex-col gap-4 relative">
+        {isLoading && (
+          <p role="status" className="text-[#777777]">
+            맛집 정보를 불러오는 중이에요.
+          </p>
+        )}
+        {error && (
+          <div role="alert">
+            <p>{error}</p>
+            <button type="button" onClick={retry} className="mt-3 text-[#F86516] underline cursor-pointer">
+              다시 시도
+            </button>
+          </div>
+        )}
+        {!isLoading && !error && selectedRegion && restaurants.length === 0 && (
+          <p className="text-center">등록된 맛집이 없어요.</p>
+        )}
         {restaurants.map((restaurant) => (
           <Link
             key={restaurant.id}
@@ -58,14 +83,11 @@ export default function Explore() {
               <span className="min-w-0 text-white">
                 {restaurant.category} - {restaurant.name}
               </span>
-              <span className="shrink-0 whitespace-nowrap text-white">
-                {restaurant.pickCount}명의 <span className="text-[#FF9639]">pick</span>
-              </span>
             </div>
           </Link>
         ))}
 
-        {!selectedRegion && (
+        {!isLoading && !error && !selectedRegion && (
           <Link to="/home" className="relative z-10 text-[#F86516] font-semibold underline">
             홈에서 지역 다시 선택하기
           </Link>

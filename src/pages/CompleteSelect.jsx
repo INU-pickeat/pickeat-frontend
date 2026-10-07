@@ -27,7 +27,7 @@ export default function CompleteSelect() {
         <p className="text-[#FF9639] text-[16px] text-center font-semibold leading-relaxed">즐거운 시간 보내세요.</p>
       </div>
 
-      {/* 각 버튼들 */}
+      {/* 길안내·공유 & 홈 이동 */}
       <div className="w-full px-6 flex flex-col items-center space-y-4">
         <div className="flex w-full gap-3">
           <Button onClick={() => alert("구현 예정입니다.")} className="flex-1 shadow-none bg-[#FFECCD] text-[#F86516]!">

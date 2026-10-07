@@ -92,14 +92,21 @@ export default function LocationSearch() {
           </GoogleMap>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <p className="text-gray-500 font-semibold">지도를 불러오는 중...</p>
+            <p className="text-center text-gray-500 font-semibold">지도를 불러오는 중...</p>
           </div>
         )}
       </div>
 
       {/* 하단 버튼 영역 */}
       <div className="px-6 pt-8 pb-10 bg-[#FFFDF8] z-10 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
-        <Button onClick={() => navigate("/recommend/situation")} className="shadow-none">
+        <Button
+          onClick={() =>
+            navigate("/recommend/situation", {
+              state: { latitude: center.lat, longitude: center.lng, neighborhood: targetLocation },
+            })
+          }
+          className="shadow-none"
+        >
           {targetLocation} 근처에서 찾아볼게요
         </Button>
       </div>

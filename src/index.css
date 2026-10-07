@@ -11,6 +11,19 @@
   --color-pickeat-white: #fcf1df;
 }
 
+/* 한국어는 단어 단위로 줄바꿈 */
+@layer base {
+  body {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  [role="alert"],
+  [role="status"] {
+    text-align: center;
+  }
+}
+
 /* 모바일 스크롤바 숨기기 */
 .scrollbar-hide {
   -ms-overflow-style: none;
