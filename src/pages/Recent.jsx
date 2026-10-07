@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import BottomNav from "../components/BottomNav";
 import LeftArrow from "../assets/arrow_left.svg";
+import useMyPicks from "../hooks/useMyPicks";
+import PickSummaryCard from "../components/PickSummaryCard";
 
 export default function Recent() {
   // 토글 상태 관리
@@ -11,53 +13,22 @@ export default function Recent() {
 
   const navigate = useNavigate();
 
-  // 토글 선택 핸들러
+  /** 기간 선택 */
   const handleSelectFilter = (filter) => {
     setSelectedFilter(filter);
     setIsDropdownOpen(false); // 선택 후 드롭다운 닫기
-    // 이후 서버 연동 로직 추가
+
   };
 
-  // 날짜 변환 함수
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-  };
+  const { restaurants: picksData, isLoading, error, needsLogin, retry } = useMyPicks(selectedFilter === "일주일 기준" ? "week" : "month");
 
-  // 임시 더미데이터
-  const picksData = [
-    {
-      id: 1,
-      date: "2026-07-20",
-      name: "야스노야지로 본점",
-      category: "일식",
-      desc: "5월 14일",
-      visit: "3번째 방문",
-      imgUrl: "/assets/dummy.png",
-    },
-    {
-      id: 2,
-      date: "2026-07-20",
-      name: "초원",
-      category: "한식",
-      desc: "5월 12일 방문",
-      visit: "",
-      imgUrl: "/assets/dummy.png",
-    },
-    {
-      id: 3,
-      date: "2026-07-18",
-      name: "동래정 본점",
-      category: "한식",
-      desc: "5월 12일 방문",
-      visit: "",
-      imgUrl: "/assets/dummy.png",
-    },
-  ];
-
+  /** 한국 시간으로 날짜 표시 */
+  const formatDate = (dateString) => new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul", year: "numeric", month: "long", day: "numeric",
+  }).format(new Date(dateString));
   // 날짜별로 데이터 그룹화
   const groupedPicks = picksData.reduce((acc, pick) => {
-    const formattedDate = formatDate(pick.date);
+    const formattedDate = formatDate(pick.latestPickedAt);
     if (!acc[formattedDate]) {
       acc[formattedDate] = [];
     }
@@ -114,6 +85,11 @@ export default function Recent() {
             </div>
           </div>
 
+          {isLoading && <p role="status" className="text-sm text-[#777777]">최근 Pick을 불러오는 중이에요.</p>}
+          {error && <div role="alert" className="text-sm text-[#777777]"><p>{error}</p>{needsLogin
+            ? <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">로그인하기</Link>
+            : <button type="button" onClick={retry} className="mt-3 text-[#F86516] underline cursor-pointer">다시 시도</button>}</div>}
+          {!isLoading && !error && picksData.length === 0 && <p className="text-center text-sm text-[#777777]">선택한 기간에 Pick한 맛집이 없어요.</p>}
           {Object.entries(groupedPicks).map(([date, items], index) => (
             <div key={date} className={index > 0 ? "mt-8" : ""}>
               {/* 날짜 헤더 */}
@@ -121,26 +97,7 @@ export default function Recent() {
 
               {/* 식당 카드 리스트 */}
               <div className="flex flex-col space-y-4">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="w-full h-[82px] bg-[#FFECCD] rounded-2xl flex items-center justify-between shadow-sm overflow-hidden"
-                  >
-                    <div className="flex flex-col h-full justify-center space-y-2 pl-5 pr-2 py-3 flex-1">
-                      <h4 className="text-[16px] font-bold text-[#F86516] truncate">{item.name}</h4>
-                      <div className="flex space-x-3 text-[13px] text-[#434343] font-medium">
-                        <span>{item.category}</span>
-                        <span>{item.desc}</span>
-                        {item.visit && <span>{item.visit}</span>}
-                      </div>
-                    </div>
-
-                    {/* 식당 썸네일 */}
-                    <div className="w-[82px] h-full bg-black/10 shrink-0">
-                      {item.imgUrl && <img src={item.imgUrl} alt={item.name} className="w-full h-full object-cover" />}
-                    </div>
-                  </div>
-                ))}
+                {items.map((item) => <PickSummaryCard key={item.restaurantId} pick={item} />)}
               </div>
             </div>
           ))}

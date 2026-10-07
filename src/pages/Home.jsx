@@ -7,31 +7,15 @@ import Button from "../components/Button";
 import BottomNav from "../components/BottomNav";
 import logoImg from "../assets/pickeat_logo.svg";
 import CharacterImg from "../assets/home_character.png";
+import useMyPicks from "../hooks/useMyPicks";
+import PickSummaryCard from "../components/PickSummaryCard";
 
 export default function Home() {
   const navigate = useNavigate();
   const nickname = getAccessToken() ? getNickname() : null;
   const { spots, isLoading, error, retry } = useDiscoverySpots();
 
-  // 더미데이터
-  const recentPicks = [
-    {
-      id: 1,
-      name: "더미1",
-      category: "일식",
-      date: "5월 14일",
-      visit: "3번째 방문",
-      imgUrl: "/assets/dummy.png",
-    },
-    {
-      id: 2,
-      name: "더미2",
-      category: "한식",
-      date: "5월 14일",
-      visit: "3번째 방문",
-      imgUrl: "/assets/dummy.png",
-    },
-  ];
+  const { restaurants: recentPicks, isLoading: picksLoading, error: picksError, needsLogin: picksNeedLogin, retry: retryPicks } = useMyPicks("week");
 
   return (
     <>
@@ -88,33 +72,18 @@ export default function Home() {
 
             {/* 식당 카드 리스트 */}
             <div className="flex flex-col space-y-4">
-              {recentPicks.map((pick) => (
-                <div
-                  onClick={() => navigate("/recent")}
-                  key={pick.id}
-                  className="w-full h-[82px] bg-[#FFECCD] rounded-2xl flex items-center justify-between shadow-sm overflow-hidden"
-                >
-                  <div className="flex flex-col h-full justify-center space-y-2 pl-5 pr-2 py-3 flex-1">
-                    <h4 className="text-[16px] font-bold text-[#F86516] truncate">{pick.name}</h4>
-                    <div className="flex space-x-3 text-[13px] text-[#434343] font-medium">
-                      <span>{pick.category}</span>
-                      <span>{pick.date}</span>
-                      <span>{pick.visit}</span>
-                    </div>
-                  </div>
-
-                  {/* 이미지 플레이스홀더 */}
-                  <div className="w-[82px] h-full bg-black/10 shrink-0">
-                    {pick.imgUrl && <img src={pick.imgUrl} className="w-full h-full object-cover" />}
-                  </div>
-                </div>
-              ))}
+              {picksLoading && <p role="status" className="text-sm text-[#777777]">최근 Pick을 불러오는 중이에요.</p>}
+              {picksError && <div role="alert" className="text-sm text-[#777777]"><p>{picksError}</p>{picksNeedLogin
+                ? <Link to="/login" className="mt-2 inline-block text-[#F86516] underline">로그인하기</Link>
+                : <button type="button" onClick={retryPicks} className="mt-2 text-[#F86516] underline cursor-pointer">다시 시도</button>}</div>}
+              {!picksLoading && !picksError && recentPicks.length === 0 && <p className="text-center text-sm text-[#777777]">최근 7일간 Pick한 맛집이 없어요.</p>}
+              {recentPicks.slice(0, 2).map((pick) => <PickSummaryCard key={pick.restaurantId} pick={pick} to="/recent" />)}
             </div>
           </div>
 
           {/* 인기 탐색 스팟 영역 */}
           <div>
-            <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 지역별 인기 맛집</h3>
+            <h3 className="text-[16px] font-semibold text-[#F86516] mb-4 ml-3">picker들의 지역별 인기 맛집</h3>
             {isLoading && (
               <p role="status" className="text-center text-sm text-[#777777]">
                 지역을 불러오는 중이에요.
