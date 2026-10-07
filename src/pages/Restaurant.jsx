@@ -2,13 +2,35 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import RestaurantDetail from "../components/RestaurantDetail";
 import { findRestaurant } from "../data/restaurants";
+import useDiscoverySpots from "../hooks/useDiscoverySpots";
 
 const actionClassName =
   "flex-1 rounded-full bg-[#FF9639] px-4 py-2 text-[14px] font-bold text-white cursor-pointer active:scale-95 transition-transform";
 
 export default function Restaurant() {
   const { id } = useParams();
-  const restaurant = findRestaurant(id);
+  const [searchParams] = useSearchParams();
+  const isRecommendation = searchParams.get("source") === "recommend";
+  const { spots, isLoading, error, retry } = useDiscoverySpots(!isRecommendation);
+  const restaurant = isRecommendation
+    ? findRestaurant(id)
+    : spots.flatMap((spot) => spot.restaurants).find((item) => String(item.id) === id);
+
+  if (!isRecommendation && (isLoading || error)) {
+    return (
+      <div className="min-h-dvh bg-[#FFFDF8] px-8 pt-12">
+        <p role={error ? "alert" : "status"}>{error || "식당 정보를 불러오는 중이에요."}</p>
+        {error && (
+          <button type="button" onClick={retry} className="mt-4 text-[#F86516] underline cursor-pointer">
+            다시 시도
+          </button>
+        )}
+        <Link to="/home" className="mt-6 block text-[#F86516]">
+          홈으로 돌아가기
+        </Link>
+      </div>
+    );
+  }
 
   if (!restaurant) {
     return (
@@ -39,8 +61,8 @@ function RestaurantPage({ restaurant }) {
       return false;
     }
   });
-  const isRecommendation = searchParams.get("source") === "recommend" || typeof restaurant.id === "number";
-  const fallback = isRecommendation ? "/recommend/result" : `/explore/${restaurant.id.split("-")[0]}`;
+  const isRecommendation = searchParams.get("source") === "recommend";
+  const fallback = isRecommendation ? "/recommend/result" : `/explore/${restaurant.region}`;
   const returnTo = location.state?.returnTo || fallback;
 
   // pick 지도에 저장

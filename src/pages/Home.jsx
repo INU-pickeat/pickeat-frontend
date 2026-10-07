@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { exploreRegions } from "../data/exploreRegions";
+import useDiscoverySpots from "../hooks/useDiscoverySpots";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import BottomNav from "../components/BottomNav";
@@ -8,6 +9,7 @@ import CharacterImg from "../assets/home_character.png";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { spots, isLoading, error, retry } = useDiscoverySpots();
 
   // 더미데이터
   const recentPicks = [
@@ -109,11 +111,35 @@ export default function Home() {
           {/* 인기 탐색 스팟 영역 */}
           <div>
             <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 지역별 인기 맛집</h3>
+            {isLoading && (
+              <p role="status" className="text-sm text-[#777777]">
+                지역을 불러오는 중이에요.
+              </p>
+            )}
+            {error && (
+              <div role="alert" className="text-sm">
+                <p>{error}</p>
+                <button type="button" onClick={retry} className="mt-2 text-[#F86516] underline cursor-pointer">
+                  다시 시도
+                </button>
+              </div>
+            )}
+            {!isLoading && !error && spots.length === 0 && (
+              <p className="text-sm text-[#777777]">등록된 지역이 없어요.</p>
+            )}
             <div className="flex justify-between items-start w-full pb-2">
-              {exploreRegions.map((spot) => (
+              {spots.map((spot) => (
                 <Link key={spot.slug} to={`/explore/${spot.slug}`} className="flex flex-col items-center space-y-2">
                   <div className="w-14 h-14 rounded-full border-3 border-[#FFECCD] active:border-[#FF9639] transition-colors duration-200 bg-black/20 overflow-hidden shadow-sm cursor-pointer hover:border-[#FF9639]">
-                    {spot.imgUrl && <img src={spot.imgUrl} alt="" className="w-full h-full object-cover" />}
+                    <img
+                      src={
+                        exploreRegions.find((region) => region.slug === spot.slug)?.imgUrl ||
+                        spot.restaurants[0]?.image ||
+                        "/assets/dummy.png"
+                      }
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <span className="text-[12px] font-semibold text-[#434343]">{spot.name}</span>
                 </Link>
