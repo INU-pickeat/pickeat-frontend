@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import DefaultProfile from "../assets/profile_default.png";
 import BottomNav from "../components/BottomNav";
+import { clearAccessToken } from "../api/tokenStorage";
 
 export default function MyPage() {
   const navigate = useNavigate();
@@ -22,7 +23,10 @@ export default function MyPage() {
         <button
           key={menu.id}
           onClick={() => {
-            if (menu.title === "로그아웃") navigate("/");
+            if (menu.title === "로그아웃") {
+              clearAccessToken();
+              navigate("/", { replace: true });
+            }
             else alert("추가 예정입니다.");
           }}
           className="w-full flex justify-between items-center py-3 active:opacity-60 transition-opacity cursor-pointer"

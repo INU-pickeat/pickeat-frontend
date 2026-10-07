@@ -44,7 +44,7 @@ export default function PriceSelect() {
 
       {/* 헤더 영역 */}
       <div className="pt-6 flex flex-col items-center relative z-10 w-full">
-        <h1 className="text-[22px] font-bold text-[#F87816] mb-3 whitespace-nowrap">
+        <h1 className="text-[22px] font-bold text-[#F87816] mb-3 text-center">
           1인당 원하는 가격대를 선택해주세요.
         </h1>
         <p className="text-[16px] font-medium text-[#FF9639]">한 끼에 생각하고 있는 예산을 알려주세요.</p>
