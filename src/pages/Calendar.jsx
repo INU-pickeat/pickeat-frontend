@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
 import TabMenu from "../components/TabMenu";
-import WriteIcon from "../assets/icons/write.svg";
+import usePickCalendar from "../hooks/usePickCalendar";
 import CheckIcon from "../assets/icons/check.svg";
 import BottomNav from "../components/BottomNav";
 import { formatCalendarDate, getCalendarCells } from "../utils/calendar";
@@ -12,47 +12,24 @@ export default function Calendar() {
   const navigate = useNavigate();
 
   // 금일 기준으로 캘린더 표시
-  const today = new Date();
+  const today = new Date(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }) + "T00:00:00");
 
   const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selectedDate, setSelectedDate] = useState(formatCalendarDate(today)); // 사용자가 클릭한 날짜 상태
 
-  // 기록 더미데이터
-  const [records] = useState({
-    "2026-10-01": [
-      {
-        id: 1,
-        restaurantName: "더미1",
-        category: "한식",
-        visitDate: "10월 1일",
-        image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=200&auto=format&fit=crop",
-        isRecorded: false,
-      },
-    ],
-    "2026-10-02": [
-      {
-        id: 2,
-        restaurantName: "더미2",
-        category: "일식",
-        visitDate: "10월 2일",
-        image: "https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?q=80&w=200&auto=format&fit=crop",
-        isRecorded: true,
-      },
-      {
-        id: 3,
-        restaurantName: "더미3",
-        category: "중식",
-        visitDate: "10월 2일",
-        image: "https://images.unsplash.com/photo-1544681280-d2dc1a61c314?q=80&w=200&auto=format&fit=crop",
-        isRecorded: false,
-      },
-    ],
-  });
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const { dates, isLoading, error, needsLogin, retry } = usePickCalendar(year, month);
+  const records = Object.fromEntries(dates.map((record) => [record.date, record]));
+  const selectedRecord = records[selectedDate];
 
-  // 월 이동 함수
-  const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-  const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-
+  /** 월 이동 */
+  const changeMonth = (offset) => {
+    const nextDate = new Date(year, month - 1 + offset, 1);
+    if (nextDate.getFullYear() < 2000 || nextDate.getFullYear() > 2100) return;
+    setCurrentDate(nextDate);
+    setSelectedDate(formatCalendarDate(nextDate));
+  };
   const cells = getCalendarCells(currentDate);
 
   return (
@@ -75,7 +52,7 @@ export default function Calendar() {
           <div className="px-6 relative z-10">
             <div className="bg-[#FFECCD] rounded-[20px] p-5 shadow-sm">
               <div className="flex items-center gap-1 mb-4">
-                <button onClick={prevMonth} className="p-1 active:scale-75 transition-transform">
+                <button onClick={() => changeMonth(-1)} disabled={year === 2000 && month === 1} aria-label="이전 달" className="p-1 active:scale-75 transition-transform disabled:opacity-30">
                   <svg
                     width="20"
                     height="20"
@@ -94,7 +71,7 @@ export default function Calendar() {
                   {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
                 </h2>
 
-                <button onClick={nextMonth} className="p-1 active:scale-75 transition-transform">
+                <button onClick={() => changeMonth(1)} disabled={year === 2100 && month === 12} aria-label="다음 달" className="p-1 active:scale-75 transition-transform disabled:opacity-30">
                   <svg
                     width="20"
                     height="20"
@@ -122,20 +99,24 @@ export default function Calendar() {
               {/* 날짜 그리드 */}
               <div className="grid grid-cols-7 gap-y-1 text-center">
                 {cells.map((cell, idx) => {
-                  const dayRecords = records[cell.dateStr];
-                  const firstRecord = dayRecords ? dayRecords[0] : null;
+                  const dayRecord = records[cell.dateStr];
+
                   const isSunday = idx % 7 === 0;
 
                   return (
-                    <div
-                      key={idx}
+                    <button
+                      type="button"
+                      disabled={!cell.isCurrent}
+                      aria-pressed={selectedDate === cell.dateStr}
+                      aria-label={`${cell.day}일${dayRecord ? `, 기록 ${dayRecord.recordCount}개` : ""}`}
+                      key={cell.dateStr}
                       onClick={() => cell.isCurrent && setSelectedDate(cell.dateStr)}
-                      className={`relative flex justify-center items-center h-10 w-10 mx-auto ${cell.isCurrent ? "cursor-pointer" : "cursor-default opacity-40"}`}
+                      className={`relative flex justify-center items-center h-10 w-full max-w-10 mx-auto rounded-full ${selectedDate === cell.dateStr ? "ring-2 ring-[#F86516]" : ""} ${cell.isCurrent ? "cursor-pointer" : "cursor-default opacity-40"}`}
                     >
                       {/* 기록이 있는 날짜 */}
-                      {firstRecord && cell.isCurrent ? (
+                      {dayRecord?.representativeImageUrl && cell.isCurrent ? (
                         <div className="relative w-9 h-9 rounded-full overflow-hidden">
-                          <img src={firstRecord.image} className="w-full h-full object-cover" />
+                          <img src={dayRecord.representativeImageUrl} alt={dayRecord.restaurantName} onError={(event) => { if (event.currentTarget.getAttribute("src") !== "/assets/dummy.png") event.currentTarget.src = "/assets/dummy.png"; }} className="w-full h-full object-cover" />
                         </div>
                       ) : (
                         /* 일반 날짜 */
@@ -147,7 +128,8 @@ export default function Calendar() {
                           {cell.day}
                         </span>
                       )}
-                    </div>
+                      {dayRecord && cell.isCurrent && !dayRecord.representativeImageUrl && <span aria-hidden="true" className="absolute bottom-0 h-1 w-1 rounded-full bg-[#F86516]" />}
+                    </button>
                   );
                 })}
               </div>
@@ -161,40 +143,28 @@ export default function Calendar() {
               {selectedDate.split("-")[2].replace(/^0/, "")}일
             </h3>
 
-            {records[selectedDate] && records[selectedDate].length > 0 ? (
-              <div className="flex flex-col gap-4">
-                {records[selectedDate].map((record) => (
-                  <div
-                    key={record.id}
-                    className="bg-[#FFECCD] rounded-[24px] px-5 py-4 flex justify-between items-center shadow-sm"
-                  >
-                    <div>
-                      <h4 className="text-[#F86516] font-bold text-[16px] mb-1">{record.restaurantName}</h4>
-                      <p className="text-[#434343] font-medium text-[10px]">
-                        {record.category} &nbsp; &nbsp; {record.visitDate} 방문
-                      </p>
-                    </div>
-
-                    {/* 기록하기 영역 */}
-                    <button className="flex flex-col items-center gap-2">
-                      {record.isRecorded ? (
-                        <>
-                          <img src={CheckIcon} className="w-5 h-5" />
-                          <span className="text-[#434343] text-[10px] font-medium">기록 완료</span>
-                        </>
-                      ) : (
-                        <>
-                          <img src={WriteIcon} onClick={() => navigate("/history/write")} className="w-5 h-5" />
-                          <span className="text-[#434343] text-[10px] font-medium">기록하기</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                ))}
+            {isLoading ? (
+              <p role="status" className="text-[#777777] text-sm">캘린더를 불러오는 중이에요.</p>
+            ) : error ? (
+              <div role="alert" className="text-sm">
+                <p>{error}</p>
+                {needsLogin ? <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">로그인하기</Link>
+                  : <button type="button" onClick={retry} className="mt-3 text-[#F86516] underline cursor-pointer">다시 시도</button>}
+              </div>
+            ) : selectedRecord ? (
+              <div className="bg-[#FFECCD] rounded-[24px] px-5 py-4 flex justify-between items-center gap-4 shadow-sm">
+                <div className="min-w-0">
+                  <h4 className="text-[#F86516] font-bold text-[16px] mb-1">{selectedRecord.restaurantName}</h4>
+                  <p className="text-[#434343] font-medium text-[12px]">이 날 남긴 기록 {selectedRecord.recordCount}개</p>
+                </div>
+                <div className="shrink-0 flex flex-col items-center gap-2">
+                  <img src={CheckIcon} alt="" className="w-5 h-5" />
+                  <span className="text-[#434343] text-[10px] font-medium">기록 완료</span>
+                </div>
               </div>
             ) : (
               <div className="bg-[#FFFDF8] border-2 border-dashed border-[#FFECCD] rounded-[24px] p-6 flex justify-center items-center">
-                <p className="text-[#F87816] font-semibold text-[14px]">이 날은 픽한 맛집이 없어요.</p>
+                <p className="text-[#F87816] font-semibold text-[14px]">이 날은 작성한 후기가 없어요.</p>
               </div>
             )}
           </div>
