@@ -11,11 +11,11 @@ import { formatCalendarDate, getCalendarCells } from "../utils/calendar";
 export default function Calendar() {
   const navigate = useNavigate();
 
-  // 금일 기준으로 캘린더 표시
+  // 한국 날짜 기준으로 초기 월을 표시한다.
   const today = new Date(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }) + "T00:00:00");
 
   const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedDate, setSelectedDate] = useState(formatCalendarDate(today)); // 사용자가 클릭한 날짜 상태
+  const [selectedDate, setSelectedDate] = useState(formatCalendarDate(today));
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;

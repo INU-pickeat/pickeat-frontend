@@ -11,8 +11,17 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
   return (
     <PageTransition className="h-dvh w-full flex flex-col overflow-hidden bg-[#FFFDF8]">
       {/* 식당 이미지 & 뒤로가기 버튼 */}
-      <div className="relative h-[34dvh] min-h-0 shrink-0">
-        <img src={restaurant.image} alt={restaurant.name} className="h-full w-full object-cover" />
+      <div className="relative h-[34dvh] min-h-0 shrink-0 bg-[#9A7759]">
+        {restaurant.image && (
+          <img
+            src={restaurant.image}
+            alt={restaurant.name}
+            className="h-full w-full object-cover"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+            }}
+          />
+        )}
         <button
           type="button"
           onClick={onBack}
@@ -34,18 +43,24 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
           </header>
 
           {/* 한줄평 */}
-          <section className="mt-4 rounded-2xl border-2 border-[#FFB079] p-4">
-            <h2 className="flex items-center gap-2 text-[16px] font-semibold text-[#F86516]">
-              <img src="/assets/picker.svg" />
-              picker들의 한줄평
-            </h2>
-            <p className="mt-2 font-medium text-[12px] leading-relaxed text-[#434343]">{restaurant.review}</p>
-          </section>
+          {restaurant.review && (
+            <section className="mt-4 rounded-2xl border-2 border-[#FFB079] p-4">
+              <h2 className="flex items-center gap-2 text-[16px] font-semibold text-[#F86516]">
+                <img src="/assets/picker.svg" />
+                picker들의 한줄평
+              </h2>
+              <p className="mt-2 font-medium text-[12px] leading-relaxed text-[#434343]">{restaurant.review}</p>
+            </section>
+          )}
 
           <section className="mt-5 px-2 text-[14px] text-[#434343]">
             <h2 className="text-[16px] font-bold text-[#F86516]">식당 정보</h2>
-            <h3 className="mt-6 font-semibold">위치</h3>
-            <p className="mt-3 font-medium text-[12px] leading-relaxed">{restaurant.address}</p>
+            {restaurant.address && (
+              <>
+                <h3 className="mt-6 font-semibold">위치</h3>
+                <p className="mt-3 font-medium text-[12px] leading-relaxed">{restaurant.address}</p>
+              </>
+            )}
 
             {/* 영업시간 & 전화번호 */}
             {(hours.length > 0 || openingHoursText) && (

@@ -4,10 +4,9 @@ const categoryNames = {
   KOREAN: "한식",
   JAPANESE: "일식",
   CHINESE: "중식",
-  ITALIAN: "양식",
   WESTERN: "양식",
   CAFE_DESSERT: "커피·디저트",
-  ALCOHOL: "펍·와인·술집",
+  PUB_BAR: "펍·와인·술집",
   OTHER: "기타",
 };
 

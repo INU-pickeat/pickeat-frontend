@@ -118,7 +118,7 @@ export default function CategorySelect() {
           disabled={!selectedCategory}
           onClick={() => {
             // 위치, 상황, 카테고리 데이터를 다음 페이지로 넘김
-            navigate("/recommend/price", { state: { situation, category: selectedCategory } });
+            navigate("/recommend/price", { state: { ...location.state, situation, category: selectedCategory } });
           }}
           className={!selectedCategory ? "opacity-50 cursor-not-allowed shadow-none" : "shadow-none"}
         >

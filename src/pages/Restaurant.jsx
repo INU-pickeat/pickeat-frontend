@@ -1,22 +1,25 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import RestaurantDetail from "../components/RestaurantDetail";
-import { findRestaurant } from "../data/restaurants";
-import useDiscoverySpots from "../hooks/useDiscoverySpots";
+import useRestaurant from "../hooks/useRestaurant";
 
 const actionClassName =
   "flex-1 rounded-full bg-[#FF9639] px-4 py-2 text-[14px] font-bold text-white cursor-pointer active:scale-95 transition-transform";
 
+const situationNames = {
+  date: "데이트",
+  family: "가족과 함께",
+  kids: "아이와 함께",
+  solo: "혼밥",
+  group: "단체",
+  pet: "반려견과 함께",
+};
+
 export default function Restaurant() {
   const { id } = useParams();
-  const [searchParams] = useSearchParams();
-  const isRecommendation = searchParams.get("source") === "recommend";
-  const { spots, isLoading, error, retry } = useDiscoverySpots(!isRecommendation);
-  const restaurant = isRecommendation
-    ? findRestaurant(id)
-    : spots.flatMap((spot) => spot.restaurants).find((item) => String(item.id) === id);
+  const { restaurant, isLoading, error, retry } = useRestaurant(id);
 
-  if (!isRecommendation && (isLoading || error)) {
+  if (isLoading || error) {
     return (
       <div className="min-h-dvh bg-[#FFFDF8] px-8 pt-12 text-center">
         <p role={error ? "alert" : "status"}>{error || "식당 정보를 불러오는 중이에요."}</p>
@@ -62,10 +65,15 @@ function RestaurantPage({ restaurant }) {
     }
   });
   const isRecommendation = searchParams.get("source") === "recommend";
-  const fallback = isRecommendation ? "/recommend/result" : `/explore/${restaurant.region}`;
+  const selectedSituation = situationNames[location.state?.recommendationState?.situation];
+  // 추천 상세에 사용자가 선택한 동행 조건을 표시
+  const detailRestaurant = isRecommendation
+    ? { ...restaurant, features: selectedSituation ? [selectedSituation] : [] }
+    : restaurant;
+  const fallback = isRecommendation ? "/recommend/result" : "/home";
   const returnTo = location.state?.returnTo || fallback;
 
-  // pick 지도에 저장
+  /** 식당 임시 저장 */
   const saveRestaurant = () => {
     try {
       const stored = JSON.parse(localStorage.getItem("pickeat.savedRestaurants") || "[]");
@@ -80,7 +88,7 @@ function RestaurantPage({ restaurant }) {
     }
   };
 
-  // URL 공유
+  /** 상세 링크 공유 */
   const shareRestaurant = async () => {
     const url = `${window.location.origin}/restaurant/${restaurant.id}`;
     try {
@@ -99,7 +107,7 @@ function RestaurantPage({ restaurant }) {
 
   return (
     <RestaurantDetail
-      restaurant={restaurant}
+      restaurant={detailRestaurant}
       onBack={() => navigate(returnTo, { state: location.state?.recommendationState })}
       feedback={feedback}
       actions={

@@ -23,10 +23,10 @@ const center = {
 const companionNames = {
   DATE: "데이트",
   FAMILY: "가족과 함께",
-  KIDS: "아이와 함께",
+  CHILDREN: "아이와 함께",
   SOLO: "혼밥",
   GROUP: "단체·회식",
-  PET: "반려견과 함께",
+  DOG: "반려견과 함께",
 };
 
 export default function Map() {

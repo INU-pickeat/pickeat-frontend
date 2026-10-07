@@ -7,7 +7,6 @@ import useMyPicks from "../hooks/useMyPicks";
 import PickSummaryCard from "../components/PickSummaryCard";
 
 export default function Recent() {
-  // 토글 상태 관리
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("일주일 기준");
 
@@ -16,7 +15,7 @@ export default function Recent() {
   /** 기간 선택 */
   const handleSelectFilter = (filter) => {
     setSelectedFilter(filter);
-    setIsDropdownOpen(false); // 선택 후 드롭다운 닫기
+    setIsDropdownOpen(false);
 
   };
 

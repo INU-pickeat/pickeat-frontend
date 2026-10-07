@@ -30,20 +30,19 @@ const foodNames = {
   KOREAN: "한식",
   JAPANESE: "일식",
   CHINESE: "중식",
-  ITALIAN: "양식",
   WESTERN: "양식",
-  DESSERT: "커피·디저트",
-  ALCOHOL: "펍·와인·술집",
-  ETC: "기타",
+  CAFE_DESSERT: "커피·디저트",
+  PUB_BAR: "펍·와인·술집",
+  OTHER: "기타",
 };
 
 const companionNames = {
   DATE: "데이트",
   FAMILY: "가족과 함께",
-  KIDS: "아이와 함께",
+  CHILDREN: "아이와 함께",
   SOLO: "혼밥",
   GROUP: "단체·회식",
-  PET: "반려견과 함께",
+  DOG: "반려견과 함께",
 };
 
 /** 피드 화면 데이터 변환 */
