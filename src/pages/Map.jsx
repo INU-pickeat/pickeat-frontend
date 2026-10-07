@@ -132,7 +132,7 @@ export default function Map() {
               </GoogleMap>
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-[#F86516] font-bold text-sm">
+                <span className="text-center text-[#F86516] font-bold text-sm">
                   {loadError ? "지도를 불러오지 못했어요. 페이지를 새로고침해주세요." : "지도를 불러오는 중..."}
                 </span>
               </div>

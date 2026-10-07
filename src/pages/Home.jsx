@@ -112,7 +112,7 @@ export default function Home() {
           <div>
             <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 지역별 인기 맛집</h3>
             {isLoading && (
-              <p role="status" className="text-sm text-[#777777]">
+              <p role="status" className="text-center text-sm text-[#777777]">
                 지역을 불러오는 중이에요.
               </p>
             )}
@@ -125,7 +125,7 @@ export default function Home() {
               </div>
             )}
             {!isLoading && !error && spots.length === 0 && (
-              <p className="text-sm text-[#777777]">등록된 지역이 없어요.</p>
+              <p className="text-center text-sm text-[#777777]">등록된 지역이 없어요.</p>
             )}
             <div className="flex justify-between items-start w-full pb-2">
               {spots.map((spot) => (

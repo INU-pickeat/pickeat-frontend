@@ -17,6 +17,11 @@
     word-break: keep-all;
     overflow-wrap: anywhere;
   }
+
+  [role="alert"],
+  [role="status"] {
+    text-align: center;
+  }
 }
 
 /* 모바일 스크롤바 숨기기 */

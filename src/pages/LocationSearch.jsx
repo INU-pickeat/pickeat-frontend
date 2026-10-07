@@ -92,7 +92,7 @@ export default function LocationSearch() {
           </GoogleMap>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <p className="text-gray-500 font-semibold">지도를 불러오는 중...</p>
+            <p className="text-center text-gray-500 font-semibold">지도를 불러오는 중...</p>
           </div>
         )}
       </div>

@@ -1,25 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import TabMenu from "../components/TabMenu";
 import BottomNav from "../components/BottomNav";
 import FeedReviewCard from "../components/FeedReviewCard";
 import ReviewModal from "../components/ReviewModal";
 import LeftArrow from "../assets/arrow_left.svg";
-import { feedReviews } from "../data/feedReviews";
+import useFeed from "../hooks/useFeed";
 
 export default function Feed() {
   const navigate = useNavigate();
   const [selectedReview, setSelectedReview] = useState(null);
-  const [likedIds, setLikedIds] = useState(() =>
-    feedReviews.filter((review) => review.liked).map((review) => review.id),
-  );
-
-  const toggleLike = (id) => {
-    setLikedIds((previous) =>
-      previous.includes(id) ? previous.filter((likedId) => likedId !== id) : [...previous, id],
-    );
-  };
+  const { items, nextCursor, isLoading, isLoadingMore, error, needsLogin, retry, loadMore } = useFeed();
 
   return (
     <>
@@ -38,15 +30,43 @@ export default function Feed() {
           </header>
 
           <section aria-label="피드" className="px-6 flex flex-col gap-4">
-            {feedReviews.map((review) => (
-              <FeedReviewCard
-                key={review.id}
-                review={review}
-                liked={likedIds.includes(review.id)}
-                onToggleLike={() => toggleLike(review.id)}
-                onOpen={setSelectedReview}
-              />
+            {isLoading && (
+              <p role="status" className="text-center text-sm text-[#777777]">
+                피드를 불러오는 중이에요.
+              </p>
+            )}
+            {!isLoading && !error && items.length === 0 && (
+              <p className="text-center text-sm text-[#777777]">아직 공개된 후기가 없어요.</p>
+            )}
+            {items.map((review) => (
+              <FeedReviewCard key={review.id} review={review} liked={review.liked} onOpen={setSelectedReview} />
             ))}
+            {error && (
+              <div role="alert" className="text-center text-sm text-[#777777]">
+                <p>{error}</p>
+                {needsLogin ? (
+                  <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">
+                    로그인하기
+                  </Link>
+                ) : (
+                  items.length === 0 && (
+                    <button type="button" onClick={retry} className="mt-3 text-[#F86516] underline cursor-pointer">
+                      다시 시도
+                    </button>
+                  )
+                )}
+              </div>
+            )}
+            {!isLoading && nextCursor !== null && !needsLogin && (
+              <button
+                type="button"
+                onClick={loadMore}
+                disabled={isLoadingMore}
+                className="rounded-full bg-[#FFECCD] py-3 text-sm font-semibold text-[#F86516] cursor-pointer disabled:opacity-50"
+              >
+                {isLoadingMore ? "불러오는 중…" : error ? "다시 시도" : "더 보기"}
+              </button>
+            )}
           </section>
         </div>
       </PageTransition>

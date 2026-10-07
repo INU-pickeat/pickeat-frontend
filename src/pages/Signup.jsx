@@ -213,7 +213,9 @@ export default function Signup() {
               placeholder="닉네임을 입력해주세요."
               className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30"
             />
-            {errors.nickname && <p className="text-[#FF5C5C] text-xs font-semibold ml-4 mt-1">{errors.nickname}</p>}
+            {errors.nickname && (
+              <p className="text-center text-[#FF5C5C] text-xs font-semibold mt-1">{errors.nickname}</p>
+            )}
           </div>
 
           {/* 이메일 & 인증하기 버튼 */}
@@ -244,7 +246,7 @@ export default function Signup() {
               </button>
             </div>
             {errors.email && (
-              <p role="alert" className="text-[#FF5C5C] text-xs font-semibold ml-4">
+              <p role="alert" className="text-[#FF5C5C] text-xs font-semibold">
                 {errors.email}
               </p>
             )}
@@ -276,7 +278,9 @@ export default function Signup() {
               </button>
             </div>
             <div className="flex justify-between items-start gap-3 px-4 pt-1">
-              <span className="min-w-0 flex-1 text-[#FF5C5C] text-xs font-semibold leading-relaxed">{errors.code}</span>
+              <span className="text-center min-w-0 flex-1 text-[#FF5C5C] text-xs font-semibold leading-relaxed">
+                {errors.code}
+              </span>
               <button
                 type="button"
                 onClick={handleSendCode}
@@ -306,7 +310,9 @@ export default function Signup() {
               placeholder="비밀번호를 입력해주세요."
               className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30"
             />
-            {errors.password && <p className="text-[#FF5C5C] text-xs font-semibold ml-4 mt-1">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-center text-[#FF5C5C] text-xs font-semibold mt-1">{errors.password}</p>
+            )}
           </div>
 
           {/* 비밀번호 확인 */}
@@ -321,7 +327,7 @@ export default function Signup() {
               className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30"
             />
             {errors.passwordConfirm && (
-              <p className="text-[#FF5C5C] text-xs font-semibold ml-4 mt-1">{errors.passwordConfirm}</p>
+              <p className="text-center text-[#FF5C5C] text-xs font-semibold mt-1">{errors.passwordConfirm}</p>
             )}
           </div>
         </fieldset>

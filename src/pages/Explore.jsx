@@ -23,7 +23,9 @@ export default function Explore() {
         </Link>
 
         {/* 상단 텍스트 영역 */}
-        <h1 className="text-[24px] font-bold text-[#F86516] leading-snug">
+        <h1
+          className={`text-[24px] font-bold text-[#F86516] leading-snug ${!selectedRegion && !isLoading && !error ? "text-center" : ""}`}
+        >
           {selectedRegion ? (
             <>{selectedRegion.name} 인기 맛집</>
           ) : isLoading || error ? (
@@ -54,7 +56,9 @@ export default function Explore() {
             </button>
           </div>
         )}
-        {!isLoading && !error && selectedRegion && restaurants.length === 0 && <p>등록된 맛집이 없어요.</p>}
+        {!isLoading && !error && selectedRegion && restaurants.length === 0 && (
+          <p className="text-center">등록된 맛집이 없어요.</p>
+        )}
         {restaurants.map((restaurant) => (
           <Link
             key={restaurant.id}
