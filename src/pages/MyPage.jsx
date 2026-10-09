@@ -28,15 +28,11 @@ export default function MyPage() {
   };
 
   // 메뉴 그룹 데이터
-  const menuGroup1 = [
+  const menuGroup = [
     { id: 1, title: "알림 설정" },
-    { id: 2, title: "화면 테마" },
-    { id: 3, title: "이용약관" },
-  ];
-
-  const menuGroup2 = [
-    { id: 4, title: "서비스 정보" },
-    { id: 5, title: "로그아웃" },
+    { id: 2, title: "이용약관" },
+    { id: 3, title: "서비스 정보" },
+    { id: 4, title: "로그아웃" },
   ];
 
   /** 메뉴 렌더링 */
@@ -124,10 +120,7 @@ export default function MyPage() {
           )}
 
           {/* 메뉴 리스트 영역 */}
-          <div className="flex flex-col space-y-5">
-            {renderMenu(menuGroup1)}
-            {renderMenu(menuGroup2)}
-          </div>
+          <div className="flex flex-col space-y-5">{renderMenu(menuGroup)}</div>
         </div>
       </PageTransition>
 

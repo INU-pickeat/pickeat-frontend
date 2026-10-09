@@ -16,22 +16,26 @@ export default function PriceSelect() {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(20);
   const [isAnyPrice, setIsAnyPrice] = useState(false);
+  const [hasSelectedPrice, setHasSelectedPrice] = useState(false);
+  const canContinue = isAnyPrice || hasSelectedPrice;
 
-  // 최소 금액 변경 핸들러
+  /** 최소 금액 선택 */
   const handleMinChange = (e) => {
-    const value = Math.min(Number(e.target.value), maxPrice - 1);
+    const value = Math.min(Number(e.target.value), maxPrice);
     setMinPrice(value);
     setIsAnyPrice(false);
+    setHasSelectedPrice(true);
   };
 
-  // 최대 금액 변경 핸들러
+  /** 최대 금액 선택 */
   const handleMaxChange = (e) => {
-    const value = Math.max(Number(e.target.value), minPrice + 1);
+    const value = Math.max(Number(e.target.value), minPrice);
     setMaxPrice(value);
     setIsAnyPrice(false);
+    setHasSelectedPrice(true);
   };
 
-  // 금액 포맷팅 함수
+  /** 금액 표시 */
   const formatPrice = (val) => {
     if (val === 0) return "0원";
     if (val === 20) return "20만원";
@@ -52,7 +56,7 @@ export default function PriceSelect() {
         className={`w-full flex flex-col items-center transition-opacity duration-300 ${isAnyPrice ? "opacity-40" : "opacity-100"}`}
       >
         {/* 커스텀 슬라이더 영역 */}
-        <div className="px-2 w-full flex flex-col items-center mt-24 relative">
+        <div className="px-3 w-full flex flex-col items-center mt-24 relative">
           <div className="relative w-full h-2 bg-[#FFECCD] rounded-full">
             <div
               className="absolute h-full bg-[#F86516] rounded-full pointer-events-none"
@@ -65,35 +69,67 @@ export default function PriceSelect() {
             {/* 최소 금액 슬라이더 */}
             <input
               type="range"
+              aria-label="최소 금액"
               min="0"
               max="20"
               value={minPrice}
               onChange={handleMinChange}
-              className="absolute -top-[8px] w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#FF9639] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:shadow-md cursor-pointer"
+              className="absolute -left-3 -top-[8px] m-0 w-[calc(100%+24px)] appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#FF9639] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#FF9639] cursor-pointer"
             />
 
             {/* 최대 금액 슬라이더 */}
             <input
               type="range"
+              aria-label="최대 금액"
               min="0"
               max="20"
               value={maxPrice}
               onChange={handleMaxChange}
-              className="absolute -top-[8px] w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#FF9639] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:shadow-md cursor-pointer"
+              className="absolute -left-3 -top-[8px] m-0 w-[calc(100%+24px)] appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#FF9639] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#FF9639] cursor-pointer"
             />
           </div>
         </div>
 
         {/* 슬라이더 하단 라벨 */}
-        <div className="flex justify-between w-full mt-6 text-[10px] font-medium text-[#F87816]">
+        <div className="relative flex justify-between w-full mt-6 text-[10px] font-medium text-[#F87816]">
           <span>최소 금액 없음</span>
-          <span>10만 원</span>
+          <span className="absolute left-1/2 -translate-x-1/2">10만 원</span>
           <span>20만 원</span>
         </div>
 
-        {/* 현재 가격대 표시 박스 */}
-        <div className="w-full max-w-[280px] bg-[#FFECCD] mt-14 py-3 rounded-full flex justify-center items-center font-medium text-[#F87816] text-[12px]">
-          {formatPrice(minPrice)} ~ {formatPrice(maxPrice)}
+        {/* 가격대 드롭다운 */}
+        <div className="w-full max-w-[280px] bg-[#FF9639] mt-14 px-4 py-3 rounded-full flex justify-center items-center gap-3 font-medium text-[#FFFDF8] text-[12px]">
+          <select
+            aria-label="최소 금액 선택"
+            value={hasSelectedPrice ? minPrice : ""}
+            onChange={handleMinChange}
+            className="min-w-0 flex-1 bg-transparent text-center outline-none"
+          >
+            <option value="" disabled>
+              0원
+            </option>
+            {Array.from({ length: 21 }, (_, value) => (
+              <option key={value} value={value} disabled={value > maxPrice}>
+                {formatPrice(value)}
+              </option>
+            ))}
+          </select>
+          <span>~</span>
+          <select
+            aria-label="최대 금액 선택"
+            value={hasSelectedPrice ? maxPrice : ""}
+            onChange={handleMaxChange}
+            className="min-w-0 flex-1 bg-transparent text-center outline-none"
+          >
+            <option value="" disabled>
+              20만원
+            </option>
+            {Array.from({ length: 21 }, (_, value) => (
+              <option key={value} value={value} disabled={value < minPrice}>
+                {formatPrice(value)}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -112,7 +148,9 @@ export default function PriceSelect() {
       {/* 다음 버튼 */}
       <div className="mt-auto">
         <Button
+          disabled={!canContinue}
           onClick={() => {
+            if (!canContinue) return;
             const finalData = {
               ...location.state,
               situation,
@@ -121,7 +159,7 @@ export default function PriceSelect() {
             };
             navigate("/recommend/loading", { state: finalData });
           }}
-          className="shadow-none"
+          className="shadow-none disabled:opacity-50"
         >
           다음
         </Button>

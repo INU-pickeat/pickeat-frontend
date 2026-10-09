@@ -95,8 +95,8 @@ export default function RecommendResult() {
             <button
               className="absolute inset-0 w-full text-left"
               onClick={() =>
-                navigate(`/restaurant/${restaurant.id}?source=recommend`, {
-                  state: { returnTo: location.pathname + location.search, recommendationState: location.state },
+                navigate(`/restaurant/${restaurant.id}?source=recommend&sessionId=${encodeURIComponent(params.get("sessionId"))}`, {
+                  state: { returnTo: location.pathname + location.search, recommendationState: { ...location.state, sessionId: params.get("sessionId") } },
                 })
               }
               aria-label={`${restaurant.name} 상세보기`}

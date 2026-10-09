@@ -6,19 +6,3 @@ export const exploreRegions = [
   { slug: "jongno", name: "종로", imgUrl: "/assets/Jongro.png" },
 ];
 
-// 지역별 인기 맛집 더미데이터
-const categories = ["한식", "일식", "중식", "양식", "카페"];
-
-export const popularRestaurantsByRegion = Object.fromEntries(
-  exploreRegions.map((region) => [
-    region.slug,
-    categories.map((category, index) => ({
-      id: `${region.slug}-${index + 1}`,
-      rank: index + 1,
-      name: `${region.name} 더미 ${index + 1}`,
-      category,
-      pickCount: [123, 108, 95, 82, 67][index],
-      image: "/assets/dummy.png",
-    })),
-  ]),
-);

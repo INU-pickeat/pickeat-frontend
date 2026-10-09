@@ -1,5 +1,13 @@
 import { api } from "./client";
 
+/** Pick 선택 저장 */
+export async function createPick({ recommendationSessionId, restaurantId }) {
+  const { data } = await api.post("/v1/picks", { recommendationSessionId, restaurantId });
+  if (data?.pickId == null || String(data.restaurantId) !== String(restaurantId) || data.status !== "SELECTED")
+    throw new Error("INVALID_PICK_RESPONSE");
+  return data;
+}
+
 /** 기간별 내 Pick 목록 조회 */
 export async function getMyPicks({ period, signal }) {
   const { data } = await api.get("/v1/me/picks", { params: { period }, signal });
@@ -26,8 +34,8 @@ export async function getPickMap(signal) {
 /** 월별 Pick 캘린더 조회 */
 export async function getPickCalendar({ year, month, signal }) {
   const { data } = await api.get("/v1/me/picks/calendar", { params: { year, month }, signal });
-  if (data?.year !== year || data?.month !== month || !Array.isArray(data?.dates)) {
+  if (data?.year !== year || data?.month !== month || !Array.isArray(data?.dates) || !Array.isArray(data?.picks)) {
     throw new Error("INVALID_CALENDAR_RESPONSE");
   }
-  return data.dates;
+  return { dates: data.dates, picks: data.picks.filter((pick) => pick.status !== "CANCELED") };
 }
