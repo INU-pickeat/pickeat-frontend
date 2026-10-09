@@ -1,5 +1,13 @@
 import { api } from "./client";
 
+/** Pick 선택 저장 */
+export async function createPick({ recommendationSessionId, restaurantId }) {
+  const { data } = await api.post("/v1/picks", { recommendationSessionId, restaurantId });
+  if (data?.pickId == null || String(data.restaurantId) !== String(restaurantId) || data.status !== "SELECTED")
+    throw new Error("INVALID_PICK_RESPONSE");
+  return data;
+}
+
 /** 기간별 내 Pick 목록 조회 */
 export async function getMyPicks({ period, signal }) {
   const { data } = await api.get("/v1/me/picks", { params: { period }, signal });

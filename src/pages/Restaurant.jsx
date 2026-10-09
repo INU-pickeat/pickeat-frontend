@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import RestaurantDetail from "../components/RestaurantDetail";
 import useRestaurant from "../hooks/useRestaurant";
+import { createPick } from "../api/picks";
+import { getApiErrorMessage } from "../utils/apiError";
 
 const actionClassName =
   "flex-1 rounded-full bg-[#FF9639] px-4 py-2 text-[14px] font-bold text-white cursor-pointer active:scale-95 transition-transform";
@@ -54,6 +56,8 @@ function RestaurantPage({ restaurant }) {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [feedback, setFeedback] = useState("");
+  const [isSelecting, setIsSelecting] = useState(false);
+  const selectionInFlight = useRef(false);
   const [saved, setSaved] = useState(() => {
     try {
       const savedRestaurants = JSON.parse(localStorage.getItem("pickeat.savedRestaurants") || "[]");
@@ -65,13 +69,44 @@ function RestaurantPage({ restaurant }) {
     }
   });
   const isRecommendation = searchParams.get("source") === "recommend";
+  const sessionId = searchParams.get("sessionId") || location.state?.recommendationState?.sessionId;
   const selectedSituation = situationNames[location.state?.recommendationState?.situation];
   // 추천 상세에 사용자가 선택한 동행 조건을 표시
   const detailRestaurant = isRecommendation
     ? { ...restaurant, features: selectedSituation ? [selectedSituation] : [] }
     : restaurant;
-  const fallback = isRecommendation ? "/recommend/result" : "/home";
+  const fallback = isRecommendation && sessionId ? `/recommend/result?sessionId=${encodeURIComponent(sessionId)}` : "/home";
   const returnTo = location.state?.returnTo || fallback;
+
+  /** 추천 식당 선택 */
+  const selectRestaurant = async () => {
+    if (selectionInFlight.current) return;
+    const recommendationSessionId = Number(sessionId);
+    if (!Number.isSafeInteger(recommendationSessionId) || recommendationSessionId <= 0) {
+      setFeedback("추천 결과에서 식당을 다시 선택해주세요.");
+      return;
+    }
+    selectionInFlight.current = true;
+    setIsSelecting(true);
+    setFeedback("");
+    try {
+      const pick = await createPick({ recommendationSessionId, restaurantId: restaurant.id });
+      navigate("/recommend/complete", {
+        replace: true,
+        state: {
+          ...location.state?.recommendationState,
+          sessionId: recommendationSessionId,
+          pick,
+          selectedRestaurant: { ...restaurant, name: pick.restaurantName },
+        },
+      });
+    } catch (error) {
+      setFeedback(getApiErrorMessage(error, "선택을 저장하지 못했어요. 다시 시도해주세요."));
+    } finally {
+      selectionInFlight.current = false;
+      setIsSelecting(false);
+    }
+  };
 
   /** 식당 임시 저장 */
   const saveRestaurant = () => {
@@ -128,14 +163,11 @@ function RestaurantPage({ restaurant }) {
         ) : (
           <button
             type="button"
-            onClick={() =>
-              navigate("/recommend/complete", {
-                state: { ...location.state?.recommendationState, selectedRestaurant: restaurant },
-              })
-            }
-            className={actionClassName}
+            onClick={selectRestaurant}
+            disabled={isSelecting}
+            className={`${actionClassName} disabled:opacity-60 disabled:cursor-wait`}
           >
-            여기로 선택할게요
+            {isSelecting ? "선택 저장 중..." : "여기로 선택할게요"}
           </button>
         )
       }

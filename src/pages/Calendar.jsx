@@ -11,7 +11,7 @@ import { formatCalendarDate, getCalendarCells } from "../utils/calendar";
 export default function Calendar() {
   const navigate = useNavigate();
 
-  // 한국 날짜 기준으로 초기 월을 표시한다.
+  // 한국 날짜 기준으로 초기 월을 표시
   const today = new Date(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }) + "T00:00:00");
 
   const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));

@@ -43,12 +43,17 @@ export default function Feed() {
 
           <section aria-label="피드" className="px-6 flex flex-col gap-4">
             {isLoading && (
-              <p role="status" className="text-center text-sm text-[#777777]">
+              <p
+                role="status"
+                className="min-h-[180px] flex items-center justify-center text-center text-sm text-[#777777]"
+              >
                 피드를 불러오는 중이에요.
               </p>
             )}
             {!isLoading && !error && items.length === 0 && (
-              <p className="text-center text-sm text-[#777777]">아직 공개된 후기가 없어요.</p>
+              <p className="min-h-[180px] flex items-center justify-center text-center text-sm text-[#777777]">
+                아직 공개된 후기가 없어요.
+              </p>
             )}
             {items.map((review) => (
               <FeedReviewCard
@@ -62,7 +67,10 @@ export default function Feed() {
               />
             ))}
             {error && (
-              <div role="alert" className="text-center text-sm text-[#777777]">
+              <div
+                role="alert"
+                className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]"
+              >
                 <p>{error}</p>
                 {needsLogin ? (
                   <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">
