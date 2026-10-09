@@ -15,7 +15,13 @@ export default function Home() {
   const nickname = getAccessToken() ? getNickname() : null;
   const { spots, isLoading, error, retry } = useDiscoverySpots();
 
-  const { restaurants: recentPicks, isLoading: picksLoading, error: picksError, needsLogin: picksNeedLogin, retry: retryPicks } = useMyPicks("week");
+  const {
+    restaurants: recentPicks,
+    isLoading: picksLoading,
+    error: picksError,
+    needsLogin: picksNeedLogin,
+    retry: retryPicks,
+  } = useMyPicks("week");
 
   return (
     <>
@@ -61,7 +67,7 @@ export default function Home() {
           {/* 최근 pick 영역 */}
           <div className="mb-10">
             <div className="flex justify-between items-end mb-4">
-              <h3 className="text-[16px] font-semibold text-[#F86516] ml-3">최근 pick</h3>
+              <h3 className="text-[16px] font-semibold text-[#F86516]">최근 pick</h3>
               <button
                 className="text-[12px] text-[#FF8839] font-medium hover:underline cursor-pointer"
                 onClick={() => navigate("/recent")}
@@ -71,34 +77,59 @@ export default function Home() {
             </div>
 
             {/* 식당 카드 리스트 */}
-            <div className="flex flex-col space-y-4">
-              {picksLoading && <p role="status" className="text-sm text-[#777777]">최근 Pick을 불러오는 중이에요.</p>}
-              {picksError && <div role="alert" className="text-sm text-[#777777]"><p>{picksError}</p>{picksNeedLogin
-                ? <Link to="/login" className="mt-2 inline-block text-[#F86516] underline">로그인하기</Link>
-                : <button type="button" onClick={retryPicks} className="mt-2 text-[#F86516] underline cursor-pointer">다시 시도</button>}</div>}
-              {!picksLoading && !picksError && recentPicks.length === 0 && <p className="text-center text-sm text-[#777777]">최근 7일간 Pick한 맛집이 없어요.</p>}
-              {recentPicks.slice(0, 2).map((pick) => <PickSummaryCard key={pick.restaurantId} pick={pick} to="/recent" />)}
+            <div
+              className={`flex flex-col ${picksLoading || picksError || recentPicks.length === 0 ? "min-h-[180px] items-center justify-center text-center" : "space-y-4"}`}
+            >
+              {picksLoading && (
+                <p role="status" className="text-sm text-[#777777]">
+                  최근 Pick을 불러오는 중이에요.
+                </p>
+              )}
+              {picksError && (
+                <div role="alert" className="text-sm text-[#777777]">
+                  <p>{picksError}</p>
+                  {picksNeedLogin ? (
+                    <Link to="/login" className="mt-2 inline-block text-[#F86516] underline">
+                      로그인하기
+                    </Link>
+                  ) : (
+                    <button type="button" onClick={retryPicks} className="mt-2 text-[#F86516] underline cursor-pointer">
+                      다시 시도
+                    </button>
+                  )}
+                </div>
+              )}
+              {!picksLoading && !picksError && recentPicks.length === 0 && (
+                <p className="text-center text-sm text-[#777777]">최근 7일간 Pick한 맛집이 없어요.</p>
+              )}
+              {recentPicks.slice(0, 2).map((pick) => (
+                <PickSummaryCard key={pick.restaurantId} pick={pick} to="/recent" />
+              ))}
             </div>
           </div>
 
           {/* 인기 탐색 스팟 영역 */}
           <div>
-            <h3 className="text-[16px] font-semibold text-[#F86516] mb-4 ml-3">picker들의 지역별 인기 맛집</h3>
-            {isLoading && (
-              <p role="status" className="text-center text-sm text-[#777777]">
-                지역을 불러오는 중이에요.
-              </p>
-            )}
-            {error && (
-              <div role="alert" className="text-sm">
-                <p>{error}</p>
-                <button type="button" onClick={retry} className="mt-2 text-[#F86516] underline cursor-pointer">
-                  다시 시도
-                </button>
+            <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 지역별 인기 맛집</h3>
+            {(isLoading || error || spots.length === 0) && (
+              <div className="min-h-[180px] flex flex-col items-center justify-center text-center">
+                {isLoading && (
+                  <p role="status" className="text-center text-sm text-[#777777]">
+                    지역을 불러오는 중이에요.
+                  </p>
+                )}
+                {error && (
+                  <div role="alert" className="text-sm">
+                    <p>{error}</p>
+                    <button type="button" onClick={retry} className="mt-2 text-[#F86516] underline cursor-pointer">
+                      다시 시도
+                    </button>
+                  </div>
+                )}
+                {!isLoading && !error && spots.length === 0 && (
+                  <p className="text-center text-sm text-[#777777]">등록된 지역이 없어요.</p>
+                )}
               </div>
-            )}
-            {!isLoading && !error && spots.length === 0 && (
-              <p className="text-center text-sm text-[#777777]">등록된 지역이 없어요.</p>
             )}
             <div className="flex justify-between items-start w-full pb-2">
               {spots.map((spot) => (

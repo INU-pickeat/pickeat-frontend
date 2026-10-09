@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getFeed, addReviewLike, cancelReviewLike } from "../api/feed";
+import { getApiErrorMessage } from "../utils/apiError";
 
 /** 피드 조회 및 페이지 추가 */
 export default function useFeed() {
@@ -35,7 +36,7 @@ export default function useFeed() {
           isLoading: false,
           isLoadingMore: false,
           needsLogin,
-          error: needsLogin ? "다시 로그인해주세요." : "피드를 불러오지 못했어요.",
+          error: getApiErrorMessage(error, needsLogin ? "다시 로그인해주세요." : "피드를 불러오지 못했어요."),
         });
       });
     return () => controller.abort();
@@ -85,7 +86,7 @@ export default function useFeed() {
         ...previous,
         isLoadingMore: false,
         needsLogin,
-        error: needsLogin ? "다시 로그인해주세요." : "다음 후기를 불러오지 못했어요. 다시 시도해주세요.",
+        error: getApiErrorMessage(error, needsLogin ? "다시 로그인해주세요." : "후기를 불러오지 못했어요."),
       }));
     } finally {
       if (!controller.signal.aborted) loadingMoreRef.current = false;
@@ -112,14 +113,10 @@ export default function useFeed() {
     } catch (error) {
       if (controller.signal.aborted) return;
       const status = error.response?.status;
-      const message =
-        status === 401
-          ? "다시 로그인한 후 시도해주세요."
-          : status === 409
-            ? "비공개 후기에는 좋아요를 누를 수 없어요."
-            : status === 404
-              ? "삭제되었거나 공개되지 않은 후기예요."
-              : "좋아요를 변경하지 못했어요. 다시 눌러주세요.";
+      const message = getApiErrorMessage(
+        error,
+        status === 401 ? "다시 로그인해주세요." : "좋아요를 변경하지 못했어요.",
+      );
       setLikeErrors((previous) => ({ ...previous, [reviewId]: message }));
     } finally {
       if (!controller.signal.aborted) {

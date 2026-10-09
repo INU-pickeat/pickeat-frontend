@@ -4,14 +4,16 @@ import PageTransition from "../components/PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
 import TabMenu from "../components/TabMenu";
 import usePickCalendar from "../hooks/usePickCalendar";
+import { reviewTags, reviewImageUrl } from "../utils/reviewDisplay";
 import CheckIcon from "../assets/icons/check.svg";
+import WriteIcon from "../assets/icons/write.svg";
 import BottomNav from "../components/BottomNav";
 import { formatCalendarDate, getCalendarCells } from "../utils/calendar";
 
 export default function Calendar() {
   const navigate = useNavigate();
 
-  // 한국 날짜 기준으로 초기 월을 표시한다.
+  // 한국 날짜 기준으로 초기 월을 표시
   const today = new Date(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }) + "T00:00:00");
 
   const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
@@ -19,9 +21,9 @@ export default function Calendar() {
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
-  const { dates, isLoading, error, needsLogin, retry } = usePickCalendar(year, month);
+  const { dates, picks, isLoading, error, needsLogin, retry } = usePickCalendar(year, month);
   const records = Object.fromEntries(dates.map((record) => [record.date, record]));
-  const selectedRecord = records[selectedDate];
+  const selectedPicks = picks.filter((pick) => pick.date === selectedDate);
 
   /** 월 이동 */
   const changeMonth = (offset) => {
@@ -50,7 +52,7 @@ export default function Calendar() {
           </div>
           {/* 캘린더 영역 */}
           <div className="px-6 relative z-10">
-            <div className="bg-[#FFECCD] rounded-[20px] p-5 shadow-sm">
+            <div className="bg-[#FFECCD] rounded-[20px] p-5">
               <div className="flex items-center gap-1 mb-4">
                 <button
                   onClick={() => changeMonth(-1)}
@@ -127,7 +129,7 @@ export default function Calendar() {
                       {dayRecord?.representativeImageUrl && cell.isCurrent ? (
                         <div className="relative w-9 h-9 rounded-full overflow-hidden">
                           <img
-                            src={dayRecord.representativeImageUrl}
+                            src={reviewImageUrl(dayRecord.representativeImageUrl)}
                             alt={dayRecord.restaurantName}
                             onError={(event) => {
                               if (event.currentTarget.getAttribute("src") !== "/assets/dummy.png")
@@ -158,7 +160,7 @@ export default function Calendar() {
 
           {/* 기록 상세 카드 영역 */}
           <div className="px-6 my-6 relative z-10">
-            <h3 className="text-[#F87816] font-semibold text-[16px] ml-3 mb-4">
+            <h3 className="text-[#F87816] font-semibold text-[16px] mb-4">
               {selectedDate.split("-")[0]}년 {selectedDate.split("-")[1].replace(/^0/, "")}월{" "}
               {selectedDate.split("-")[2].replace(/^0/, "")}일
             </h3>
@@ -180,22 +182,46 @@ export default function Calendar() {
                   </button>
                 )}
               </div>
-            ) : selectedRecord ? (
-              <div className="bg-[#FFECCD] rounded-[24px] px-5 py-4 flex justify-between items-center gap-4 shadow-sm">
-                <div className="min-w-0">
-                  <h4 className="text-[#F86516] font-bold text-[16px] mb-1">{selectedRecord.restaurantName}</h4>
-                  <p className="text-[#434343] font-medium text-[12px]">
-                    이 날 남긴 기록 {selectedRecord.recordCount}개
-                  </p>
-                </div>
-                <div className="shrink-0 flex flex-col items-center gap-2">
-                  <img src={CheckIcon} alt="" className="w-5 h-5" />
-                  <span className="text-[#434343] text-[10px] font-medium">기록 완료</span>
-                </div>
+            ) : selectedPicks.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {selectedPicks.map((pick) => (
+                  <div
+                    key={pick.pickId}
+                    className="bg-[#FFECCD] rounded-[20px] px-5 py-4 flex justify-between items-center gap-4"
+                  >
+                    <div className="min-w-0">
+                      <h4 className="text-[#F86516] font-bold text-[16px] mb-1">{pick.restaurantName}</h4>
+                      <p className="text-[#434343] font-medium text-[12px]">{reviewTags(pick)}</p>
+                    </div>
+                    <button
+                      className="shrink-0 flex flex-col items-center gap-2 cursor-pointer"
+                      onClick={() =>
+                        pick.reviewId != null
+                          ? navigate(`/history/write?reviewId=${encodeURIComponent(pick.reviewId)}`)
+                          : navigate(`/history/write?pickId=${encodeURIComponent(pick.pickId)}`, {
+                              state: {
+                                pick,
+                                selectedRestaurant: {
+                                  id: pick.restaurantId,
+                                  name: pick.restaurantName,
+                                  foodCategory: pick.foodCategory,
+                                  image: reviewImageUrl(pick.restaurantImageUrl),
+                                },
+                              },
+                            })
+                      }
+                    >
+                      <img src={pick.reviewId != null ? CheckIcon : WriteIcon} alt="" className="w-5 h-5" />
+                      <span className="text-[#434343] text-[10px] font-medium">
+                        {pick.reviewId != null ? "기록 완료" : "기록하기"}
+                      </span>
+                    </button>
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="bg-[#FFFDF8] border-2 border-dashed border-[#FFECCD] rounded-[24px] p-6 flex justify-center items-center">
-                <p className="text-center text-[#F87816] font-semibold text-[14px]">이 날은 작성한 후기가 없어요.</p>
+                <p className="text-center text-[#F87816] font-semibold text-[14px]">이 날은 선택한 Pick이 없어요.</p>
               </div>
             )}
           </div>

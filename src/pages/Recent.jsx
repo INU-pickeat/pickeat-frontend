@@ -120,7 +120,7 @@ export default function Recent() {
           {Object.entries(groupedPicks).map(([date, items], index) => (
             <div key={date} className={index > 0 ? "mt-8" : ""}>
               {/* 날짜 헤더 */}
-              <h2 className="ml-3 text-[16px] font-bold text-[#F86516] mb-3">{date}</h2>
+              <h2 className="text-[16px] font-bold text-[#F86516] mb-3">{date}</h2>
 
               {/* 식당 카드 리스트 */}
               <div className="flex flex-col space-y-4">
