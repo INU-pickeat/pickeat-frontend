@@ -47,6 +47,9 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, is
             />
           </svg>
         </button>
+        <span className="absolute right-5 top-11 min-w-5 text-center text-[10px] font-medium leading-none text-white drop-shadow pointer-events-none">
+          {review.likeCount ?? 0}
+        </span>
       </div>
 
       {/* 카드 영역 */}
