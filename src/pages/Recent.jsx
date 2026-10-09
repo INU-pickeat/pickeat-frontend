@@ -35,6 +35,10 @@ export default function Recent() {
       day: "numeric",
     }).format(new Date(dateString));
 
+  /** 한국 시간으로 날짜 표시 */
+  const formatDate = (dateString) => new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul", year: "numeric", month: "long", day: "numeric",
+  }).format(new Date(dateString));
   // 날짜별로 데이터 그룹화
   const groupedPicks = picksData.reduce((acc, pick) => {
     const formattedDate = formatDate(pick.latestPickedAt);
