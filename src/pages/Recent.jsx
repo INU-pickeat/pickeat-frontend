@@ -16,15 +16,25 @@ export default function Recent() {
   const handleSelectFilter = (filter) => {
     setSelectedFilter(filter);
     setIsDropdownOpen(false);
-
   };
 
-  const { restaurants: picksData, isLoading, error, needsLogin, retry } = useMyPicks(selectedFilter === "일주일 기준" ? "week" : "month");
+  const {
+    restaurants: picksData,
+    isLoading,
+    error,
+    needsLogin,
+    retry,
+  } = useMyPicks(selectedFilter === "일주일 기준" ? "week" : "month");
 
   /** 한국 시간으로 날짜 표시 */
-  const formatDate = (dateString) => new Intl.DateTimeFormat("ko-KR", {
-    timeZone: "Asia/Seoul", year: "numeric", month: "long", day: "numeric",
-  }).format(new Date(dateString));
+  const formatDate = (dateString) =>
+    new Intl.DateTimeFormat("ko-KR", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(dateString));
+
   // 날짜별로 데이터 그룹화
   const groupedPicks = picksData.reduce((acc, pick) => {
     const formattedDate = formatDate(pick.latestPickedAt);
@@ -84,19 +94,38 @@ export default function Recent() {
             </div>
           </div>
 
-          {isLoading && <p role="status" className="text-sm text-[#777777]">최근 Pick을 불러오는 중이에요.</p>}
-          {error && <div role="alert" className="text-sm text-[#777777]"><p>{error}</p>{needsLogin
-            ? <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">로그인하기</Link>
-            : <button type="button" onClick={retry} className="mt-3 text-[#F86516] underline cursor-pointer">다시 시도</button>}</div>}
-          {!isLoading && !error && picksData.length === 0 && <p className="text-center text-sm text-[#777777]">선택한 기간에 Pick한 맛집이 없어요.</p>}
+          {isLoading && (
+            <p role="status" className="text-sm text-[#777777]">
+              최근 Pick을 불러오는 중이에요.
+            </p>
+          )}
+          {error && (
+            <div role="alert" className="text-sm text-[#777777]">
+              <p>{error}</p>
+              {needsLogin ? (
+                <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">
+                  로그인하기
+                </Link>
+              ) : (
+                <button type="button" onClick={retry} className="mt-3 text-[#F86516] underline cursor-pointer">
+                  다시 시도
+                </button>
+              )}
+            </div>
+          )}
+          {!isLoading && !error && picksData.length === 0 && (
+            <p className="text-center text-sm text-[#777777]">선택한 기간에 Pick한 맛집이 없어요.</p>
+          )}
           {Object.entries(groupedPicks).map(([date, items], index) => (
             <div key={date} className={index > 0 ? "mt-8" : ""}>
               {/* 날짜 헤더 */}
-              <h2 className="ml-3 text-[16px] font-bold text-[#F86516] mb-3">{date}</h2>
+              <h2 className="text-[16px] font-bold text-[#F86516] mb-3">{date}</h2>
 
               {/* 식당 카드 리스트 */}
               <div className="flex flex-col space-y-4">
-                {items.map((item) => <PickSummaryCard key={item.restaurantId} pick={item} />)}
+                {items.map((item) => (
+                  <PickSummaryCard key={item.restaurantId} pick={item} />
+                ))}
               </div>
             </div>
           ))}

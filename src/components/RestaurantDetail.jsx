@@ -1,5 +1,6 @@
 import PageTransition from "./PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
+import RestaurantPhotos from "./RestaurantPhotos";
 
 export default function RestaurantDetail({ restaurant, onBack, actions, feedback }) {
   const hours = Array.isArray(restaurant.hours)
@@ -7,21 +8,13 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
     : [];
   const phone = typeof restaurant.phone === "string" ? restaurant.phone.trim() : "";
   const openingHoursText = restaurant.openingHoursText?.trim();
+  const images = restaurant.images || (restaurant.image ? [restaurant.image] : []);
 
   return (
     <PageTransition className="h-dvh w-full flex flex-col overflow-hidden bg-[#FFFDF8]">
       {/* 식당 이미지 & 뒤로가기 버튼 */}
       <div className="relative h-[34dvh] min-h-0 shrink-0 bg-[#9A7759]">
-        {restaurant.image && (
-          <img
-            src={restaurant.image}
-            alt={restaurant.name}
-            className="h-full w-full object-cover"
-            onError={(event) => {
-              event.currentTarget.style.display = "none";
-            }}
-          />
-        )}
+        <RestaurantPhotos key={`${restaurant.id}:${images.join(",")}`} images={images} name={restaurant.name} />
         <button
           type="button"
           onClick={onBack}

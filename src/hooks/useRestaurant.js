@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getRestaurant } from "../api/restaurants";
+import { getRestaurant, getRestaurantReviewSummary } from "../api/restaurants";
+import { getApiErrorMessage } from "../utils/apiError";
 
 /** 식당 상세 로딩 */
 export default function useRestaurant(id) {
@@ -8,8 +9,20 @@ export default function useRestaurant(id) {
   useEffect(() => {
     const controller = new AbortController();
     getRestaurant(id, controller.signal)
-      .then((restaurant) => {
-        if (!controller.signal.aborted) setState({ id, restaurant, error: "" });
+      .then(async (restaurant) => {
+        const summary = typeof restaurant.review === "string" ? null : await getRestaurantReviewSummary(id, controller.signal).catch((error) => ({
+          oneLineReview: getApiErrorMessage(error, "한줄평을 불러오지 못했어요."),
+        }));
+        if (!controller.signal.aborted)
+          setState({
+            id,
+            restaurant: {
+              ...restaurant,
+              review: restaurant.review ?? summary?.oneLineReview,
+              reviewCount: summary?.reviewCount,
+            },
+            error: "",
+          });
       })
       .catch((error) => {
         if (!controller.signal.aborted)

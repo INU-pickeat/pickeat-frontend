@@ -67,7 +67,6 @@ export function mapFeedPage(data) {
         .join(" / "),
       liked: item.likedByMe,
       likeCount: item.likeCount,
-      rating: item.rating,
       createdAt: item.createdAt,
     })),
   };

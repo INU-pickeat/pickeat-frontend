@@ -97,8 +97,8 @@ export default function PriceSelect() {
           <span>20만 원</span>
         </div>
 
-        {/* 가격대 드롭다운 — 슬라이더와 함께 변경 */}
-        <div className="w-full max-w-[280px] bg-[#FFECCD] mt-14 px-4 py-3 rounded-full flex justify-center items-center gap-3 font-medium text-[#F87816] text-[12px]">
+        {/* 가격대 드롭다운 */}
+        <div className="w-full max-w-[280px] bg-[#FF9639] mt-14 px-4 py-3 rounded-full flex justify-center items-center gap-3 font-medium text-[#FFFDF8] text-[12px]">
           <select
             aria-label="최소 금액 선택"
             value={hasSelectedPrice ? minPrice : ""}
@@ -106,7 +106,7 @@ export default function PriceSelect() {
             className="min-w-0 flex-1 bg-transparent text-center outline-none"
           >
             <option value="" disabled>
-              최소 금액
+              0원
             </option>
             {Array.from({ length: 21 }, (_, value) => (
               <option key={value} value={value} disabled={value > maxPrice}>
@@ -122,7 +122,7 @@ export default function PriceSelect() {
             className="min-w-0 flex-1 bg-transparent text-center outline-none"
           >
             <option value="" disabled>
-              최대 금액
+              20만원
             </option>
             {Array.from({ length: 21 }, (_, value) => (
               <option key={value} value={value} disabled={value < minPrice}>
