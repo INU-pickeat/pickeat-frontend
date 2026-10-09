@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getReview, updateReview, deleteReview } from "../api/reviews";
+import { getReview, updateReview } from "../api/reviews";
 import { uploadReviewImage } from "../api/reviewImages";
 import { getApiErrorMessage } from "../utils/apiError";
-import { foodNames } from "../api/recommendations";
+import { reviewTags, reviewImageUrl } from "../utils/reviewDisplay";
+import GalleryIcon from "../assets/icons/gallery.svg";
 import Button from "./Button";
 import PageTransition from "./PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
@@ -21,10 +22,12 @@ export default function ReviewEdit({ reviewId }) {
         if (!controller.signal.aborted) setReview(data);
       })
       .catch((error) => {
-        if (!controller.signal.aborted) setError(getApiErrorMessage(error, "후기를 불러오지 못했어요."));
+        if (!controller.signal.aborted) setError(getApiErrorMessage(error, "기록을 불러오지 못했어요."));
       });
     return () => controller.abort();
   }, [reviewId, attempt]);
+
+  if (review) return <ReviewEditForm key={review.reviewId} review={review} />;
 
   return (
     <PageTransition className="h-dvh w-full overflow-y-auto bg-[#FFFDF8] px-6 pt-10 pb-10">
@@ -36,7 +39,7 @@ export default function ReviewEdit({ reviewId }) {
       {/* 로딩·오류 안내 */}
       {!review && (
         <div className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
-          <p role={error ? "alert" : "status"}>{error || "후기를 불러오는 중이에요."}</p>
+          <p role={error ? "alert" : "status"}>{error || "기록을 불러오는 중이에요."}</p>
           {error && (
             <button
               onClick={() => {
@@ -50,7 +53,6 @@ export default function ReviewEdit({ reviewId }) {
           )}
         </div>
       )}
-      {review && <ReviewEditForm review={review} />}
     </PageTransition>
   );
 }
@@ -59,82 +61,50 @@ export default function ReviewEdit({ reviewId }) {
 function ReviewEditForm({ review }) {
   const navigate = useNavigate();
   const [content, setContent] = useState(review.content);
-  const [visibility, setVisibility] = useState(review.visibility);
-  const [removeImage, setRemoveImage] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const uploadedImage = useRef(null);
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const isBusy = isSaving || isDeleting;
   const inFlight = useRef(false);
-  const hasChanges =
-    content !== review.content ||
-    visibility !== review.visibility ||
-    removeImage ||
-    imageFile !== null;
+  const hasChanges = content !== review.content || imageFile !== null;
+  const fileInputRef = useRef(null);
+  const displayImage = preview || reviewImageUrl(review.imageUrls?.[0]);
+  const thumbnail = reviewImageUrl(review.restaurantImageUrl || review.representativeImageUrl || review.imageUrls?.[0]);
 
   useEffect(() => {
     if (!preview) return;
     return () => URL.revokeObjectURL(preview);
   }, [preview]);
 
-  /** 이미지 변경 */
+  /** 사진 교체 */
   function handleImageChange(event) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    setPreview(URL.createObjectURL(file));
     setImageFile(file);
+    setPreview(URL.createObjectURL(file));
     uploadedImage.current = null;
-    setRemoveImage(false);
     setError("");
   }
 
-  /** 후기 삭제 */
-  async function handleDelete() {
-    if (inFlight.current) return;
-    if (!window.confirm("후기를 삭제할까요? 삭제하면 다시 후기를 작성할 수 있는 상태로 돌아가요.")) return;
-    inFlight.current = true;
-    setIsDeleting(true);
-    setError("");
-    try {
-      await deleteReview(review.reviewId);
-      navigate("/history", { replace: true });
-    } catch (error) {
-      setError(getApiErrorMessage(error, "후기를 삭제하지 못했어요."));
-    } finally {
-      inFlight.current = false;
-      setIsDeleting(false);
-    }
-  }
-
-  /** 변경한 항목 저장 */
-  async function handleSave(event) {
-    event.preventDefault();
-    if (inFlight.current || !hasChanges) return;
-    if (!content.trim()) {
-      setError("후기 내용을 입력해주세요.");
-      return;
-    }
-    const changes = {};
-    if (content !== review.content) changes.content = content.trim();
-    if (visibility !== review.visibility) changes.visibility = visibility;
-    if (removeImage) changes.imageUrls = [];
+  /** 변경한 기록 저장 */
+  async function handleSave() {
+    if (inFlight.current || !hasChanges || !content.trim()) return;
     inFlight.current = true;
     setIsSaving(true);
     setError("");
     try {
+      const changes = {};
+      if (content !== review.content) changes.content = content.trim();
       if (imageFile) {
-        // 수정 재시도 시 이미 업로드한 사진은 다시 올리지 않음
         if (!uploadedImage.current) uploadedImage.current = await uploadReviewImage(imageFile);
         changes.imageUrls = [uploadedImage.current];
       }
       await updateReview(review.reviewId, changes);
       navigate("/history", { replace: true });
     } catch (error) {
-      setError(getApiErrorMessage(error, "후기를 수정하지 못했어요."));
+      setError(getApiErrorMessage(error, "기록을 수정하지 못했어요."));
     } finally {
       inFlight.current = false;
       setIsSaving(false);
@@ -142,89 +112,91 @@ function ReviewEditForm({ review }) {
   }
 
   return (
-    <form onSubmit={handleSave} className="rounded-[30px] bg-[#FFF5E4] p-6 flex flex-col gap-5">
-      {/* 식당 정보 */}
-      <header>
-        <h2 className="text-[20px] font-bold text-[#F86516]">{review.restaurantName}</h2>
-        <p className="mt-2 text-sm text-[#434343]">{foodNames[review.foodCategory] || review.foodCategory}</p>
-      </header>
-
-      {/* 후기 작성 영역 */}
-      <fieldset disabled={isBusy} className="flex flex-col gap-5">
-
-        <label className="flex justify-between items-center text-[#434343]">
-          공개 여부
-          <select
-            value={visibility}
-            onChange={(event) => setVisibility(event.target.value)}
-            className="rounded-lg bg-[#FFECCD] p-2"
+    <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
+      <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide">
+        {/* 헤더 영역 */}
+        <div className="pt-10 px-6 relative z-10">
+          <button
+            onClick={() => navigate(-1)}
+            className="mb-6 p-2 -ml-2 active:scale-90 transition-transform cursor-pointer"
           >
-            <option value="PUBLIC">공개</option>
-            <option value="PRIVATE">비공개</option>
-          </select>
-        </label>
-
-        {/* 후기 사진 선택·교체·삭제 */}
-        <label className="text-sm text-[#F86516]">
-          사진 선택 (최대 1장)
-          <input type="file" accept="image/*" onChange={handleImageChange} className="mt-2 block w-full text-sm" />
-        </label>
-        {(imageFile || review.imageUrls?.length > 0) && (
-          <div>
-            {!removeImage && (
-              <img
-                src={preview || review.imageUrls[0]}
-                alt="후기 사진"
-                className="w-full h-48 object-cover rounded-[15px]"
-              />
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                if (imageFile) {
-                  setImageFile(null);
-                  setPreview(null);
-                  uploadedImage.current = null;
-                } else setRemoveImage((value) => !value);
-              }}
-              className="mt-3 text-sm text-[#F86516] underline"
-            >
-              {imageFile ? "새 사진 선택 취소" : removeImage ? "사진 삭제 취소" : "사진 삭제"}
-            </button>
-          </div>
-        )}
-        <textarea
-          maxLength={1000}
-          aria-label="후기 내용"
-          value={content}
-          onChange={(event) => setContent(event.target.value)}
-          className="h-32 resize-none rounded-[20px] bg-[#FFECCD] p-5 text-sm text-[#434343]"
-        />
-      </fieldset>
-
-      {/* 오류 안내 & 저장 */}
-      {error && (
-        <div className="min-h-[180px] flex items-center justify-center text-center text-sm text-[#777777]">
-          <p role="alert">{error}</p>
+            <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6" />
+          </button>
         </div>
-      )}
-      <Button
-        type="submit"
-        disabled={isBusy || !hasChanges || !content.trim()}
-        className="shadow-none disabled:opacity-50"
-      >
-        {isSaving ? "저장 중..." : "수정하기"}
-      </Button>
 
-      {/* 후기 삭제 */}
-      <button
-        type="button"
-        onClick={handleDelete}
-        disabled={isBusy}
-        className="text-sm text-[#F86516] underline disabled:opacity-50"
-      >
-        {isDeleting ? "삭제 중..." : "후기 삭제"}
-      </button>
-    </form>
+        {/* 기록 작성 영역 */}
+        <div className="flex-1 bg-[#FFF5E4] rounded-t-[30px] px-6 pt-8 pb-18 flex flex-col">
+          {/* 식당 정보 */}
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-[#F86516] font-bold text-[20px] mb-1.5">{review.restaurantName}</h2>
+              <p className="text-[#434343] font-medium text-[12px]">{reviewTags(review)}</p>
+            </div>
+            {/* 식당 썸네일 */}
+            <div className="w-14 h-14 rounded-full overflow-hidden border-black/5 bg-gray-200 shrink-0">
+              {thumbnail && <img src={thumbnail} alt="식당 사진" className="w-full h-full object-cover" />}
+            </div>
+          </div>
+
+          {/* 구분선 */}
+          <hr className="border-t-[2.5px] border-[#FF9639] mt-5 mb-5" />
+
+          <h3 className="text-[#F87816] font-semibold text-[15px] mb-4">오늘의 pick은 어땠나요?</h3>
+
+          {/* 사진 업로드 영역 */}
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            ref={fileInputRef}
+            disabled={isSaving}
+            onChange={handleImageChange}
+          />
+
+          <button
+            type="button"
+            disabled={isSaving}
+            onClick={() => fileInputRef.current?.click()}
+            className="relative w-full h-60 bg-[#FFFDF8] rounded-[15px] py-20 flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 active:scale-[0.98] transition-transform overflow-hidden"
+          >
+            {displayImage ? (
+              <img src={displayImage} alt="후기 사진" className="absolute inset-0 w-full h-full object-cover" />
+            ) : (
+              <>
+                <img src={GalleryIcon} alt="사진 업로드" className="w-14 h-14 mb-3" />
+                <span className="text-[#757575] font-medium text-[12px]">사진을 업로드해주세요.</span>
+              </>
+            )}
+          </button>
+
+          {/* 한줄평 입력 영역 */}
+          <textarea
+            maxLength={1000}
+            aria-label="후기 내용"
+            disabled={isSaving}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full bg-[#FFECCD] rounded-[20px] p-5 text-[14px] text-[#333333] placeholder:text-[#757575] resize-none h-32 focus:outline-none focus:ring-1 focus:ring-[#F87816] shadow-inner"
+            placeholder="간단한 기록을 남겨주세요."
+          ></textarea>
+
+          {/* 버튼 영역 */}
+          <div className="mt-auto pt-8">
+            {error && (
+              <p role="alert" className="mb-3 text-center text-sm text-[#777777]">
+                {error}
+              </p>
+            )}
+            <Button
+              onClick={handleSave}
+              disabled={isSaving || !hasChanges || !content.trim()}
+              className="w-full shadow-none disabled:opacity-50"
+            >
+              {isSaving ? "저장 중..." : "수정하기"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </PageTransition>
   );
 }

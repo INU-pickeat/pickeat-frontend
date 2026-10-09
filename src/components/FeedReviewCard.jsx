@@ -64,7 +64,11 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, is
           </div>
         </div>
         <p className="mt-4 truncate text-[12px] font-medium text-[#686767]">{review.review}</p>
-        {likeError && <p role="alert" className="relative z-20 mt-3 text-xs text-[#FF5C5C]">{likeError}</p>}
+        {likeError && (
+          <p role="alert" className="relative z-20 mt-3 text-xs text-[#FF5C5C]">
+            {likeError}
+          </p>
+        )}
       </div>
     </article>
   );

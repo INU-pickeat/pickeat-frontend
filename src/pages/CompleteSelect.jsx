@@ -3,7 +3,7 @@ import PageTransition from "../components/PageTransition";
 import CharacterImg from "../assets/complete_character.png";
 import Button from "../components/Button";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import NavigationLinksDialog from "../components/NavigationLinksDialog";
 
 export default function CompleteSelect() {
@@ -12,6 +12,36 @@ export default function CompleteSelect() {
   const selectedRestaurant = state?.selectedRestaurant;
   const restaurantId = state?.pick?.restaurantId || selectedRestaurant?.id;
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
+  const [shareMessage, setShareMessage] = useState("");
+  const [isSharing, setIsSharing] = useState(false);
+  const shareInFlight = useRef(false);
+
+  /** 식당 상세 링크 공유 */
+  async function handleShare() {
+    if (!restaurantId || shareInFlight.current) return;
+    const url = new URL(`/restaurant/${encodeURIComponent(restaurantId)}`, window.location.origin).href;
+    shareInFlight.current = true;
+    setIsSharing(true);
+    setShareMessage("");
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: selectedRestaurant?.name || state?.pick?.restaurantName || "오늘의 Pick",
+          url,
+        });
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setShareMessage("식당 상세 링크를 복사했어요.");
+      } else {
+        setShareMessage(url);
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") setShareMessage(url);
+    } finally {
+      shareInFlight.current = false;
+      setIsSharing(false);
+    }
+  }
 
   return (
     <PageTransition className="flex-1 w-full flex flex-col bg-gradient-to-b from-[#FAB47A95] to-[#ffffff] pb-14">
@@ -43,20 +73,21 @@ export default function CompleteSelect() {
           >
             길안내
           </Button>
-          <Button onClick={() => alert("구현 예정입니다.")} className="flex-1 shadow-none bg-[#FFECCD] text-[#F86516]!">
+          <Button
+            onClick={handleShare}
+            disabled={!restaurantId || isSharing}
+            className="flex-1 shadow-none bg-[#FFECCD] text-[#F86516]! disabled:opacity-50"
+          >
             pick 공유
           </Button>
         </div>
 
-        {/* 후기 작성 */}
-        {state?.pick?.pickId && (
-          <Button
-            onClick={() => navigate(`/history/write?pickId=${encodeURIComponent(state.pick.pickId)}`, { state })}
-            className="w-full shadow-none"
-          >
-            후기 작성하기
-          </Button>
+        {shareMessage && (
+          <p role="status" className="w-full break-all text-center text-sm text-[#777777]">
+            {shareMessage}
+          </p>
         )}
+
         <Button onClick={() => navigate("/home")} className="w-full shadow-none">
           홈화면 이동
         </Button>

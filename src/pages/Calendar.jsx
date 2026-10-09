@@ -221,7 +221,7 @@ export default function Calendar() {
               </div>
             ) : (
               <div className="bg-[#FFFDF8] border-2 border-dashed border-[#FFECCD] rounded-[24px] p-6 flex justify-center items-center">
-                <p className="text-center text-[#F87816] font-semibold text-[14px]">이 날은 선택한 Pick이 없어요.</p>
+                <p className="text-center text-[#F87816] font-semibold text-[14px]">이날은 선택한 Pick이 없어요.</p>
               </div>
             )}
           </div>

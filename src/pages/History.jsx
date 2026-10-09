@@ -19,10 +19,18 @@ export default function History() {
   const [deleteError, setDeleteError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const deleting = useRef(false);
-  const { reviews, isLoading, error, needsLogin, retry } = useMyReviews(selectedFilter.startsWith("30") ? "month" : "week");
+  const { reviews, isLoading, error, needsLogin, retry } = useMyReviews(
+    selectedFilter.startsWith("30") ? "month" : "week",
+  );
   const groupedHistory = reviews.reduce((result, review) => {
     const date = selectedDateLabel(review.selectedAt);
-    (result[date] ||= []).push({ ...review, id: review.reviewId, image: reviewImageUrl(review.imageUrls?.[0]), review: review.content, tags: reviewTags(review) });
+    (result[date] ||= []).push({
+      ...review,
+      id: review.reviewId,
+      image: reviewImageUrl(review.imageUrls?.[0]),
+      review: review.content,
+      tags: reviewTags(review),
+    });
     return result;
   }, {});
 
@@ -36,7 +44,7 @@ export default function History() {
 
   /** 내 후기 삭제 */
   async function handleDelete(reviewId) {
-    if (deleting.current || !window.confirm("후기를 삭제할까요? 다시 기록할 수 있는 상태로 돌아가요.")) return;
+    if (deleting.current || !window.confirm("기록을 삭제하시겠습니까?")) return;
     deleting.current = true;
     setDeletingId(reviewId);
     setDeleteError("");
@@ -45,7 +53,7 @@ export default function History() {
       setSelectedRecord(null);
       retry();
     } catch (error) {
-      setDeleteError(getApiErrorMessage(error, "후기를 삭제하지 못했어요."));
+      setDeleteError(getApiErrorMessage(error, "기록을 삭제하지 못했어요."));
     } finally {
       deleting.current = false;
       setDeletingId(null);
@@ -116,7 +124,23 @@ export default function History() {
             </div>
 
             {/* 기록 카드 리스트 영역 */}
-            {(isLoading || error || deleteError) && <div className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]"><p role={error || deleteError ? "alert" : "status"}>{error || deleteError || "기록을 불러오는 중이에요."}</p>{error && (needsLogin ? <Link to="/login" className="mt-3 text-[#F86516] underline">로그인하기</Link> : <button onClick={retry} className="mt-3 text-[#F86516] underline">다시 시도</button>)}</div>}
+            {(isLoading || error || deleteError) && (
+              <div className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
+                <p role={error || deleteError ? "alert" : "status"}>
+                  {error || deleteError || "기록을 불러오는 중이에요."}
+                </p>
+                {error &&
+                  (needsLogin ? (
+                    <Link to="/login" className="mt-3 text-[#F86516] underline">
+                      로그인하기
+                    </Link>
+                  ) : (
+                    <button onClick={retry} className="mt-3 text-[#F86516] underline">
+                      다시 시도
+                    </button>
+                  ))}
+              </div>
+            )}
             {isLoading || error ? null : historyDates.length > 0 ? (
               <div className="flex flex-col gap-6">
                 {historyDates.map((dateStr, index) => (
@@ -132,7 +156,16 @@ export default function History() {
                           className="w-full rounded-[24px] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-transform"
                         >
                           <div className="relative w-full h-36">
-                            {item.image && <img src={item.image} alt={item.restaurantName} className="w-full h-full object-cover" onError={(event) => { event.currentTarget.style.display = "none"; }} />}
+                            {item.image && (
+                              <img
+                                src={item.image}
+                                alt={item.restaurantName}
+                                className="w-full h-full object-cover"
+                                onError={(event) => {
+                                  event.currentTarget.style.display = "none";
+                                }}
+                              />
+                            )}
 
                             {/* 수정 & 삭제 아이콘 */}
                             <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-black/50 to-transparent flex justify-end items-start pt-4 pr-4 gap-3">
@@ -141,7 +174,8 @@ export default function History() {
                                   e.stopPropagation();
                                   navigate(`/history/write?reviewId=${encodeURIComponent(item.reviewId)}`);
                                 }}
-                                disabled={deletingId != null} className="active:scale-90 transition-transform disabled:opacity-50"
+                                disabled={deletingId != null}
+                                className="active:scale-90 transition-transform disabled:opacity-50"
                               >
                                 <svg
                                   width="20"
@@ -163,7 +197,8 @@ export default function History() {
                                   e.stopPropagation();
                                   handleDelete(item.reviewId);
                                 }}
-                                disabled={deletingId != null} className="active:scale-90 transition-transform disabled:opacity-50"
+                                disabled={deletingId != null}
+                                className="active:scale-90 transition-transform disabled:opacity-50"
                               >
                                 <svg
                                   width="20"
@@ -197,7 +232,7 @@ export default function History() {
               // 필터링 결과가 없을 때
               <div className="bg-[#FFFDF8] border-2 border-dashed border-[#FFECCD] rounded-[24px] p-10 flex flex-col items-center justify-center mt-4">
                 <p className="text-center text-[#F87816] font-semibold text-[14px]">
-                  {selectedFilter} 내에 기록한 맛집이 없어요.
+                  {selectedFilter} 기록한 맛집이 없어요.
                 </p>
               </div>
             )}
@@ -215,7 +250,13 @@ export default function History() {
               >
                 {/* 기록 이미지 */}
                 <div className="relative w-full h-50">
-                  {selectedRecord.image && <img src={selectedRecord.image} alt={selectedRecord.restaurantName} className="w-full h-full object-cover" />}
+                  {selectedRecord.image && (
+                    <img
+                      src={selectedRecord.image}
+                      alt={selectedRecord.restaurantName}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end px-5 py-4">
                     <div className="flex justify-between items-end gap-2">
                       <h2 className="text-[#FFFDF8] font-bold text-[16px] truncate">{selectedRecord.restaurantName}</h2>

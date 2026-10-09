@@ -8,16 +8,7 @@ import ReviewEdit from "../components/ReviewEdit";
 import { createReview } from "../api/reviews";
 import { uploadReviewImage } from "../api/reviewImages";
 import { getApiErrorMessage } from "../utils/apiError";
-import { foodNames } from "../api/recommendations";
-
-const companionNames = {
-  DATE: "데이트",
-  FAMILY: "가족과 함께",
-  CHILDREN: "아이와 함께",
-  SOLO: "혼밥",
-  GROUP: "단체",
-  DOG: "반려견과 함께",
-};
+import { reviewTags } from "../utils/reviewDisplay";
 const situationCodes = { date: "DATE", family: "FAMILY", kids: "CHILDREN", solo: "SOLO", group: "GROUP", pet: "DOG" };
 
 export default function Write() {
@@ -73,7 +64,7 @@ function WriteDraft() {
   async function handleSave() {
     if (inFlight.current || !hasPick) return;
     if (!reviewText.trim() || reviewText.trim().length > 1000) {
-      setError("후기 내용을 1~1000자로 입력해주세요.");
+      setError("기록 내용을 1~1000자로 입력해주세요.");
       return;
     }
     if (!foodCategory || !companionType) {
@@ -95,7 +86,7 @@ function WriteDraft() {
       });
       navigate("/history", { replace: true });
     } catch (error) {
-      setError(getApiErrorMessage(error, "후기를 저장하지 못했어요."));
+      setError(getApiErrorMessage(error, "기록을 저장하지 못했어요."));
     } finally {
       inFlight.current = false;
       setIsSaving(false);
@@ -123,18 +114,12 @@ function WriteDraft() {
               <h2 className="text-[#F86516] font-bold text-[20px] mb-1.5 truncate">
                 {restaurant?.name || "후기 작성"}
               </h2>
-              <p className="text-[#434343] font-medium text-[12px]">
-                {[companionNames[companionType], foodNames[foodCategory]].filter(Boolean).join(" / ")}
-              </p>
+              <p className="text-[#434343] font-medium text-[12px]">{reviewTags({ companionType, foodCategory })}</p>
             </div>
             {/* 식당 썸네일 */}
             <div className="w-14 h-14 rounded-full overflow-hidden border-black/5 bg-gray-200 shrink-0">
               {restaurant?.image && (
-                <img
-                  src={restaurant.image}
-                  alt="식당 사진"
-                  className="w-full h-full object-cover"
-                />
+                <img src={restaurant.image} alt="식당 사진" className="w-full h-full object-cover" />
               )}
             </div>
           </div>
@@ -202,7 +187,7 @@ function WriteDraft() {
           <div className="mt-auto shrink-0">
             {(!hasPick || error) && (
               <div className="mb-3 flex items-center justify-center text-center text-sm text-[#777777]">
-                <p role="alert">{error || "후기를 작성할 Pick을 먼저 선택해주세요."}</p>
+                <p role="alert">{error || "기록을 작성할 Pick을 먼저 선택해주세요."}</p>
               </div>
             )}
             <Button

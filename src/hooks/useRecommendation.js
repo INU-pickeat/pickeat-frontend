@@ -9,6 +9,7 @@ export default function useRecommendation(sessionId) {
   const [isExcluding, setIsExcluding] = useState(false);
   const busy = useRef(false);
   const generation = useRef(0);
+  const requestKey = `${sessionId}:${attempt}`;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -18,10 +19,10 @@ export default function useRecommendation(sessionId) {
         if (!sessionId) throw new Error("MISSING_SESSION");
         const session = await getRecommendation(sessionId, controller.signal);
         const items = await hydrate(session.items, controller.signal);
-        if (!controller.signal.aborted) setState({ items, isLoading: false, error: "" });
+        if (!controller.signal.aborted) setState({ requestKey, items, isLoading: false, error: "" });
       } catch (error) {
         if (!controller.signal.aborted && generation.current === version)
-          setState({ items: [], isLoading: false, error: message(error) });
+          setState({ requestKey, items: [], isLoading: false, error: message(error) });
       }
     }
     load();
@@ -29,11 +30,11 @@ export default function useRecommendation(sessionId) {
       controller.abort();
       generation.current = version + 1;
     };
-  }, [sessionId, attempt]);
+  }, [sessionId, requestKey]);
 
   /** 후보 제외 후 목록 갱신 */
   async function exclude(restaurantId, reason) {
-    if (busy.current) return false;
+    if (busy.current || state.requestKey !== requestKey) return false;
     busy.current = true;
     setIsExcluding(true);
     const version = generation.current;
@@ -41,7 +42,7 @@ export default function useRecommendation(sessionId) {
       const session = await excludeRecommendation(sessionId, restaurantId, reason);
       const items = await hydrate(session.items);
       if (generation.current !== version) return false;
-      setState({ items, isLoading: false, error: "" });
+      setState({ requestKey, items, isLoading: false, error: "" });
       return true;
     } catch (error) {
       if (generation.current === version) setState((prev) => ({ ...prev, error: message(error) }));
@@ -52,7 +53,8 @@ export default function useRecommendation(sessionId) {
     }
   }
 
-  return { ...state, isExcluding, exclude, retry: () => setAttempt((value) => value + 1) };
+  const currentState = state.requestKey === requestKey ? state : { items: [], isLoading: true, error: "" };
+  return { ...currentState, isExcluding, exclude, retry: () => setAttempt((value) => value + 1) };
 }
 
 /** 카드 사진 조회 */

@@ -58,16 +58,6 @@ function RestaurantPage({ restaurant }) {
   const [feedback, setFeedback] = useState("");
   const [isSelecting, setIsSelecting] = useState(false);
   const selectionInFlight = useRef(false);
-  const [saved, setSaved] = useState(() => {
-    try {
-      const savedRestaurants = JSON.parse(localStorage.getItem("pickeat.savedRestaurants") || "[]");
-      return (
-        Array.isArray(savedRestaurants) && savedRestaurants.some((item) => String(item.id) === String(restaurant.id))
-      );
-    } catch {
-      return false;
-    }
-  });
   const isRecommendation = searchParams.get("source") === "recommend";
   const sessionId = searchParams.get("sessionId") || location.state?.recommendationState?.sessionId;
   const selectedSituation = situationNames[location.state?.recommendationState?.situation];
@@ -75,7 +65,8 @@ function RestaurantPage({ restaurant }) {
   const detailRestaurant = isRecommendation
     ? { ...restaurant, features: selectedSituation ? [selectedSituation] : [] }
     : restaurant;
-  const fallback = isRecommendation && sessionId ? `/recommend/result?sessionId=${encodeURIComponent(sessionId)}` : "/home";
+  const fallback =
+    isRecommendation && sessionId ? `/recommend/result?sessionId=${encodeURIComponent(sessionId)}` : "/home";
   const returnTo = location.state?.returnTo || fallback;
 
   /** 추천 식당 선택 */
@@ -108,21 +99,6 @@ function RestaurantPage({ restaurant }) {
     }
   };
 
-  /** 식당 임시 저장 */
-  const saveRestaurant = () => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("pickeat.savedRestaurants") || "[]");
-      const savedRestaurants = Array.isArray(stored) ? stored : [];
-      if (!savedRestaurants.some((item) => String(item.id) === String(restaurant.id))) {
-        localStorage.setItem("pickeat.savedRestaurants", JSON.stringify([...savedRestaurants, restaurant]));
-      }
-      setSaved(true);
-      alert("구현 예정입니다.");
-    } catch {
-      setFeedback("저장하지 못했어요. 브라우저 저장 공간을 확인해주세요.");
-    }
-  };
-
   /** 상세 링크 공유 */
   const shareRestaurant = async () => {
     const url = `${window.location.origin}/restaurant/${restaurant.id}`;
@@ -150,11 +126,10 @@ function RestaurantPage({ restaurant }) {
           <>
             <button
               type="button"
-              onClick={saveRestaurant}
-              disabled={saved}
+              onClick={() => alert("구현 예정입니다.")}
               className={`${actionClassName} disabled:opacity-60 disabled:cursor-default`}
             >
-              {saved ? "pick 저장 완료" : "pick 지도에 저장"}
+              pick 지도에 저장
             </button>
             <button type="button" onClick={shareRestaurant} className={actionClassName}>
               친구에게 공유

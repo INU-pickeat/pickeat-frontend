@@ -36,13 +36,18 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
           </header>
 
           {/* 한줄평 */}
-          {restaurant.review && (
+          {(restaurant.review || restaurant.reviewError) && (
             <section className="mt-4 rounded-2xl border-2 border-[#FFB079] p-4">
               <h2 className="flex items-center gap-2 text-[16px] font-semibold text-[#F86516]">
                 <img src="/assets/picker.svg" />
                 picker들의 한줄평
               </h2>
-              <p className="mt-2 font-medium text-[12px] leading-relaxed text-[#434343]">{restaurant.review}</p>
+              <p
+                role={restaurant.reviewError ? "alert" : undefined}
+                className="mt-2 font-medium text-[12px] leading-relaxed text-[#434343]"
+              >
+                {restaurant.review || restaurant.reviewError}
+              </p>
             </section>
           )}
 

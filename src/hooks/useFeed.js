@@ -86,7 +86,7 @@ export default function useFeed() {
         ...previous,
         isLoadingMore: false,
         needsLogin,
-        error: getApiErrorMessage(error, needsLogin ? "다시 로그인해주세요." : "후기를 불러오지 못했어요."),
+        error: getApiErrorMessage(error, needsLogin ? "다시 로그인해주세요." : "기록을 불러오지 못했어요."),
       }));
     } finally {
       if (!controller.signal.aborted) loadingMoreRef.current = false;

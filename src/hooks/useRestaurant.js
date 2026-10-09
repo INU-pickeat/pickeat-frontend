@@ -10,9 +10,15 @@ export default function useRestaurant(id) {
     const controller = new AbortController();
     getRestaurant(id, controller.signal)
       .then(async (restaurant) => {
-        const summary = typeof restaurant.review === "string" ? null : await getRestaurantReviewSummary(id, controller.signal).catch((error) => ({
-          oneLineReview: getApiErrorMessage(error, "한줄평을 불러오지 못했어요."),
-        }));
+        let reviewError = "";
+        const summary =
+          typeof restaurant.review === "string"
+            ? null
+            : await getRestaurantReviewSummary(id, controller.signal).catch((error) => {
+                reviewError = getApiErrorMessage(error, "한줄평을 불러오지 못했어요.");
+                return null;
+              });
+
         if (!controller.signal.aborted)
           setState({
             id,
@@ -20,6 +26,7 @@ export default function useRestaurant(id) {
               ...restaurant,
               review: restaurant.review ?? summary?.oneLineReview,
               reviewCount: summary?.reviewCount,
+              reviewError,
             },
             error: "",
           });
@@ -32,8 +39,10 @@ export default function useRestaurant(id) {
             error: error.response?.status === 404 ? "식당 정보를 찾을 수 없어요." : "식당 정보를 불러오지 못했어요.",
           });
       });
+
     return () => controller.abort();
   }, [id, attempt]);
+
   return {
     restaurant: state.id === id ? state.restaurant : null,
     error: state.id === id ? state.error : "",

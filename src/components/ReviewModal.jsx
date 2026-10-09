@@ -42,8 +42,17 @@ export default function ReviewModal({ review, onClose, showAuthor = true }) {
       {/* 식당 이미지 & 개요 영역 */}
       <div className="flex max-h-[85dvh] flex-col">
         <div className={`relative ${review.image ? "h-[210px]" : "h-[120px] bg-[#FF9639]"} max-h-[40dvh] shrink-0`}>
-          {review.image && <img src={review.image} alt={review.restaurantName} className="h-full w-full object-cover" />}
-          <button type="button" onClick={onClose} aria-label="닫기" className="absolute right-3 top-3 z-10 h-8 w-8 text-white text-xl cursor-pointer">×</button>
+          {review.image && (
+            <img src={review.image} alt={review.restaurantName} className="h-full w-full object-cover" />
+          )}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="닫기"
+            className="absolute right-3 top-3 z-10 h-8 w-8 text-white text-xl cursor-pointer"
+          >
+            ×
+          </button>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
           {showAuthor && (
             <div className="absolute left-6 top-6 right-14 flex items-center gap-3">
@@ -56,20 +65,22 @@ export default function ReviewModal({ review, onClose, showAuthor = true }) {
 
           {/* 기록 영역 */}
           <div className="absolute bottom-5 left-6 right-6 flex items-center justify-between gap-3 text-white">
-            <h2 id="review-modal-title" className="min-w-0 text-[16px] font-bold font-[#FFFDF8]">
+            <h2 id="review-modal-title" className="min-w-0 text-[16px] font-bold">
               {review.restaurantName}
             </h2>
-            <span className="shrink-0 text-[12px] font-medium font-[#fffdf8]">{review.tags}</span>
+            <span className="shrink-0 text-[12px] font-medium">{review.tags}</span>
           </div>
         </div>
-        {review.review && <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-7 scrollbar-hide">
-          <p
-            id="review-modal-content"
-            className="min-h-[110px] whitespace-pre-wrap break-keep text-[14px] font-medium leading-relaxed text-[#686767]"
-          >
-            {review.review}
-          </p>
-        </div>}
+        {review.review && (
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-7 scrollbar-hide">
+            <p
+              id="review-modal-content"
+              className="min-h-[110px] whitespace-pre-wrap break-keep text-[14px] font-medium leading-relaxed text-[#686767]"
+            >
+              {review.review}
+            </p>
+          </div>
+        )}
       </div>
     </dialog>
   );

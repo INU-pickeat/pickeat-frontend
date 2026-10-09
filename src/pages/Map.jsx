@@ -84,7 +84,7 @@ export default function Map() {
               )}
             </div>
           ) : picks.length === 0 ? (
-            <p className="text-center">첫 후기를 작성해보세요.</p>
+            <p className="text-center">첫 기록을 작성해보세요.</p>
           ) : null}
         </div>
         {/* 구글 맵 영역 */}
