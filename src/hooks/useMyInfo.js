@@ -18,9 +18,9 @@ export default function useMyInfo() {
         const needsLogin = status === 401 || status === 404;
         const message =
           status === 404
-            ? "회원 정보를 찾을 수 없어요. 다시 로그인해주세요."
+            ? "회원 정보를 찾을 수 없어요. 로그인이 필요합니다."
             : status === 401
-              ? "다시 로그인해주세요."
+              ? "로그인이 필요합니다."
               : "내 정보를 불러오지 못했어요.";
         setState({ member: null, isLoading: false, error: message, needsLogin });
       });

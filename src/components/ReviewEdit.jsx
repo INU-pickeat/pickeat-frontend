@@ -9,7 +9,7 @@ import Button from "./Button";
 import PageTransition from "./PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
 
-/** 수정할 후기 조회 */
+/** 수정할 기록 조회 */
 export default function ReviewEdit({ reviewId }) {
   const navigate = useNavigate();
   const [review, setReview] = useState(null);
@@ -38,7 +38,7 @@ export default function ReviewEdit({ reviewId }) {
 
       {/* 로딩·오류 안내 */}
       {!review && (
-        <div className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
+        <div className="exception-glow min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
           <p role={error ? "alert" : "status"}>{error || "기록을 불러오는 중이에요."}</p>
           {error && (
             <button
@@ -57,7 +57,7 @@ export default function ReviewEdit({ reviewId }) {
   );
 }
 
-/** 후기 수정 폼 */
+/** 기록 수정 폼 */
 function ReviewEditForm({ review }) {
   const navigate = useNavigate();
   const [content, setContent] = useState(review.content);
@@ -160,7 +160,7 @@ function ReviewEditForm({ review }) {
             className="relative w-full h-60 bg-[#FFFDF8] rounded-[15px] py-20 flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 active:scale-[0.98] transition-transform overflow-hidden"
           >
             {displayImage ? (
-              <img src={displayImage} alt="후기 사진" className="absolute inset-0 w-full h-full object-cover" />
+              <img src={displayImage} alt="기록 사진" className="absolute inset-0 w-full h-full object-cover" />
             ) : (
               <>
                 <img src={GalleryIcon} alt="사진 업로드" className="w-14 h-14 mb-3" />
@@ -172,7 +172,7 @@ function ReviewEditForm({ review }) {
           {/* 한줄평 입력 영역 */}
           <textarea
             maxLength={1000}
-            aria-label="후기 내용"
+            aria-label="기록 내용"
             disabled={isSaving}
             value={content}
             onChange={(e) => setContent(e.target.value)}

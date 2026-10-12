@@ -1,12 +1,11 @@
+import { resolveImageUrl } from "../utils/imageUrl";
 import { Link } from "react-router-dom";
-import { foodNames } from "../api/recommendations";
+import { foodNames } from "../constants/restaurant";
 
 /** 식당별 Pick 요약 */
 export default function PickSummaryCard({ pick, to }) {
   const className = "w-full min-h-[80px] bg-[#FFECCD] rounded-[24px] flex overflow-hidden shadow-sm";
-  const image = pick.representativeImageUrl
-    ? new URL(pick.representativeImageUrl, "https://api.pickeat.kr").href
-    : null;
+  const image = pick.representativeImageUrl ? resolveImageUrl(pick.representativeImageUrl) : null;
   const category = foodNames[pick.foodCategory] || pick.foodCategory;
   const content = (
     <>

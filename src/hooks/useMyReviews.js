@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getMyReviews } from "../api/reviews";
 import { getApiErrorMessage } from "../utils/apiError";
 
-/** 기간별 내 후기 목록 */
+/** 기간별 내 기록 목록 */
 export default function useMyReviews(period) {
   const [state, setState] = useState({ period: null, reviews: [], error: "", needsLogin: false });
   const [attempt, setAttempt] = useState(0);

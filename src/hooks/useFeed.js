@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { getFeed, addReviewLike, cancelReviewLike } from "../api/feed";
+import { getFeed } from "../api/feed";
+import { addReviewLike, cancelReviewLike } from "../api/reviews";
 import { getApiErrorMessage } from "../utils/apiError";
 
 /** 피드 조회 및 페이지 추가 */
@@ -36,7 +37,7 @@ export default function useFeed() {
           isLoading: false,
           isLoadingMore: false,
           needsLogin,
-          error: getApiErrorMessage(error, needsLogin ? "다시 로그인해주세요." : "피드를 불러오지 못했어요."),
+          error: getApiErrorMessage(error, needsLogin ? "로그인이 필요합니다." : "피드를 불러오지 못했어요."),
         });
       });
     return () => controller.abort();
@@ -86,7 +87,7 @@ export default function useFeed() {
         ...previous,
         isLoadingMore: false,
         needsLogin,
-        error: getApiErrorMessage(error, needsLogin ? "다시 로그인해주세요." : "기록을 불러오지 못했어요."),
+        error: getApiErrorMessage(error, needsLogin ? "로그인이 필요합니다." : "기록을 불러오지 못했어요."),
       }));
     } finally {
       if (!controller.signal.aborted) loadingMoreRef.current = false;
@@ -115,7 +116,7 @@ export default function useFeed() {
       const status = error.response?.status;
       const message = getApiErrorMessage(
         error,
-        status === 401 ? "다시 로그인해주세요." : "좋아요를 변경하지 못했어요.",
+        status === 401 ? "로그인이 필요합니다." : "좋아요를 변경하지 못했어요.",
       );
       setLikeErrors((previous) => ({ ...previous, [reviewId]: message }));
     } finally {

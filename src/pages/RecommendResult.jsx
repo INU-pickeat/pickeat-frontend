@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
 import useRecommendation from "../hooks/useRecommendation";
-import { foodNames } from "../api/recommendations";
+import { foodNames } from "../constants/restaurant";
 import { getNickname } from "../api/tokenStorage";
 
 const reasons = [
@@ -95,9 +95,15 @@ export default function RecommendResult() {
             <button
               className="absolute inset-0 w-full text-left"
               onClick={() =>
-                navigate(`/restaurant/${restaurant.id}?source=recommend&sessionId=${encodeURIComponent(params.get("sessionId"))}`, {
-                  state: { returnTo: location.pathname + location.search, recommendationState: { ...location.state, sessionId: params.get("sessionId") } },
-                })
+                navigate(
+                  `/restaurant/${restaurant.id}?source=recommend&sessionId=${encodeURIComponent(params.get("sessionId"))}`,
+                  {
+                    state: {
+                      returnTo: location.pathname + location.search,
+                      recommendationState: { ...location.state, sessionId: params.get("sessionId") },
+                    },
+                  },
+                )
               }
               aria-label={`${restaurant.name} 상세보기`}
             >

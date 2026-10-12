@@ -24,6 +24,31 @@
   }
 }
 
+.exception-glow {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-image: radial-gradient(
+    circle 90px at center,
+    rgb(250 180 122 / 30%) 0%,
+    rgb(250 180 122 / 12%) 40%,
+    transparent 100%
+  );
+}
+
+/* 예외 안내 문구는 홈과 같은 스타일 사용 */
+.exception-glow,
+.exception-glow p {
+  color: #777777;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+}
+
 /* 모바일 스크롤바 숨기기 */
 .scrollbar-hide {
   -ms-overflow-style: none;

@@ -60,7 +60,7 @@ function WriteDraft() {
     }
   };
 
-  /** 후기 저장 */
+  /** 기록 저장 */
   async function handleSave() {
     if (inFlight.current || !hasPick) return;
     if (!reviewText.trim() || reviewText.trim().length > 1000) {
@@ -112,7 +112,7 @@ function WriteDraft() {
           <div className="flex shrink-0 justify-between items-center gap-3">
             <div className="min-w-0">
               <h2 className="text-[#F86516] font-bold text-[20px] mb-1.5 truncate">
-                {restaurant?.name || "후기 작성"}
+                {restaurant?.name || "기록 작성"}
               </h2>
               <p className="text-[#434343] font-medium text-[12px]">{reviewTags({ companionType, foodCategory })}</p>
             </div>
@@ -149,7 +149,7 @@ function WriteDraft() {
 
           {/* 한줄평 입력 영역 */}
           <textarea
-            aria-label="후기 내용"
+            aria-label="기록 내용"
             maxLength={1000}
             disabled={isSaving}
             value={reviewText}

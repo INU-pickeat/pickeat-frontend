@@ -19,7 +19,7 @@ export default function useMyPicks(period = "week") {
           period,
           restaurants: [],
           needsLogin,
-          error: needsLogin ? "다시 로그인해주세요." : "최근 Pick을 불러오지 못했어요.",
+          error: needsLogin ? "로그인이 필요합니다." : "최근 Pick을 불러오지 못했어요.",
         });
       });
     return () => controller.abort();

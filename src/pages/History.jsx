@@ -42,7 +42,7 @@ export default function History() {
     setDeleteError("");
   };
 
-  /** 내 후기 삭제 */
+  /** 내 기록 삭제 */
   async function handleDelete(reviewId) {
     if (deleting.current || !window.confirm("기록을 삭제하시겠습니까?")) return;
     deleting.current = true;
@@ -125,7 +125,7 @@ export default function History() {
 
             {/* 기록 카드 리스트 영역 */}
             {(isLoading || error || deleteError) && (
-              <div className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
+              <div className="exception-glow min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
                 <p role={error || deleteError ? "alert" : "status"}>
                   {error || deleteError || "기록을 불러오는 중이에요."}
                 </p>

@@ -3,6 +3,11 @@ import PageTransition from "../components/PageTransition";
 import LeftArrow from "../assets/arrow_left.svg";
 import useDiscoverySpots from "../hooks/useDiscoverySpots";
 
+/** 식당별 고정 더미 인원 수 */
+function getDummyPickCount(id) {
+  return 30 + ((Number(id) * 37) % 250);
+}
+
 export default function Explore() {
   const { region } = useParams();
   const { spots, isLoading, error, retry } = useDiscoverySpots();
@@ -44,12 +49,12 @@ export default function Explore() {
       {/* 카드 리스트 영역 */}
       <div className="px-6 pb-14 flex flex-col gap-4 relative">
         {isLoading && (
-          <p role="status" className="text-[#777777]">
+          <p role="status" className="exception-glow text-[#777777]">
             맛집 정보를 불러오는 중이에요.
           </p>
         )}
         {error && (
-          <div role="alert">
+          <div role="alert" className="exception-glow">
             <p>{error}</p>
             <button type="button" onClick={retry} className="mt-3 text-[#F86516] underline cursor-pointer">
               다시 시도
@@ -82,6 +87,9 @@ export default function Explore() {
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between gap-3 text-[14px] font-semibold">
               <span className="min-w-0 text-white">
                 {restaurant.category} - {restaurant.name}
+              </span>
+              <span className="shrink-0 whitespace-nowrap text-white">
+                {getDummyPickCount(restaurant.id)}명의 <span className="text-[#FF9639]">pick</span>
               </span>
             </div>
           </Link>

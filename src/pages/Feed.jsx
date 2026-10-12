@@ -45,14 +45,14 @@ export default function Feed() {
             {isLoading && (
               <p
                 role="status"
-                className="min-h-[180px] flex items-center justify-center text-center text-sm text-[#777777]"
+                className="exception-glow min-h-[180px] flex items-center justify-center text-center text-sm text-[#777777]"
               >
                 피드를 불러오는 중이에요.
               </p>
             )}
             {!isLoading && !error && items.length === 0 && (
-              <p className="min-h-[180px] flex items-center justify-center text-center text-sm text-[#777777]">
-                아직 공개된 피드가 없어요.
+              <p className="exception-glow min-h-[180px] flex items-center justify-center text-center text-sm text-[#777777]">
+                아직 공개된 기록이 없어요.
               </p>
             )}
             {items.map((review) => (
@@ -69,7 +69,7 @@ export default function Feed() {
             {error && (
               <div
                 role="alert"
-                className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]"
+                className="exception-glow min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]"
               >
                 <p>{error}</p>
                 {needsLogin ? (

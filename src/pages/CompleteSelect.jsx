@@ -1,3 +1,4 @@
+import { restaurantShareUrl, shareRestaurantLink } from "../utils/shareRestaurant";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import CharacterImg from "../assets/complete_character.png";
@@ -19,20 +20,18 @@ export default function CompleteSelect() {
   /** 식당 상세 링크 공유 */
   async function handleShare() {
     if (!restaurantId || shareInFlight.current) return;
-    const url = new URL(`/restaurant/${encodeURIComponent(restaurantId)}`, window.location.origin).href;
+    const url = restaurantShareUrl(restaurantId);
     shareInFlight.current = true;
     setIsSharing(true);
     setShareMessage("");
     try {
-      if (navigator.share) {
-        await navigator.share({
-          title: selectedRestaurant?.name || state?.pick?.restaurantName || "오늘의 Pick",
-          url,
-        });
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
+      const result = await shareRestaurantLink({
+        title: selectedRestaurant?.name || state?.pick?.restaurantName || "오늘의 Pick",
+        url,
+      });
+      if (result === "copied") {
         setShareMessage("식당 상세 링크를 복사했어요.");
-      } else {
+      } else if (result === "unsupported") {
         setShareMessage(url);
       }
     } catch (error) {

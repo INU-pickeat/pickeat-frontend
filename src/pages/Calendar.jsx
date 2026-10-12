@@ -166,11 +166,11 @@ export default function Calendar() {
             </h3>
 
             {isLoading ? (
-              <p role="status" className="text-[#777777] text-sm">
+              <p role="status" className="exception-glow text-[#777777] text-sm">
                 캘린더를 불러오는 중이에요.
               </p>
             ) : error ? (
-              <div role="alert" className="text-sm">
+              <div role="alert" className="exception-glow text-sm">
                 <p>{error}</p>
                 {needsLogin ? (
                   <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">
