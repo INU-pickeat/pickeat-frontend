@@ -1,14 +1,6 @@
+import { foodNames } from "../constants/restaurant";
+import { resolveImageUrl } from "../utils/imageUrl";
 import { api } from "./client";
-
-const categoryNames = {
-  KOREAN: "한식",
-  JAPANESE: "일식",
-  CHINESE: "중식",
-  WESTERN: "양식",
-  CAFE_DESSERT: "커피·디저트",
-  PUB_BAR: "펍·와인·술집",
-  OTHER: "기타",
-};
 
 /** 탐색 스팟 화면 데이터 변환 */
 export function mapDiscoverySpots(data) {
@@ -23,7 +15,7 @@ export function mapDiscoverySpots(data) {
         .map((restaurant, index) => ({
           id: restaurant.restaurantId,
           name: restaurant.name,
-          category: categoryNames[restaurant.foodCategory] || restaurant.foodCategory,
+          category: foodNames[restaurant.foodCategory] || restaurant.foodCategory,
           rank: index + 1,
           region: spot.regionCode.toLowerCase(),
           features: [],
@@ -32,7 +24,7 @@ export function mapDiscoverySpots(data) {
           openingHoursText: restaurant.openingHoursText,
           phone: restaurant.phoneNumber,
           image: restaurant.representativeImageUrl
-            ? new URL(restaurant.representativeImageUrl, "https://api.pickeat.kr").href
+            ? resolveImageUrl(restaurant.representativeImageUrl)
             : "/assets/dummy.png",
         })),
     }));

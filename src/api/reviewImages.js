@@ -1,4 +1,4 @@
-/** 발급받은 URL에 후기 사진 업로드 */
+/** 발급받은 URL에 기록 사진 업로드 */
 export async function putReviewImage(file, upload, signal) {
   if (!upload?.uploadUrl || !upload.imageUrl || upload.contentType !== file.type)
     throw new Error("INVALID_IMAGE_UPLOAD_RESPONSE");
@@ -16,7 +16,7 @@ export async function putReviewImage(file, upload, signal) {
 }
 import { api } from "./client";
 
-/** 후기 사진 업로드 */
+/** 기록 사진 업로드 */
 export async function uploadReviewImage(file, signal) {
   const { data } = await api.post("/v1/reviews/images/upload-urls", { contentTypes: [file.type] }, { signal });
   if (!Array.isArray(data?.uploads) || data.uploads.length !== 1) throw new Error("INVALID_IMAGE_UPLOAD_RESPONSE");

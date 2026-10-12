@@ -1,3 +1,4 @@
+import { restaurantShareUrl, shareRestaurantLink } from "../utils/shareRestaurant";
 import { useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import RestaurantDetail from "../components/RestaurantDetail";
@@ -101,14 +102,12 @@ function RestaurantPage({ restaurant }) {
 
   /** 상세 링크 공유 */
   const shareRestaurant = async () => {
-    const url = `${window.location.origin}/restaurant/${restaurant.id}`;
+    const url = restaurantShareUrl(restaurant.id);
     try {
-      if (navigator.share) {
-        await navigator.share({ title: restaurant.name, text: `${restaurant.name} 맛집 정보`, url });
-      } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(url);
+      const result = await shareRestaurantLink({ title: restaurant.name, text: `${restaurant.name} 맛집 정보`, url });
+      if (result === "copied") {
         setFeedback("상세 페이지 링크를 복사했어요.");
-      } else {
+      } else if (result === "unsupported") {
         alert("구현 예정입니다.");
       }
     } catch (error) {

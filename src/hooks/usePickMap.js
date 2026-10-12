@@ -7,13 +7,20 @@ export default function usePickMap() {
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    getPickMap(controller.signal).then((picks) => {
-      if (!controller.signal.aborted) setState({ picks, isLoading: false, error: "", needsLogin: false });
-    }).catch((error) => {
-      if (controller.signal.aborted) return;
-      const needsLogin = error.response?.status === 401;
-      setState({ picks: [], isLoading: false, needsLogin, error: needsLogin ? "다시 로그인해주세요." : "Pick을 불러오지 못했어요." });
-    });
+    getPickMap(controller.signal)
+      .then((picks) => {
+        if (!controller.signal.aborted) setState({ picks, isLoading: false, error: "", needsLogin: false });
+      })
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        const needsLogin = error.response?.status === 401;
+        setState({
+          picks: [],
+          isLoading: false,
+          needsLogin,
+          error: needsLogin ? "로그인이 필요합니다." : "Pick을 불러오지 못했어요.",
+        });
+      });
     return () => controller.abort();
   }, [attempt]);
 

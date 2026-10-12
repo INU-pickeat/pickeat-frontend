@@ -5,7 +5,7 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, is
         <button
           type="button"
           onClick={() => onOpen(review)}
-          aria-label={`${review.author}님의 ${review.restaurantName} 리뷰 보기`}
+          aria-label={`${review.author}님의 ${review.restaurantName} 기록 보기`}
           className="absolute inset-0 z-10 cursor-pointer rounded-[22px] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#F87816]"
         />
       )}
@@ -26,7 +26,7 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, is
               ? liked
                 ? "좋아요 취소"
                 : "좋아요"
-              : `좋아요 ${review.likeCount ?? 0}개${liked ? ", 내가 좋아한 후기" : ""}`
+              : `좋아요 ${review.likeCount ?? 0}개${liked ? ", 내가 좋아한 기록" : ""}`
           }
           aria-pressed={liked}
           aria-busy={isLikePending}

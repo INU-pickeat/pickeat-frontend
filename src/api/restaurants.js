@@ -1,5 +1,6 @@
+import { resolveImageUrl } from "../utils/imageUrl";
 import { api } from "./client";
-import { foodNames } from "./recommendations";
+import { foodNames } from "../constants/restaurant";
 
 /** 외부 지도 링크 조회 */
 export async function getNavigationLinks(id, signal) {
@@ -17,7 +18,7 @@ function readMapUrl(value) {
   }
 }
 
-/** 식당별 공개 후기 요약 */
+/** 식당별 공개 기록 요약 */
 export async function getRestaurantReviewSummary(id, signal) {
   const { data } = await api.get(`/v1/restaurants/${id}/review-summary`, { signal });
   if (String(data?.restaurantId) !== String(id) || typeof data.oneLineReview !== "string")
@@ -29,11 +30,9 @@ export async function getRestaurantReviewSummary(id, signal) {
 export async function getRestaurant(id, signal) {
   const { data } = await api.get(`/v1/restaurants/${id}`, { skipAuth: true, signal });
   if (String(data?.id) !== String(id)) throw new Error("INVALID_RESTAURANT_RESPONSE");
-  const image = data.representativeImageUrl
-    ? new URL(data.representativeImageUrl, "https://api.pickeat.kr").href
-    : null;
+  const image = data.representativeImageUrl ? resolveImageUrl(data.representativeImageUrl) : null;
   const images = Array.isArray(data.imageUrls)
-    ? [...new Set(data.imageUrls.filter(Boolean).map((url) => new URL(url, "https://api.pickeat.kr").href))].slice(0, 3)
+    ? [...new Set(data.imageUrls.filter(Boolean).map((url) => resolveImageUrl(url)))].slice(0, 3)
     : [
         image || `https://api.pickeat.kr/api/v1/restaurants/${id}/photo?index=0`,
         ...[1, 2].map((index) => `https://api.pickeat.kr/api/v1/restaurants/${id}/photo?index=${index}`),

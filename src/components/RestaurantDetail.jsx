@@ -46,7 +46,9 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
                 role={restaurant.reviewError ? "alert" : undefined}
                 className="mt-2 font-medium text-[12px] leading-relaxed text-[#434343]"
               >
-                {restaurant.review || restaurant.reviewError}
+                {restaurant.review === "후기가 없습니다."
+                  ? "기록이 없습니다."
+                  : restaurant.review || restaurant.reviewError}
               </p>
             </section>
           )}

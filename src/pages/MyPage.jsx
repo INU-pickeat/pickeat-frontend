@@ -72,12 +72,12 @@ export default function MyPage() {
         <div className="flex-1 overflow-y-auto scrollbar-hide px-6 pt-16 pb-28">
           {/* 상단 프로필 영역 */}
           {isLoading && (
-            <p role="status" className="mb-10 text-sm text-[#777777]">
+            <p role="status" className="exception-glow mb-10 text-sm text-[#777777]">
               내 정보를 불러오는 중이에요.
             </p>
           )}
           {error && (
-            <div role="alert" className="mb-10 text-sm text-[#777777]">
+            <div role="alert" className="exception-glow mb-10 text-sm text-[#777777]">
               <p>{error}</p>
               {needsLogin ? (
                 <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">

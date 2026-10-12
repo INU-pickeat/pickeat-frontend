@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleMap, useJsApiLoader, OverlayViewF } from "@react-google-maps/api";
 import PageTransition from "../components/PageTransition";
@@ -8,6 +8,9 @@ import BottomNav from "../components/BottomNav";
 import ReviewModal from "../components/ReviewModal";
 import usePickMap from "../hooks/usePickMap";
 import { googleMapsLoaderOptions } from "../config/googleMaps";
+import { getReview } from "../api/reviews";
+import { reviewImageUrl, reviewTags } from "../utils/reviewDisplay";
+import { getApiErrorMessage } from "../utils/apiError";
 
 const containerStyle = {
   width: "100%",
@@ -20,23 +23,41 @@ const center = {
   lng: 127.023,
 };
 
-const companionNames = {
-  DATE: "데이트",
-  FAMILY: "가족과 함께",
-  CHILDREN: "아이와 함께",
-  SOLO: "혼밥",
-  GROUP: "단체·회식",
-  DOG: "반려견과 함께",
-};
-
 export default function Map() {
   const navigate = useNavigate();
 
   const { isLoaded, loadError } = useJsApiLoader(googleMapsLoaderOptions);
 
   const [selectedReview, setSelectedReview] = useState(null);
+  const [reviewMessage, setReviewMessage] = useState("");
+  const reviewRequest = useRef(null);
   const [map, setMap] = useState(null);
   const { picks, isLoading, error, needsLogin, retry } = usePickMap();
+
+  useEffect(() => () => reviewRequest.current?.abort(), []);
+
+  /** 선택한 핀의 기록 조회 */
+  async function openReview(pick) {
+    reviewRequest.current?.abort();
+    const controller = new AbortController();
+    reviewRequest.current = controller;
+    setSelectedReview(null);
+    setReviewMessage("기록을 불러오는 중이에요.");
+    try {
+      if (pick.reviewId == null) throw new Error("REVIEW_ID_MISSING");
+      const review = await getReview(pick.reviewId, controller.signal);
+      if (controller.signal.aborted) return;
+      setSelectedReview({
+        ...review,
+        image: reviewImageUrl(review.imageUrls?.[0]),
+        review: review.content,
+        tags: reviewTags(review),
+      });
+      setReviewMessage("");
+    } catch (error) {
+      if (!controller.signal.aborted) setReviewMessage(getApiErrorMessage(error, "기록을 불러오지 못했어요."));
+    }
+  }
 
   /** 내 Pick 위치에 지도 맞추기 */
   useEffect(() => {
@@ -71,7 +92,7 @@ export default function Map() {
           {isLoading ? (
             <p role="status">Pick을 불러오는 중이에요.</p>
           ) : error ? (
-            <div role="alert">
+            <div role="alert" className="exception-glow">
               <p>{error}</p>
               {needsLogin ? (
                 <Link to="/login" className="text-[#F86516] underline">
@@ -86,6 +107,7 @@ export default function Map() {
           ) : picks.length === 0 ? (
             <p className="text-center">첫 기록을 작성해보세요.</p>
           ) : null}
+          {reviewMessage && <p role="status">{reviewMessage}</p>}
         </div>
         {/* 구글 맵 영역 */}
         <div className="flex-1 relative z-0">
@@ -111,20 +133,13 @@ export default function Map() {
                   >
                     <button
                       type="button"
-                      aria-label={`${loc.restaurantName} 리뷰 보기`}
+                      aria-label={`${loc.restaurantName} 기록 보기`}
                       className="relative -translate-x-1/2 -translate-y-1/2 cursor-pointer active:scale-90 transition-transform"
-                      onClick={() =>
-                        setSelectedReview({
-                          ...loc,
-                          tags: companionNames[loc.companionType] || loc.companionType || "",
-                        })
-                      }
+                      onClick={() => openReview(loc)}
                     >
                       {/* 마커 스타일 */}
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden border-[3.5px] border-[#FF6C2A] shadow-[0_4px_10px_rgba(248,101,22,0.4)]">
-                        <span className="flex h-full w-full items-center justify-center bg-[#FFECCD] text-[#F86516] text-[11px] font-bold px-1">
-                          pick
-                        </span>
+                        <PickPhoto key={loc.representativeImageUrl} url={loc.representativeImageUrl} />
                       </div>
                     </button>
                   </OverlayViewF>
@@ -147,5 +162,17 @@ export default function Map() {
         <ReviewModal review={selectedReview} showAuthor={false} onClose={() => setSelectedReview(null)} />
       )}
     </>
+  );
+}
+
+/** 핀 사진과 로드 실패 시 기본 표시 */
+function PickPhoto({ url }) {
+  const [failed, setFailed] = useState(false);
+  return url && !failed ? (
+    <img src={reviewImageUrl(url)} alt="" className="h-full w-full object-cover" onError={() => setFailed(true)} />
+  ) : (
+    <span className="flex h-full w-full items-center justify-center bg-[#FFECCD] text-[#F86516] text-[11px] font-bold px-1">
+      pick
+    </span>
   );
 }

@@ -1,3 +1,4 @@
+import { selectedDateLabel } from "../utils/reviewDisplay";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
@@ -5,16 +6,6 @@ import BottomNav from "../components/BottomNav";
 import LeftArrow from "../assets/arrow_left.svg";
 import useMyPicks from "../hooks/useMyPicks";
 import PickSummaryCard from "../components/PickSummaryCard";
-
-/** 한국 시간으로 날짜 표시 */
-function formatPickDate(dateString) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(dateString));
-}
 
 export default function Recent() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -38,7 +29,7 @@ export default function Recent() {
 
   // 날짜별로 데이터 그룹화
   const groupedPicks = picksData.reduce((acc, pick) => {
-    const formattedDate = formatPickDate(pick.latestPickedAt);
+    const formattedDate = selectedDateLabel(pick.latestPickedAt);
     if (!acc[formattedDate]) {
       acc[formattedDate] = [];
     }
@@ -96,12 +87,12 @@ export default function Recent() {
           </div>
 
           {isLoading && (
-            <p role="status" className="text-sm text-[#777777]">
+            <p role="status" className="exception-glow text-sm text-[#777777]">
               최근 Pick을 불러오는 중이에요.
             </p>
           )}
           {error && (
-            <div role="alert" className="text-sm text-[#777777]">
+            <div role="alert" className="exception-glow text-sm text-[#777777]">
               <p>{error}</p>
               {needsLogin ? (
                 <Link to="/login" className="mt-3 inline-block text-[#F86516] underline">

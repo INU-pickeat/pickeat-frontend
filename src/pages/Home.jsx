@@ -78,7 +78,7 @@ export default function Home() {
 
             {/* 식당 카드 리스트 */}
             <div
-              className={`flex flex-col ${picksLoading || picksError || recentPicks.length === 0 ? "min-h-[180px] items-center justify-center text-center" : "space-y-4"}`}
+              className={`flex flex-col ${picksLoading || picksError || recentPicks.length === 0 ? "exception-glow min-h-[180px] items-center justify-center text-center" : "space-y-4"}`}
             >
               {picksLoading && (
                 <p role="status" className="text-sm text-[#777777]">
@@ -112,7 +112,7 @@ export default function Home() {
           <div>
             <h3 className="text-[16px] font-semibold text-[#F86516] mb-4">picker들의 지역별 인기 맛집</h3>
             {(isLoading || error || spots.length === 0) && (
-              <div className="min-h-[180px] flex flex-col items-center justify-center text-center">
+              <div className="exception-glow min-h-[180px] flex flex-col items-center justify-center text-center">
                 {isLoading && (
                   <p role="status" className="text-center text-sm text-[#777777]">
                     지역을 불러오는 중이에요.
@@ -131,10 +131,14 @@ export default function Home() {
                 )}
               </div>
             )}
-            <div className="flex justify-between items-start w-full pb-2">
+            <div className="mx-auto grid w-full max-w-[312px] grid-cols-5 items-start gap-2 pb-2">
               {spots.map((spot) => (
-                <Link key={spot.slug} to={`/explore/${spot.slug}`} className="flex flex-col items-center space-y-2">
-                  <div className="w-14 h-14 rounded-full border-3 border-[#FFECCD] active:border-[#FF9639] transition-colors duration-200 bg-black/20 overflow-hidden shadow-sm cursor-pointer hover:border-[#FF9639]">
+                <Link
+                  key={spot.slug}
+                  to={`/explore/${spot.slug}`}
+                  className="flex min-w-0 flex-col items-center space-y-2"
+                >
+                  <div className="w-full max-w-14 aspect-square rounded-full border-3 border-[#FFECCD] active:border-[#FF9639] transition-colors duration-200 bg-black/20 overflow-hidden shadow-sm cursor-pointer hover:border-[#FF9639]">
                     <img
                       src={
                         exploreRegions.find((region) => region.slug === spot.slug)?.imgUrl ||

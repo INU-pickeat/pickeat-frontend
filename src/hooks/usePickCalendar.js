@@ -22,7 +22,7 @@ export default function usePickCalendar(year, month) {
           dates: [],
           picks: [],
           needsLogin,
-          error: getApiErrorMessage(error, needsLogin ? "다시 로그인해주세요." : "캘린더를 불러오지 못했어요."),
+          error: getApiErrorMessage(error, needsLogin ? "로그인이 필요합니다." : "캘린더를 불러오지 못했어요."),
         });
       });
     return () => controller.abort();

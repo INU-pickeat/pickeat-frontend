@@ -1,14 +1,5 @@
 import { api } from "./client";
 
-export const foodNames = {
-  KOREAN: "한식",
-  JAPANESE: "일식",
-  CHINESE: "중식",
-  WESTERN: "양식",
-  CAFE_DESSERT: "커피·디저트",
-  PUB_BAR: "펍·와인·술집",
-  OTHER: "기타",
-};
 const foods = {
   korean: "KOREAN",
   japanese: "JAPANESE",

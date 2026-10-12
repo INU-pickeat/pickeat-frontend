@@ -44,7 +44,7 @@ export default function NavigationLinksDialog({ restaurantId, onClose }) {
 
       {/* 로딩·오류·링크 없음 안내 */}
       {(!links || (!links.naverMapUrl && !links.kakaoMapUrl)) && (
-        <div className="min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
+        <div className="exception-glow min-h-[180px] flex flex-col items-center justify-center text-center text-sm text-[#777777]">
           <p role={error ? "alert" : "status"}>
             {error || (links ? "이 식당의 지도 링크가 없어요." : "지도 링크를 불러오는 중이에요.")}
           </p>
