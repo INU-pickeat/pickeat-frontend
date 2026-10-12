@@ -110,7 +110,7 @@ export default function MyPage() {
                 <h2 className="text-[19px] font-bold text-[#F86516] mb-1">{member.nickname}님 안녕하세요.</h2>
                 {member.bio?.trim() && <p className="mb-2 text-[12px] leading-relaxed text-[#777777]">{member.bio}</p>}
                 <button
-                  onClick={() => alert("구현 예정입니다.")}
+                  onClick={() => navigate("/mypage/edit")}
                   className="text-[12px] text-[#FF8839] font-semibold text-left hover:underline w-fit cursor-pointer"
                 >
                   내 정보 수정

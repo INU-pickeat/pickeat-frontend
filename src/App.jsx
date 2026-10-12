@@ -11,6 +11,7 @@ import Restaurant from "./pages/Restaurant";
 import Feed from "./pages/Feed";
 import Recent from "./pages/Recent";
 import MyPage from "./pages/MyPage";
+import MyInfoEdit from "./pages/MyInfoEdit";
 import LocationConfirm from "./pages/LocationConfirm";
 import LocationSearch from "./pages/LocationSearch";
 import SituationSelect from "./pages/SituationSelect";
@@ -48,6 +49,7 @@ export default function App() {
               <Route path="/restaurant/:id" element={<Restaurant />} />
               <Route path="/recent" element={<Recent />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/mypage/edit" element={<MyInfoEdit />} />
               <Route path="/location" element={<LocationConfirm />} />
               <Route path="/location/custom" element={<LocationSearch />} />
               <Route path="/recommend/situation" element={<SituationSelect />} />

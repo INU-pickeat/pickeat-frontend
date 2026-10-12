@@ -1,3 +1,5 @@
+import DefaultProfile from "../assets/profile_default.png";
+
 export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, isLikePending = false, likeError }) {
   return (
     <article className="relative overflow-hidden rounded-[22px] bg-[#FFECCD]">
@@ -57,7 +59,15 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, is
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
             <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#FF7D16]">
-              {review.avatar && <img src={review.avatar} className="h-full w-full object-cover" />}
+              <img
+                src={review.avatar || DefaultProfile}
+                alt="프로필 이미지"
+                className="h-full w-full object-cover"
+                onError={(event) => {
+                  if (event.currentTarget.getAttribute("src") !== DefaultProfile)
+                    event.currentTarget.src = DefaultProfile;
+                }}
+              />
             </div>
             <span className="truncate text-[14px] font-semibold text-[#F87816]">{review.author}</span>
           </div>

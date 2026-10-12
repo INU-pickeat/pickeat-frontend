@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import DefaultProfile from "../assets/profile_default.png";
 
 export default function ReviewModal({ review, onClose, showAuthor = true }) {
   const dialogRef = useRef(null);
@@ -57,7 +58,15 @@ export default function ReviewModal({ review, onClose, showAuthor = true }) {
           {showAuthor && (
             <div className="absolute left-6 top-6 right-14 flex items-center gap-3">
               <div className="h-11 w-11 shrink-0 rounded-full overflow-hidden bg-[#FF7D16]">
-                {review.avatar && <img src={review.avatar} alt="" className="h-full w-full object-cover" />}
+                <img
+                  src={review.avatar || DefaultProfile}
+                  alt=""
+                  className="h-full w-full object-cover"
+                  onError={(event) => {
+                    if (event.currentTarget.getAttribute("src") !== DefaultProfile)
+                      event.currentTarget.src = DefaultProfile;
+                  }}
+                />
               </div>
               <span className="truncate text-[14px] font-semibold text-white">{review.author}</span>
             </div>

@@ -8,3 +8,11 @@ export async function getMyInfo(signal) {
   if (version === getAuthVersion()) setNickname(data.nickname);
   return data;
 }
+
+/** 내 정보 부분 수정 */
+export async function updateMyInfo(changes, signal) {
+  const version = getAuthVersion();
+  const { data } = await api.patch("/v1/me", changes, { signal });
+  if (version === getAuthVersion()) setNickname(data.nickname);
+  return data;
+}
