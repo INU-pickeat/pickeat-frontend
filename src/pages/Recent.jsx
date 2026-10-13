@@ -1,15 +1,33 @@
 import { selectedDateLabel } from "../utils/reviewDisplay";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import BottomNav from "../components/BottomNav";
 import LeftArrow from "../assets/arrow_left.svg";
 import useMyPicks from "../hooks/useMyPicks";
-import PickSummaryCard from "../components/PickSummaryCard";
+import SwipeablePickCard from "../components/SwipeablePickCard";
+import DeletePickDialog from "../components/DeletePickDialog";
+import { deleteRestaurantPicks } from "../api/picks";
+import { getApiErrorMessage } from "../utils/apiError";
 
 export default function Recent() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("일주일 기준");
+  const [openRestaurantId, setOpenRestaurantId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const deleteRequest = useRef(null);
+
+  useEffect(() => () => deleteRequest.current?.abort(), []);
+
+  /** 삭제 취소 후 카드 복원 */
+  const closeDelete = () => {
+    if (deleteRequest.current) return;
+    setDeleteTarget(null);
+    setOpenRestaurantId(null);
+    setDeleteError("");
+  };
 
   const navigate = useNavigate();
 
@@ -17,6 +35,8 @@ export default function Recent() {
   const handleSelectFilter = (filter) => {
     setSelectedFilter(filter);
     setIsDropdownOpen(false);
+    setOpenRestaurantId(null);
+    setDeleteTarget(null);
   };
 
   const {
@@ -26,6 +46,39 @@ export default function Recent() {
     needsLogin,
     retry,
   } = useMyPicks(selectedFilter === "일주일 기준" ? "week" : "month");
+
+  /** 삭제 후 서버의 식당별 집계 다시 조회 */
+  const confirmDelete = async () => {
+    if (!deleteTarget || deleteRequest.current) return;
+    const controller = new AbortController();
+    deleteRequest.current = controller;
+    setIsDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteRestaurantPicks(deleteTarget.restaurantId, controller.signal);
+      if (controller.signal.aborted) return;
+      setDeleteTarget(null);
+      setOpenRestaurantId(null);
+      retry();
+    } catch (error) {
+      if (!controller.signal.aborted)
+        setDeleteError(
+          getApiErrorMessage(
+            error,
+            error.response?.status === 409
+              ? "기록을 작성한 Pick만 남아 있어요. 기록을 먼저 삭제해주세요."
+              : error.response?.status === 404
+                ? "삭제할 Pick이 없어요."
+                : error.response?.status === 401
+                  ? "로그인이 필요합니다."
+                  : "Pick을 삭제하지 못했어요. 다시 시도해주세요.",
+          ),
+        );
+    } finally {
+      if (!controller.signal.aborted) setIsDeleting(false);
+      deleteRequest.current = null;
+    }
+  };
 
   // 날짜별로 데이터 그룹화
   const groupedPicks = picksData.reduce((acc, pick) => {
@@ -116,7 +169,17 @@ export default function Recent() {
               {/* 식당 카드 리스트 */}
               <div className="flex flex-col space-y-4">
                 {items.map((item) => (
-                  <PickSummaryCard key={item.restaurantId} pick={item} />
+                  <SwipeablePickCard
+                    key={item.restaurantId}
+                    pick={item}
+                    isOpen={openRestaurantId === item.restaurantId}
+                    onOpen={() => {
+                      setOpenRestaurantId(item.restaurantId);
+                      setDeleteTarget(item);
+                      setDeleteError("");
+                    }}
+                    onClose={() => setOpenRestaurantId(null)}
+                  />
                 ))}
               </div>
             </div>
@@ -126,6 +189,9 @@ export default function Recent() {
 
       {/* 네비게이션 바 */}
       <BottomNav />
+      {deleteTarget && (
+        <DeletePickDialog onClose={closeDelete} onConfirm={confirmDelete} isDeleting={isDeleting} error={deleteError} />
+      )}
     </>
   );
 }
