@@ -6,12 +6,14 @@ import Button from "../components/Button";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import NavigationLinksDialog from "../components/NavigationLinksDialog";
+import SelectHome from "../assets/icons/select_home.svg";
 
 export default function CompleteSelect() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const selectedRestaurant = state?.selectedRestaurant;
   const restaurantId = state?.pick?.restaurantId || selectedRestaurant?.id;
+  const restaurantName = selectedRestaurant?.name || state?.pick?.restaurantName;
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
   const [shareMessage, setShareMessage] = useState("");
   const [isSharing, setIsSharing] = useState(false);
@@ -43,41 +45,51 @@ export default function CompleteSelect() {
   }
 
   return (
-    <PageTransition className="flex-1 w-full flex flex-col bg-gradient-to-b from-[#FAB47A95] to-[#ffffff] pb-14">
-      <div className="flex-1 flex flex-col justify-center items-center gap-6 pt-8">
-        <h2 className="text-[#F86516] text-[28px] text-center font-bold leading-relaxed">오늘의 Pick 완료!</h2>
-        {selectedRestaurant && (
-          <p className="text-[#F86516] text-[18px] text-center font-semibold px-6">{selectedRestaurant.name}</p>
+    <PageTransition className="min-h-dvh w-full flex flex-col bg-linear-to-b from-[#FAC598] via-[#FCEBD6] via-55% to-[#FFFDF8] to-78% pt-[12dvh] pb-[12dvh]">
+      {/* 홈 이동 & 저장 완료 안내 */}
+      <header className="px-[10%]">
+        <button type="button" onClick={() => navigate("/home")} aria-label="홈으로 이동" className="block">
+          <img src={SelectHome} alt="" />
+        </button>
+      </header>
+      <div className="flex flex-col items-center mt-[7dvh]">
+        <h2 className="text-[#F86516] text-[28px] text-center font-bold leading-snug px-6">오늘의 Pick 저장 완료!</h2>
+        {restaurantName && (
+          <p className="text-[#F86516] text-[16px] text-center font-semibold px-6 mt-5">{restaurantName}</p>
         )}
         <motion.img
           src={CharacterImg}
           alt="캐릭터"
-          className="w-32"
+          className="w-32 mt-[6dvh]"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 180, damping: 15 }}
         />
-        <p className="text-[#FF9639] text-[16px] text-center font-semibold leading-relaxed">
-          즐거운 식사를 하고 기록도 해볼까요?
-        </p>
       </div>
 
-      {/* 길안내·공유 & 홈 이동 */}
-      <div className="w-full px-6 flex flex-col items-center space-y-4">
+      {/* 길안내·공유 & 기록하기 */}
+      <div className="w-full px-6 flex flex-col items-center gap-3 mt-auto pt-10">
+        <Button
+          onClick={() => setIsNavigationOpen(true)}
+          disabled={!restaurantId}
+          className="h-[38px] shadow-none disabled:opacity-50"
+        >
+          길안내
+        </Button>
         <div className="flex w-full gap-3">
-          <Button
-            onClick={() => setIsNavigationOpen(true)}
-            disabled={!restaurantId}
-            className="flex-1 shadow-none bg-[#FFECCD] text-[#F86516]! disabled:opacity-50"
-          >
-            길안내
-          </Button>
           <Button
             onClick={handleShare}
             disabled={!restaurantId || isSharing}
-            className="flex-1 shadow-none bg-[#FFECCD] text-[#F86516]! disabled:opacity-50"
+            className="flex-1 h-[38px] shadow-none bg-[#FFECCD] text-[#F86516]! disabled:opacity-50"
           >
             pick 공유
+          </Button>
+          <Button
+            onClick={() => navigate(`/history/write?pickId=${encodeURIComponent(state.pick.pickId)}`, { state })}
+            disabled={!state?.pick?.pickId}
+            className="flex-1 h-[38px] shadow-none bg-[#FFECCD] text-[#F86516]! disabled:opacity-50"
+          >
+            기록하기
           </Button>
         </div>
 
@@ -86,10 +98,6 @@ export default function CompleteSelect() {
             {shareMessage}
           </p>
         )}
-
-        <Button onClick={() => navigate("/home")} className="w-full shadow-none">
-          홈화면 이동
-        </Button>
       </div>
 
       {/* 길안내 지도 선택 */}
