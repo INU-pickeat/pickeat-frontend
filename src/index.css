@@ -22,6 +22,33 @@
   [role="status"] {
     text-align: center;
   }
+
+  button:not(:disabled),
+  a[href],
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled),
+  input:is(
+      [type="button"],
+      [type="submit"],
+      [type="reset"],
+      [type="checkbox"],
+      [type="radio"],
+      [type="range"],
+      [type="file"]
+    ):not(:disabled),
+  label[for] {
+    cursor: pointer;
+  }
+}
+
+/* 비활성화된 입력과 버튼은 클릭 불가 표시 */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
 }
 
 .exception-glow {

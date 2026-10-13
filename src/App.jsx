@@ -12,6 +12,7 @@ import Feed from "./pages/Feed";
 import Recent from "./pages/Recent";
 import MyPage from "./pages/MyPage";
 import MyInfoEdit from "./pages/MyInfoEdit";
+import Notifications from "./pages/Notifications";
 import LocationConfirm from "./pages/LocationConfirm";
 import LocationSearch from "./pages/LocationSearch";
 import SituationSelect from "./pages/SituationSelect";
@@ -50,6 +51,7 @@ export default function App() {
               <Route path="/recent" element={<Recent />} />
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/mypage/edit" element={<MyInfoEdit />} />
+              <Route path="/notifications" element={<Notifications />} />
               <Route path="/location" element={<LocationConfirm />} />
               <Route path="/location/custom" element={<LocationSearch />} />
               <Route path="/recommend/situation" element={<SituationSelect />} />

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
 import useMyInfo from "../hooks/useMyInfo";
-import { updateMyInfo } from "../api/member";
+import { updateMyInfo, uploadProfileImage } from "../api/member";
 import { getApiErrorMessage } from "../utils/apiError";
 import DefaultProfile from "../assets/profile_default.png";
 import ProfileEdit from "../assets/profile_edit.svg";
@@ -58,6 +58,8 @@ function ProfileForm({ member }) {
   const [nickname, setNickname] = useState(member.nickname || "");
   const [bio, setBio] = useState(member.bio || "");
   const [photo, setPhoto] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null);
+  const uploadedPhoto = useRef(null);
   const fileInput = useRef(null);
   const nameInput = useRef(null);
   const saveRequest = useRef(null);
@@ -81,16 +83,14 @@ function ProfileForm({ member }) {
       return;
     }
     setPhoto(URL.createObjectURL(file));
+    setPhotoFile(file);
+    uploadedPhoto.current = null;
   };
 
   /** 변경한 정보 저장 */
   const handleSave = async (event) => {
     event.preventDefault();
     if (saveRequest.current) return;
-    if (photo) {
-      alert("프로필 사진 업로드는 준비 중이에요. 사진과 정보가 아직 저장되지 않았어요.");
-      return;
-    }
     const trimmedNickname = nickname.trim();
     if (!trimmedNickname || [...trimmedNickname].length > 10) {
       alert("이름은 1~10자로 입력해주세요.");
@@ -100,7 +100,7 @@ function ProfileForm({ member }) {
     const changes = {};
     if (trimmedNickname !== member.nickname) changes.nickname = trimmedNickname;
     if (bio !== (member.bio || "")) changes.bio = bio;
-    if (!Object.keys(changes).length) {
+    if (!Object.keys(changes).length && !photoFile) {
       navigate("/mypage");
       return;
     }
@@ -108,6 +108,10 @@ function ProfileForm({ member }) {
     saveRequest.current = controller;
     setIsSaving(true);
     try {
+      if (photoFile) {
+        uploadedPhoto.current ||= await uploadProfileImage(photoFile, controller.signal);
+        changes.profileImageUrl = uploadedPhoto.current;
+      }
       await updateMyInfo(changes, controller.signal);
       if (!controller.signal.aborted) navigate("/mypage", { replace: true });
     } catch (error) {

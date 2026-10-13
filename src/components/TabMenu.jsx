@@ -4,7 +4,6 @@ const TAB_MENU = [
   { name: "캘린더", path: "/calendar" },
   { name: "pick 지도", path: "/map" },
   { name: "나의 기록", path: "/history" },
-  { name: "pick 피드", path: "/feed" },
 ];
 
 export default function TabMenu() {
@@ -20,7 +19,7 @@ export default function TabMenu() {
           <button
             key={tab.name}
             onClick={() => navigate(tab.path)}
-            className={`flex-1 basis-0 min-w-[79px] h-9 px-2 rounded-full font-semibold text-[13px] whitespace-nowrap cursor-pointer transition-colors ${
+            className={`shrink-0 w-[79px] h-9 px-2 rounded-full font-semibold text-[13px] whitespace-nowrap cursor-pointer transition-colors ${
               isActive ? "bg-[#F87816] text-[#FFF0DD] shadow-md font-bold" : "bg-[#FFECCD] text-[#F87816]"
             }`}
           >

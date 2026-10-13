@@ -8,12 +8,24 @@ export async function sendEmailVerification(email) {
 }
 
 /** 인증번호 확인 */
-export async function confirmEmailVerification({ email, code }) {
+export async function confirmEmailVerification({ email, code }, signal) {
   await api.post(
     "/v1/auth/email-verifications/confirm",
     { email: email.trim().toLowerCase(), code },
-    { skipAuth: true },
+    { skipAuth: true, signal },
   );
+}
+
+/** 비밀번호 재설정 인증번호 발송 */
+export async function sendPasswordResetVerification(email, signal) {
+  await api.post("/v1/auth/password-reset/email-verifications", { email: email.trim().toLowerCase() }, { skipAuth: true, signal });
+}
+
+/** 비밀번호 재설정 */
+export async function resetPassword({ email, newPassword }, signal) {
+  const version = getAuthVersion();
+  await api.post("/v1/auth/password-reset", { email: email.trim().toLowerCase(), newPassword }, { skipAuth: true, signal });
+  if (version === getAuthVersion()) clearAccessToken();
 }
 
 /** 회원가입 */
