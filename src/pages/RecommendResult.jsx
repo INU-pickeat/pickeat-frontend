@@ -5,6 +5,7 @@ import LeftArrow from "../assets/arrow_left.svg";
 import useRecommendation from "../hooks/useRecommendation";
 import { foodNames } from "../constants/restaurant";
 import { getNickname } from "../api/tokenStorage";
+import { formatDistance } from "../utils/distance";
 
 const reasons = [
   ["DISTANCE_TOO_FAR", "거리가 멀어요."],
@@ -20,14 +21,13 @@ export default function RecommendResult() {
   const [params] = useSearchParams();
   const { items, isLoading, error, isExcluding, exclude, retry } = useRecommendation(params.get("sessionId"));
   const [target, setTarget] = useState(null);
-  const [step, setStep] = useState("confirm");
   const [reason, setReason] = useState("");
+  const [isDistanceOpen, setIsDistanceOpen] = useState(false);
 
   /** 제외 모달 닫기 */
   function close() {
     if (isExcluding) return;
     setTarget(null);
-    setStep("confirm");
     setReason("");
   }
 
@@ -35,7 +35,6 @@ export default function RecommendResult() {
   async function handleExclude() {
     if (await exclude(target, reason)) {
       setTarget(null);
-      setStep("confirm");
       setReason("");
     }
   }
@@ -56,6 +55,44 @@ export default function RecommendResult() {
           <br />
           {location.state?.neighborhood || "선택한 지역"} 추천 맛집
         </h1>
+        {/* 거리 조건은 API 명세 확정 후 연결 */}
+        <div className="relative mt-3 flex justify-end">
+          <button
+            type="button"
+            aria-label="추천 거리 기준"
+            aria-expanded={isDistanceOpen}
+            onClick={() => setIsDistanceOpen(!isDistanceOpen)}
+            className="flex items-center gap-1 text-[12px] font-semibold text-[#F87816]"
+          >
+            500m 기준
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              className={`h-4 w-4 transition-transform ${isDistanceOpen ? "rotate-180" : ""}`}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+          {isDistanceOpen && (
+            <div className="absolute right-0 top-full z-20 mt-2 flex w-26 flex-col overflow-hidden rounded-xl border-[1.5px] border-[#F86516] bg-[#FFFDF8] shadow-lg">
+              {["500m", "1km", "2km"].map((distance) => (
+                <button
+                  key={distance}
+                  type="button"
+                  onClick={() => {
+                    setIsDistanceOpen(false);
+                    alert("거리 기준 변경은 구현 예정입니다.");
+                  }}
+                  className="border-b border-[#F86516]/30 py-2 text-[14px] font-bold text-[#F86516] last:border-0"
+                >
+                  {distance} 기준
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </header>
       {/* 추천 목록 */}
       <div className="px-6 pb-14 flex flex-col gap-4 relative">
@@ -121,10 +158,15 @@ export default function RecommendResult() {
               <span className="absolute top-6 left-6 w-7 h-7 bg-[#F86516] text-white rounded-full flex items-center justify-center text-[14px] font-bold">
                 {restaurant.rank}
               </span>
-              <span className="absolute bottom-6 left-6 flex flex-col text-[#FFFBF2]">
+              <span className="absolute bottom-6 left-6 right-6 flex flex-col text-[#FFFBF2]">
                 <span className="text-[18px] font-extrabold mb-1">{restaurant.name}</span>
-                <span className="text-[12px] font-medium">
-                  {foodNames[restaurant.foodCategory] || restaurant.foodCategory}
+                <span className="flex items-center justify-between gap-3 text-[12px]">
+                  <span className="font-medium">{foodNames[restaurant.foodCategory] || restaurant.foodCategory}</span>
+                  {formatDistance(restaurant.distanceMeters) && (
+                    <span className="shrink-0 font-normal">
+                      내 위치에서 {formatDistance(restaurant.distanceMeters)}
+                    </span>
+                  )}
                 </span>
               </span>
             </button>
@@ -138,7 +180,7 @@ export default function RecommendResult() {
           </div>
         ))}
       </div>
-      {/* 제외 확인 & 사유 선택 모달 */}
+      {/* 제외 사유 선택 모달 */}
       {target != null && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-6"
@@ -148,31 +190,25 @@ export default function RecommendResult() {
         >
           <div className="w-full max-w-md bg-[#FFFDF8] border-2 border-[#FF8223] rounded-[24px] p-8 flex flex-col items-center">
             <h2 id="exclude-title" className="text-[#F87816] font-bold text-[18px] mb-4 text-center">
-              {step === "confirm" ? "이 맛집을 추천에서 제외할까요?" : "이 추천 맛집이 아쉬운 이유가 있나요?"}
+              이 추천 맛집이 아쉬운 이유가 있나요?
             </h2>
-            {/* 제외 안내 또는 사유 목록 */}
-            {step === "confirm" ? (
-              <p className="text-[#434343] text-[14px] text-center leading-relaxed mb-6">
-                선택한 맛집을 현재 추천 목록에서 제외하고 새로운 맛집을 추천해드릴게요.
-              </p>
-            ) : (
-              <div className="w-full flex flex-col gap-3.5 mb-8">
-                {reasons.map(([value, label]) => (
-                  <label key={value} className="flex justify-between items-center text-[14px] text-[#434343]">
-                    <span>{label}</span>
-                    <input
-                      type="radio"
-                      name="reason"
-                      value={value}
-                      checked={reason === value}
-                      onChange={() => setReason(value)}
-                      disabled={isExcluding}
-                      className="w-6 h-6 accent-[#FF9639]"
-                    />
-                  </label>
-                ))}
-              </div>
-            )}
+            {/* 사유 목록 */}
+            <div className="w-full flex flex-col gap-3.5 mb-8">
+              {reasons.map(([value, label]) => (
+                <label key={value} className="flex justify-between items-center text-[14px] text-[#434343]">
+                  <span>{label}</span>
+                  <input
+                    type="radio"
+                    name="reason"
+                    value={value}
+                    checked={reason === value}
+                    onChange={() => setReason(value)}
+                    disabled={isExcluding}
+                    className="w-6 h-6 accent-[#FF9639]"
+                  />
+                </label>
+              ))}
+            </div>
             {error && (
               <p role="alert" className="mb-4 text-sm">
                 {error}
@@ -188,8 +224,8 @@ export default function RecommendResult() {
                 취소
               </button>
               <button
-                disabled={isExcluding || (step === "reason" && !reason)}
-                onClick={() => (step === "confirm" ? setStep("reason") : handleExclude())}
+                disabled={isExcluding || !reason}
+                onClick={handleExclude}
                 className="flex-1 bg-[#FF9639] text-white py-3.5 rounded-full text-[14px] disabled:opacity-50"
               >
                 {isExcluding ? "제외 중..." : "제외하기"}

@@ -1,11 +1,16 @@
 import { useState } from "react";
+import PhotoViewer from "./PhotoViewer";
 
 /** 식당 사진 넘기기 */
 export default function RestaurantPhotos({ images, name }) {
   const [failed, setFailed] = useState([]);
   const [index, setIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const visible = images.filter((url) => !failed.includes(url));
   const current = visible.length ? index % visible.length : 0;
+
+  /** 로드에 실패한 사진 제외 */
+  const hideFailed = (url) => setFailed((previous) => (previous.includes(url) ? previous : [...previous, url]));
 
   return (
     <div className="absolute inset-0" role="region" aria-label="식당 사진">
@@ -16,10 +21,19 @@ export default function RestaurantPhotos({ images, name }) {
           src={url}
           alt={`${name} 사진 ${position + 1}`}
           aria-hidden={position !== current}
-          onError={() => setFailed((previous) => (previous.includes(url) ? previous : [...previous, url]))}
+          onError={() => hideFailed(url)}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ease-in-out motion-reduce:transition-none ${position === current ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         />
       ))}
+
+      {visible.length > 0 && (
+        <button
+          type="button"
+          aria-label="식당 사진 전체 보기"
+          onClick={() => setIsOpen(true)}
+          className="absolute inset-0"
+        />
+      )}
 
       {/* 이전·다음 사진 버튼 */}
       {visible.length > 1 && (
@@ -41,6 +55,16 @@ export default function RestaurantPhotos({ images, name }) {
             <Chevron next />
           </button>
         </>
+      )}
+      {isOpen && visible.length > 0 && (
+        <PhotoViewer
+          images={visible}
+          current={current}
+          name={name}
+          onChange={setIndex}
+          onClose={() => setIsOpen(false)}
+          onError={hideFailed}
+        />
       )}
     </div>
   );

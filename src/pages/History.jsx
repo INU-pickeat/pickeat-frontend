@@ -241,11 +241,11 @@ export default function History() {
           {/* 상세 기록 모달 */}
           {selectedRecord && (
             <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6 backdrop-blur-sm animate-fade-in"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6 backdrop-blur-sm animate-fade-in cursor-pointer"
               onClick={() => setSelectedRecord(null)}
             >
               <div
-                className="w-full max-w-sm bg-[#FFECCD] rounded-[24px] overflow-hidden shadow-2xl"
+                className="w-full max-w-sm bg-[#FFECCD] rounded-[24px] overflow-hidden shadow-2xl cursor-default"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* 기록 이미지 */}

@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 import Button from "../components/Button";
+import { sendPasswordResetVerification, confirmEmailVerification, resetPassword } from "../api/auth";
+import { getApiErrorMessage } from "../utils/apiError";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
+  const [sentEmail, setSentEmail] = useState("");
+  const [verifiedUntil, setVerifiedUntil] = useState(0);
+  const [action, setAction] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const requestRef = useRef(null);
+  const isBusy = !!action;
+  const isVerified = verifiedUntil > 0;
+
+  useEffect(() => () => requestRef.current?.abort(), []);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -15,12 +26,83 @@ export default function ResetPassword() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value, ...(name === "email" ? { code: "" } : {}) }));
+    setErrorMessage("");
+    if (name === "email") {
+      setSentEmail("");
+      setVerifiedUntil(0);
+    }
   };
 
+  /** 요청 중 중복 제출 방지 */
+  const runRequest = async (type, task) => {
+    if (requestRef.current) return;
+    const controller = new AbortController();
+    requestRef.current = controller;
+    setAction(type);
+    setErrorMessage("");
+    try {
+      await task(controller.signal);
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        setErrorMessage(getApiErrorMessage(error, "요청을 처리하지 못했어요. 다시 시도해주세요."));
+        if ([403, 410].includes(error.response?.status)) setVerifiedUntil(0);
+      }
+    } finally {
+      if (!controller.signal.aborted) setAction("");
+      requestRef.current = null;
+    }
+  };
+
+  /** 재설정용 인증번호 발송 */
+  const handleSend = () => {
+    const email = formData.email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setErrorMessage("올바른 이메일 주소를 입력해주세요.");
+      return;
+    }
+    return runRequest("send", async (signal) => {
+      await sendPasswordResetVerification(email, signal);
+      if (signal.aborted) return;
+      setSentEmail(email);
+      setVerifiedUntil(0);
+      setFormData((prev) => ({ ...prev, code: "" }));
+    });
+  };
+
+  /** 인증번호 확인 */
+  const handleConfirm = () => {
+    if (!/^\d{6}$/.test(formData.code)) {
+      setErrorMessage("인증번호는 숫자 6자리로 입력해주세요.");
+      return;
+    }
+    return runRequest("confirm", async (signal) => {
+      await confirmEmailVerification({ email: sentEmail, code: formData.code }, signal);
+      if (!signal.aborted) setVerifiedUntil(Date.now() + 30 * 60 * 1000);
+    });
+  };
+
+  /** 새 비밀번호 저장 */
   const handleSubmit = () => {
-    alert("비밀번호가 성공적으로 변경되었습니다.");
-    navigate("/login");
+    if (!sentEmail || formData.email.trim().toLowerCase() !== sentEmail || Date.now() >= verifiedUntil) {
+      setVerifiedUntil(0);
+      setErrorMessage("이메일 인증을 완료한 후 비밀번호를 변경해주세요.");
+      return;
+    }
+    if (formData.newPassword.length < 8 || formData.newPassword.length > 64) {
+      setErrorMessage("비밀번호는 8~64자로 입력해주세요.");
+      return;
+    }
+    if (formData.newPassword !== formData.newPasswordConfirm) {
+      setErrorMessage("새 비밀번호 확인이 일치하지 않아요.");
+      return;
+    }
+    return runRequest("reset", async (signal) => {
+      await resetPassword({ email: sentEmail, newPassword: formData.newPassword }, signal);
+      if (signal.aborted) return;
+      alert("비밀번호가 성공적으로 변경되었습니다.");
+      navigate("/login", { replace: true });
+    });
   };
 
   return (
@@ -33,11 +115,14 @@ export default function ResetPassword() {
       <div className="w-full flex flex-col space-y-6">
         {/* 이메일 & 인증하기 버튼 */}
         <div className="flex flex-col space-y-2">
-          <label className="text-[#FF8223] text-sm font-semibold ml-4">이메일</label>
+          <label htmlFor="reset-email" className="text-[#FF8223] text-sm font-semibold ml-4">이메일</label>
           <div className="flex space-x-2">
             <input
               type="email"
               name="email"
+              id="reset-email"
+              autoComplete="email"
+              disabled={isBusy}
               value={formData.email}
               onChange={handleChange}
               placeholder="이메일을 입력해주세요."
@@ -45,19 +130,26 @@ export default function ResetPassword() {
             />
             <button
               type="button"
+              disabled={isBusy || isVerified}
+              onClick={sentEmail ? handleConfirm : handleSend}
               className="w-18 shrink-0 h-10 bg-[#FF9639] text-white text-[12px] font-semibold rounded-full active:scale-95 transition-transform cursor-pointer"
             >
-              인증하기
+              {action === "send" ? "발송 중…" : action === "confirm" ? "확인 중…" : isVerified ? "인증 완료" : sentEmail ? "인증 확인" : "인증하기"}
             </button>
           </div>
         </div>
 
         {/* 인증번호*/}
         <div className="flex flex-col space-y-2">
-          <label className="text-[#FF8223] text-sm font-semibold ml-4">인증번호</label>
+          <label htmlFor="reset-code" className="text-[#FF8223] text-sm font-semibold ml-4">인증번호</label>
           <input
             type="text"
             name="code"
+            id="reset-code"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={6}
+            disabled={isBusy || !sentEmail || isVerified}
             value={formData.code}
             onChange={handleChange}
             placeholder="인증번호를 입력해주세요."
@@ -65,7 +157,7 @@ export default function ResetPassword() {
           />
           {/* 인증번호 재발송 텍스트 */}
           <div className="flex justify-end px-4 pt-1">
-            <button type="button" className="text-[#FF9639] text-xs font-semibold hover:underline cursor-pointer">
+            <button type="button" onClick={handleSend} disabled={isBusy || !sentEmail} className="text-[#FF9639] text-xs font-semibold hover:underline cursor-pointer">
               인증번호 재발송
             </button>
           </div>
@@ -78,10 +170,13 @@ export default function ResetPassword() {
 
         {/* 새 비밀번호 */}
         <div className="flex flex-col space-y-2">
-          <label className="text-[#FF8223] text-sm font-semibold ml-4">새 비밀번호</label>
+          <label htmlFor="reset-password" className="text-[#FF8223] text-sm font-semibold ml-4">새 비밀번호</label>
           <input
             type="password"
             name="newPassword"
+            id="reset-password"
+            autoComplete="new-password"
+            disabled={isBusy}
             value={formData.newPassword}
             onChange={handleChange}
             placeholder="비밀번호를 입력해주세요."
@@ -91,10 +186,13 @@ export default function ResetPassword() {
 
         {/* 새 비밀번호 확인*/}
         <div className="flex flex-col space-y-2">
-          <label className="text-[#FF8223] text-sm font-semibold ml-4">새 비밀번호 확인</label>
+          <label htmlFor="reset-password-confirm" className="text-[#FF8223] text-sm font-semibold ml-4">새 비밀번호 확인</label>
           <input
             type="password"
             name="newPasswordConfirm"
+            id="reset-password-confirm"
+            autoComplete="new-password"
+            disabled={isBusy}
             value={formData.newPasswordConfirm}
             onChange={handleChange}
             placeholder="비밀번호를 입력해주세요."
@@ -105,7 +203,8 @@ export default function ResetPassword() {
 
       {/* 비밀번호 변경하기 버튼 */}
       <div className="mt-8">
-        <Button onClick={handleSubmit}>비밀번호 변경하기</Button>
+        {errorMessage && <p role="alert" className="mb-3 text-center text-xs text-[#FF5C5C]">{errorMessage}</p>}
+        <Button onClick={handleSubmit} disabled={isBusy}>{action === "reset" ? "변경 중…" : "비밀번호 변경하기"}</Button>
       </div>
     </PageTransition>
   );

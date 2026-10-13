@@ -5,12 +5,14 @@ import BottomNav from "../components/BottomNav";
 import { useRef, useState } from "react";
 import { logout } from "../api/auth";
 import useMyInfo from "../hooks/useMyInfo";
+import LogoutDialog from "../components/LogoutDialog";
 
 export default function MyPage() {
   const navigate = useNavigate();
   const { member, isLoading, error, needsLogin, retry } = useMyInfo();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const logoutInFlight = useRef(false);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
 
   /** 로그아웃 처리 */
   const handleLogout = async () => {
@@ -44,7 +46,7 @@ export default function MyPage() {
           disabled={isLoggingOut}
           onClick={() => {
             if (menu.title === "로그아웃") {
-              handleLogout();
+              setIsLogoutOpen(true);
             } else alert("추가 예정입니다.");
           }}
           className="w-full flex justify-between items-center py-3 active:opacity-60 transition-opacity cursor-pointer"
@@ -110,7 +112,7 @@ export default function MyPage() {
                 <h2 className="text-[19px] font-bold text-[#F86516] mb-1">{member.nickname}님 안녕하세요.</h2>
                 {member.bio?.trim() && <p className="mb-2 text-[12px] leading-relaxed text-[#777777]">{member.bio}</p>}
                 <button
-                  onClick={() => alert("구현 예정입니다.")}
+                  onClick={() => navigate("/mypage/edit")}
                   className="text-[12px] text-[#FF8839] font-semibold text-left hover:underline w-fit cursor-pointer"
                 >
                   내 정보 수정
@@ -126,6 +128,9 @@ export default function MyPage() {
 
       {/* 네비게이션 바 */}
       <BottomNav />
+      {isLogoutOpen && (
+        <LogoutDialog onClose={() => setIsLogoutOpen(false)} onConfirm={handleLogout} isLoggingOut={isLoggingOut} />
+      )}
     </>
   );
 }
