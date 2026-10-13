@@ -15,7 +15,7 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, is
       )}
       {/* 작성자와 팔로우 */}
       <header className="mb-4 flex h-[50px] items-center justify-between gap-3 px-[25px]">
-        <div className="flex min-w-0 items-center gap-4">
+        <div className="flex min-w-0 items-center gap-2">
           <img
             src={review.avatar || DefaultProfile}
             alt="프로필 이미지"

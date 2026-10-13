@@ -28,7 +28,7 @@ export default function Feed() {
       <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
         <img src={FeedGlow} alt="" className="absolute -left-[307px] -top-[312px] max-w-none pointer-events-none" />
         <div className="relative min-h-0 flex-1 overflow-y-auto scrollbar-hide pb-32">
-          <header className="pt-[110px] px-[33px] pb-[30px]">
+          <header className="pt-[60px] px-[33px] pb-[30px]">
             <div className="flex items-center gap-[13px] text-[16px] text-[#F87816]">
               <button type="button" aria-current="true" className="font-bold">
                 최신

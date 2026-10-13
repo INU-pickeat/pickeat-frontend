@@ -40,7 +40,7 @@ export default function BottomNav() {
     // 위치 고정
     <nav
       aria-label="하단 메뉴"
-      className="fixed bottom-10 left-1/2 -translate-x-1/2 w-[calc(100%-44px)] max-w-[343px] h-[53px] bg-[#FFECCD]/90 rounded-full flex items-center justify-between px-[7px] z-50"
+      className="fixed bottom-5 left-1/2 -translate-x-1/2 w-[calc(100%-44px)] max-w-[343px] h-[53px] bg-[#FFECCD]/90 rounded-full flex items-center justify-between px-[7px] z-50"
     >
       {tabs.map((tab) => {
         const isActive = tab.activePaths.includes(location.pathname);
