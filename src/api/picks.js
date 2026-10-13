@@ -15,6 +15,11 @@ export async function getMyPicks({ period, signal }) {
   return [...data.restaurants].sort((a, b) => Date.parse(b.latestPickedAt) - Date.parse(a.latestPickedAt));
 }
 
+/** 식당의 기록 없는 Pick 전체 취소 */
+export async function deleteRestaurantPicks(restaurantId, signal) {
+  await api.delete(`/v1/me/picks/restaurants/${encodeURIComponent(restaurantId)}`, { signal });
+}
+
 /** 내 Pick 지도 조회 */
 export async function getPickMap(signal) {
   const { data } = await api.get("/v1/me/picks/map", { signal });
