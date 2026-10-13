@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import logoImg from "../assets/pickeat_logo.svg";
+import logoImg from "../../assets/pickeat_logo.svg";
 
 export default function Splash({ onFinish }) {
   useEffect(() => {

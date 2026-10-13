@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/auth";
-import PageTransition from "../components/PageTransition";
-import Button from "../components/Button";
+import PageTransition from "../components/common/PageTransition";
+import Button from "../components/common/Button";
 
 export default function Login() {
   const navigate = useNavigate();

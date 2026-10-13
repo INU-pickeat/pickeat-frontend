@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
-import PageTransition from "../components/PageTransition";
-import Button from "../components/Button";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../components/common/PageTransition";
+import Button from "../components/common/Button";
+import LeftArrow from "../assets/icons/arrow_left.svg";
 
 import { googleMapsLoaderOptions } from "../config/googleMaps";
 

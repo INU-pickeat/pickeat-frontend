@@ -1,6 +1,6 @@
-import { resolveImageUrl } from "../utils/imageUrl";
+import { resolveImageUrl } from "../../utils/imageUrl";
 import { Link } from "react-router-dom";
-import { foodNames } from "../constants/restaurant";
+import { foodNames } from "../../constants/restaurant";
 
 /** 식당별 Pick 요약 */
 export default function PickSummaryCard({ pick, to }) {

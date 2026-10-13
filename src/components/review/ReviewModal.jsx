@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import DefaultProfile from "../assets/profile_default.png";
+import DefaultProfile from "../../assets/profile_default.png";
 
 export default function ReviewModal({ review, onClose, showAuthor = true }) {
   const dialogRef = useRef(null);

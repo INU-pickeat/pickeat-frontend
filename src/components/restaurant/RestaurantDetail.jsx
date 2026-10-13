@@ -1,5 +1,5 @@
-import PageTransition from "./PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../common/PageTransition";
+import LeftArrow from "../../assets/icons/arrow_left.svg";
 import RestaurantPhotos from "./RestaurantPhotos";
 
 export default function RestaurantDetail({ restaurant, onBack, actions, feedback }) {

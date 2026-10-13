@@ -1,11 +1,11 @@
 import { restaurantShareUrl, shareRestaurantLink } from "../utils/shareRestaurant";
 import { useLocation, useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
+import PageTransition from "../components/common/PageTransition";
 import CharacterImg from "../assets/complete_character.png";
-import Button from "../components/Button";
+import Button from "../components/common/Button";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import NavigationLinksDialog from "../components/NavigationLinksDialog";
+import NavigationLinksDialog from "../components/restaurant/NavigationLinksDialog";
 import SelectHome from "../assets/icons/select_home.svg";
 
 export default function CompleteSelect() {

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getReview, updateReview } from "../api/reviews";
-import { uploadReviewImage } from "../api/reviewImages";
-import { getApiErrorMessage } from "../utils/apiError";
-import { reviewTags, reviewImageUrl } from "../utils/reviewDisplay";
-import GalleryIcon from "../assets/icons/gallery.svg";
-import Button from "./Button";
-import PageTransition from "./PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
+import { getReview, updateReview } from "../../api/reviews";
+import { uploadReviewImage } from "../../api/reviewImages";
+import { getApiErrorMessage } from "../../utils/apiError";
+import { reviewTags, reviewImageUrl } from "../../utils/reviewDisplay";
+import GalleryIcon from "../../assets/icons/gallery.svg";
+import Button from "../common/Button";
+import PageTransition from "../common/PageTransition";
+import LeftArrow from "../../assets/icons/arrow_left.svg";
 
 /** 수정할 기록 조회 */
 export default function ReviewEdit({ reviewId }) {

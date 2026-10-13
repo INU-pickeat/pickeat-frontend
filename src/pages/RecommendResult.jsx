@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../components/common/PageTransition";
+import LeftArrow from "../assets/icons/arrow_left.svg";
 import useRecommendation from "../hooks/useRecommendation";
 import { foodNames } from "../constants/restaurant";
 import { getNickname } from "../api/tokenStorage";

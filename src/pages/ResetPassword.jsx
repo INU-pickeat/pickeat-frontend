@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import Button from "../components/Button";
+import PageTransition from "../components/common/PageTransition";
+import Button from "../components/common/Button";
 import { sendPasswordResetVerification, confirmEmailVerification, resetPassword } from "../api/auth";
 import { getApiErrorMessage } from "../utils/apiError";
 

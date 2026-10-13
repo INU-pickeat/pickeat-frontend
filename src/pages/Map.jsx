@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleMap, useJsApiLoader, OverlayViewF } from "@react-google-maps/api";
-import PageTransition from "../components/PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
-import TabMenu from "../components/TabMenu";
-import BottomNav from "../components/BottomNav";
-import ReviewModal from "../components/ReviewModal";
+import PageTransition from "../components/common/PageTransition";
+import LeftArrow from "../assets/icons/arrow_left.svg";
+import TabMenu from "../components/layout/TabMenu";
+import BottomNav from "../components/layout/BottomNav";
+import ReviewModal from "../components/review/ReviewModal";
 import usePickMap from "../hooks/usePickMap";
 import { googleMapsLoaderOptions } from "../config/googleMaps";
 import { getReview } from "../api/reviews";

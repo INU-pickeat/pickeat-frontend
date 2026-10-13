@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import BottomNav from "../components/BottomNav";
-import FeedReviewCard from "../components/FeedReviewCard";
-import ReviewModal from "../components/ReviewModal";
+import PageTransition from "../components/common/PageTransition";
+import BottomNav from "../components/layout/BottomNav";
+import FeedReviewCard from "../components/review/FeedReviewCard";
+import ReviewModal from "../components/review/ReviewModal";
 import FeedGlow from "../assets/feed_glow.svg";
 import useFeed from "../hooks/useFeed";
 

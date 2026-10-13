@@ -1,8 +1,8 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import HomeIcon from "../assets/home.svg";
-import MarkIcon from "../assets/mark.svg";
-import ProfileIcon from "../assets/profile.svg";
-import FeedIcon from "../assets/feed.svg";
+import HomeIcon from "../../assets/icons/home.svg";
+import MarkIcon from "../../assets/icons/mark.svg";
+import ProfileIcon from "../../assets/icons/profile.svg";
+import FeedIcon from "../../assets/icons/feed.svg";
 
 export default function BottomNav() {
   const navigate = useNavigate();

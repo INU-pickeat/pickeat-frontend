@@ -1,11 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
+import PageTransition from "../components/common/PageTransition";
 import DefaultProfile from "../assets/profile_default.png";
-import BottomNav from "../components/BottomNav";
+import BottomNav from "../components/layout/BottomNav";
 import { useRef, useState } from "react";
 import { logout } from "../api/auth";
 import useMyInfo from "../hooks/useMyInfo";
-import LogoutDialog from "../components/LogoutDialog";
+import LogoutDialog from "../components/account/LogoutDialog";
 
 export default function MyPage() {
   const navigate = useNavigate();

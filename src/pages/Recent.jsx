@@ -1,12 +1,12 @@
 import { selectedDateLabel } from "../utils/reviewDisplay";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import BottomNav from "../components/BottomNav";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../components/common/PageTransition";
+import BottomNav from "../components/layout/BottomNav";
+import LeftArrow from "../assets/icons/arrow_left.svg";
 import useMyPicks from "../hooks/useMyPicks";
-import SwipeablePickCard from "../components/SwipeablePickCard";
-import DeletePickDialog from "../components/DeletePickDialog";
+import SwipeablePickCard from "../components/pick/SwipeablePickCard";
+import DeletePickDialog from "../components/pick/DeletePickDialog";
 import { deleteRestaurantPicks } from "../api/picks";
 import { getApiErrorMessage } from "../utils/apiError";
 

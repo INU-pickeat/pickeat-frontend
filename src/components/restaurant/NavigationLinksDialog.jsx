@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { getNavigationLinks } from "../api/restaurants";
-import { getApiErrorMessage } from "../utils/apiError";
+import { getNavigationLinks } from "../../api/restaurants";
+import { getApiErrorMessage } from "../../utils/apiError";
 
 /** 길안내 지도 선택 */
 export default function NavigationLinksDialog({ restaurantId, onClose }) {

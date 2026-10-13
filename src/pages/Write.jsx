@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../components/common/PageTransition";
+import LeftArrow from "../assets/icons/arrow_left.svg";
 import GalleryIcon from "../assets/icons/gallery.svg";
-import Button from "../components/Button";
-import ReviewEdit from "../components/ReviewEdit";
+import Button from "../components/common/Button";
+import ReviewEdit from "../components/review/ReviewEdit";
 import { createReview } from "../api/reviews";
 import { uploadReviewImage } from "../api/reviewImages";
 import { getApiErrorMessage } from "../utils/apiError";

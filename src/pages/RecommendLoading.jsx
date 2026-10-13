@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import PageTransition from "../components/PageTransition";
+import PageTransition from "../components/common/PageTransition";
 import { buildRecommendationRequest, createRecommendation } from "../api/recommendations";
 import { getNickname } from "../api/tokenStorage";
 import searchingCharacter from "../assets/searching_character.png";

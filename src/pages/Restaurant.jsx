@@ -1,7 +1,7 @@
 import { restaurantShareUrl, shareRestaurantLink } from "../utils/shareRestaurant";
 import { useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import RestaurantDetail from "../components/RestaurantDetail";
+import RestaurantDetail from "../components/restaurant/RestaurantDetail";
 import useRestaurant from "../hooks/useRestaurant";
 import { createPick } from "../api/picks";
 import { getApiErrorMessage } from "../utils/apiError";

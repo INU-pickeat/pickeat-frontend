@@ -1,9 +1,9 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
-import TabMenu from "../components/TabMenu";
-import BottomNav from "../components/BottomNav";
+import PageTransition from "../components/common/PageTransition";
+import LeftArrow from "../assets/icons/arrow_left.svg";
+import TabMenu from "../components/layout/TabMenu";
+import BottomNav from "../components/layout/BottomNav";
 
 import useMyReviews from "../hooks/useMyReviews";
 import { deleteReview } from "../api/reviews";

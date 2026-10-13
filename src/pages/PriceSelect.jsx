@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import Button from "../components/Button";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../components/common/PageTransition";
+import Button from "../components/common/Button";
+import LeftArrow from "../assets/icons/arrow_left.svg";
 
 export default function PriceSelect() {
   const navigate = useNavigate();

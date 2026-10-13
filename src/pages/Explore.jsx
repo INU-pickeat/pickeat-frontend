@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../components/common/PageTransition";
+import LeftArrow from "../assets/icons/arrow_left.svg";
 import useDiscoverySpots from "../hooks/useDiscoverySpots";
 
 /** 식당별 고정 더미 인원 수 */

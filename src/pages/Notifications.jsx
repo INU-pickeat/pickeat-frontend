@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import BottomNav from "../components/BottomNav";
-import LeftArrow from "../assets/arrow_left.svg";
+import PageTransition from "../components/common/PageTransition";
+import BottomNav from "../components/layout/BottomNav";
+import LeftArrow from "../assets/icons/arrow_left.svg";
 import DefaultProfile from "../assets/profile_default.png";
 import useNotifications from "../hooks/useNotifications";
 import { getReview } from "../api/reviews";
 import { getApiErrorMessage } from "../utils/apiError";
 import { reviewImageUrl, reviewTags } from "../utils/reviewDisplay";
-import ReviewModal from "../components/ReviewModal";
+import ReviewModal from "../components/review/ReviewModal";
 
 /** 알림 화면 */
 export default function Notifications() {

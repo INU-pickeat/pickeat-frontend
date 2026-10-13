@@ -2,14 +2,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAccessToken, getNickname } from "../api/tokenStorage";
 import { exploreRegions } from "../data/exploreRegions";
 import useDiscoverySpots from "../hooks/useDiscoverySpots";
-import PageTransition from "../components/PageTransition";
-import Button from "../components/Button";
-import BottomNav from "../components/BottomNav";
+import PageTransition from "../components/common/PageTransition";
+import Button from "../components/common/Button";
+import BottomNav from "../components/layout/BottomNav";
 import logoImg from "../assets/pickeat_logo.svg";
 import CharacterImg from "../assets/home_character.png";
 import useMyPicks from "../hooks/useMyPicks";
-import PickSummaryCard from "../components/PickSummaryCard";
-import NotificationIcon from "../assets/notification.svg";
+import PickSummaryCard from "../components/pick/PickSummaryCard";
+import NotificationIcon from "../assets/icons/notification.svg";
 
 export default function Home() {
   const navigate = useNavigate();

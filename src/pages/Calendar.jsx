@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import LeftArrow from "../assets/arrow_left.svg";
-import TabMenu from "../components/TabMenu";
+import PageTransition from "../components/common/PageTransition";
+import LeftArrow from "../assets/icons/arrow_left.svg";
+import TabMenu from "../components/layout/TabMenu";
 import usePickCalendar from "../hooks/usePickCalendar";
 import { reviewTags, reviewImageUrl } from "../utils/reviewDisplay";
 import CheckIcon from "../assets/icons/check.svg";
 import WriteIcon from "../assets/icons/write.svg";
-import BottomNav from "../components/BottomNav";
+import BottomNav from "../components/layout/BottomNav";
 import { formatCalendarDate, getCalendarCells } from "../utils/calendar";
 
 export default function Calendar() {

@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
+import PageTransition from "../components/common/PageTransition";
 import logoImg from "../assets/pickeat_logo.svg";
 import CharacterImg from "../assets/intro_character.png";
-import Button from "../components/Button";
+import Button from "../components/common/Button";
 
 export default function Intro() {
   const navigate = useNavigate();

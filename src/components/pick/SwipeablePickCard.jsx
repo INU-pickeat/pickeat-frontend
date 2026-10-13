@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import PickSummaryCard from "./PickSummaryCard";
-import BinIcon from "../assets/icons/bin.svg";
+import BinIcon from "../../assets/icons/bin.svg";
 
 const REVEAL_WIDTH = 88;
 

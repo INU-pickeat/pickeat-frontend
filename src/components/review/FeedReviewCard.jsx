@@ -1,6 +1,6 @@
-import DefaultProfile from "../assets/profile_default.png";
-import HeartFilled from "../assets/icons/heart_filled.svg";
-import HeartOutline from "../assets/icons/heart_outline.svg";
+import DefaultProfile from "../../assets/profile_default.png";
+import HeartFilled from "../../assets/icons/heart_filled.svg";
+import HeartOutline from "../../assets/icons/heart_outline.svg";
 
 export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, isLikePending = false, likeError }) {
   return (

@@ -12,8 +12,10 @@ async function mockReset(page, { confirmFails = false, resetFails = false } = {}
     const path = new URL(route.request().url()).pathname;
     const body = route.request().postDataJSON();
     calls.push({ path, body });
-    if (path.endsWith("/confirm") && confirmFails) return route.fulfill({ status: 400, json: { message: "인증번호가 올바르지 않습니다." } });
-    if (path.endsWith("/password-reset") && resetFails) return route.fulfill({ status: 403, json: { message: "인증이 만료되었습니다." } });
+    if (path.endsWith("/confirm") && confirmFails)
+      return route.fulfill({ status: 400, json: { message: "인증번호가 올바르지 않습니다." } });
+    if (path.endsWith("/password-reset") && resetFails)
+      return route.fulfill({ status: 403, json: { message: "인증이 만료되었습니다." } });
     await route.fulfill({ status: 204 });
   });
   return calls;
@@ -47,7 +49,9 @@ for (const width of [360, 390, 430]) {
       { email: "user@pickeat.com", newPassword: "changed-password123" },
     ]);
     expect(calls.map((call) => call.path.replace(/^.*\/v1/, "/v1"))).toEqual([
-      "/v1/auth/password-reset/email-verifications", "/v1/auth/email-verifications/confirm", "/v1/auth/password-reset",
+      "/v1/auth/password-reset/email-verifications",
+      "/v1/auth/email-verifications/confirm",
+      "/v1/auth/password-reset",
     ]);
     expect(await page.evaluate(() => sessionStorage.getItem("pickeat.accessToken"))).toBeNull();
     expect(await page.evaluate(() => sessionStorage.getItem("pickeat.refreshToken"))).toBeNull();

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PageTransition from "../components/PageTransition";
-import Button from "../components/Button";
+import PageTransition from "../components/common/PageTransition";
+import Button from "../components/common/Button";
 import useMyInfo from "../hooks/useMyInfo";
 import { updateMyInfo, uploadProfileImage } from "../api/member";
 import { getApiErrorMessage } from "../utils/apiError";
 import DefaultProfile from "../assets/profile_default.png";
-import ProfileEdit from "../assets/profile_edit.svg";
-import BackArrow from "../assets/arrow_left.svg";
+import ProfileEdit from "../assets/icons/profile_edit.svg";
+import BackArrow from "../assets/icons/arrow_left.svg";
 
 /** 내 정보 수정 화면 */
 export default function MyInfoEdit() {

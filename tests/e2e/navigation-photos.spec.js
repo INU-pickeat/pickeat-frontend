@@ -49,12 +49,12 @@ for (const width of [360, 390, 430]) {
     await expect(dialog).toBeVisible();
     expect(logoutCount).toBe(0);
     if (width === 390) await page.screenshot({ path: testInfo.outputPath("logout.png") });
-    await dialog.getByRole("button", { name: "아니요." }).click();
+    await dialog.getByRole("button", { name: "아니요", exact: true }).click();
     await expect(dialog).toBeHidden();
     await expect(page).toHaveURL(/\/mypage$/);
     expect(await page.evaluate(() => sessionStorage.getItem("pickeat.accessToken"))).toBe("test-access");
     await page.getByRole("button", { name: "로그아웃", exact: true }).click();
-    await dialog.getByRole("button", { name: "네.", exact: true }).click();
+    await dialog.getByRole("button", { name: "네", exact: true }).click();
     await expect(page).toHaveURL("/");
     expect(logoutCount).toBe(1);
     expect(await page.evaluate(() => sessionStorage.getItem("pickeat.accessToken"))).toBeNull();
@@ -66,7 +66,7 @@ for (const width of [360, 390, 430]) {
     const nav = page.getByRole("navigation", { name: "하단 메뉴" });
     await expect(nav.getByRole("button")).toHaveCount(4);
     const feedIcon = nav.getByRole("button", { name: "피드", exact: true }).locator("img");
-    await expect(feedIcon).toHaveAttribute("src", /feed\.png/);
+    await expect(feedIcon).toHaveAttribute("src", /feed\.svg|^data:image\/svg\+xml/);
     await expect(feedIcon).toHaveJSProperty("naturalWidth", 24);
     const tab = await page.getByRole("button", { name: "캘린더", exact: true }).boundingBox();
     expect(tab.width).toBe(79);
