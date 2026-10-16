@@ -40,7 +40,9 @@ export default function RecommendLoading() {
               ? "위치와 추천 조건을 다시 선택해주세요."
               : error.response?.status === 401
                 ? "로그인이 필요해요."
-                : "추천을 불러오지 못했어요. 다시 시도해주세요.",
+                : error.response?.status === 400 && error.response?.data?.code === "RECOMMENDATION_003"
+                  ? "이 지역에서 선택할 수 없는 거리예요. 추천 조건을 다시 선택해주세요."
+                  : "추천을 불러오지 못했어요. 다시 시도해주세요.",
           );
       });
     return () => {

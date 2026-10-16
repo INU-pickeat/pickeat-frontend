@@ -1,4 +1,5 @@
 import { api } from "./client";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 const foods = {
   korean: "KOREAN",
@@ -13,7 +14,7 @@ const companions = { date: "DATE", family: "FAMILY", kids: "CHILDREN", solo: "SO
 
 /** 추천 요청 변환 */
 export function buildRecommendationRequest(state) {
-  const { latitude, longitude, situation, category, price } = state || {};
+  const { latitude, longitude, situation, category, price, radiusMeters } = state || {};
   if (
     !Number.isFinite(latitude) ||
     Math.abs(latitude) > 90 ||
@@ -24,6 +25,10 @@ export function buildRecommendationRequest(state) {
   )
     throw new Error("INVALID_RECOMMENDATION_INPUT");
   const body = { latitude, longitude, foodCategories: [foods[category]], companionType: companions[situation] };
+  if (radiusMeters != null) {
+    if (!Number.isFinite(radiusMeters) || radiusMeters <= 0) throw new Error("INVALID_RECOMMENDATION_INPUT");
+    body.radiusMeters = radiusMeters;
+  }
   if (price !== "any") {
     if (!Number.isFinite(price?.min) || !Number.isFinite(price?.max) || price.min < 0 || price.min > price.max)
       throw new Error("INVALID_RECOMMENDATION_INPUT");
@@ -35,12 +40,23 @@ export function buildRecommendationRequest(state) {
 /** 추천 응답 확인 */
 function readSession(data) {
   if (data?.sessionId == null || !Array.isArray(data.items)) throw new Error("INVALID_RECOMMENDATION_RESPONSE");
-  return { ...data, items: [...data.items].sort((a, b) => a.rank - b.rank) };
+  if (!Array.isArray(data.radiusOptions) || !data.radiusOptions.includes(data.radiusMeters))
+    throw new Error("INVALID_RECOMMENDATION_RESPONSE");
+  return {
+    ...data,
+    items: [...data.items]
+      .sort((a, b) => a.rank - b.rank)
+      .map((item) => ({
+        ...item,
+        id: item.restaurantId,
+        image: resolveImageUrl(item.representativeImageUrl),
+      })),
+  };
 }
 
 /** 추천 생성 */
-export async function createRecommendation(body) {
-  const { data } = await api.post("/v1/recommendations", body);
+export async function createRecommendation(body, signal) {
+  const { data } = await api.post("/v1/recommendations", body, { signal });
   return readSession(data);
 }
 

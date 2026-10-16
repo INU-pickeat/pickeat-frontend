@@ -1,32 +1,34 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Splash from "./components/common/Splash";
 import Intro from "./pages/Intro";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ResetPassword from "./pages/ResetPassword";
-import Home from "./pages/Home";
-import Explore from "./pages/Explore";
-import Restaurant from "./pages/Restaurant";
-import Feed from "./pages/Feed";
-import Recent from "./pages/Recent";
-import MyPage from "./pages/MyPage";
-import MyInfoEdit from "./pages/MyInfoEdit";
-import Notifications from "./pages/Notifications";
-import LocationConfirm from "./pages/LocationConfirm";
-import LocationSearch from "./pages/LocationSearch";
-import SituationSelect from "./pages/SituationSelect";
-import CategorySelect from "./pages/CategorySelect";
-import CompleteSelect from "./pages/CompleteSelect";
-import PriceSelect from "./pages/PriceSelect";
-import RecommendLoading from "./pages/RecommendLoading";
-import RecommendResult from "./pages/RecommendResult";
-import Calendar from "./pages/Calendar";
-import Write from "./pages/Write";
-import History from "./pages/History";
 
-import Map from "./pages/Map";
+// 방문한 페이지의 코드만 불러오기
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Home = lazy(() => import("./pages/Home"));
+const Explore = lazy(() => import("./pages/Explore"));
+const Restaurant = lazy(() => import("./pages/Restaurant"));
+const Feed = lazy(() => import("./pages/Feed"));
+const Recent = lazy(() => import("./pages/Recent"));
+const MyPage = lazy(() => import("./pages/MyPage"));
+const MyInfoEdit = lazy(() => import("./pages/MyInfoEdit"));
+const Notifications = lazy(() => import("./pages/Notifications"));
+const LocationConfirm = lazy(() => import("./pages/LocationConfirm"));
+const LocationSearch = lazy(() => import("./pages/LocationSearch"));
+const SituationSelect = lazy(() => import("./pages/SituationSelect"));
+const CategorySelect = lazy(() => import("./pages/CategorySelect"));
+const CompleteSelect = lazy(() => import("./pages/CompleteSelect"));
+const PriceSelect = lazy(() => import("./pages/PriceSelect"));
+const RecommendLoading = lazy(() => import("./pages/RecommendLoading"));
+const RecommendResult = lazy(() => import("./pages/RecommendResult"));
+const Calendar = lazy(() => import("./pages/Calendar"));
+const Write = lazy(() => import("./pages/Write"));
+const History = lazy(() => import("./pages/History"));
+const Map = lazy(() => import("./pages/Map"));
 
+// 앱 라우팅과 초기 스플래시
 export default function App() {
   // 스플래시 애니메이션 상태
   const [showSplash, setShowSplash] = useState(() => {
@@ -40,32 +42,35 @@ export default function App() {
           <Splash onFinish={() => setShowSplash(false)} />
         ) : (
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Intro />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/explore/:region" element={<Explore />} />
-              <Route path="/restaurant/:id" element={<Restaurant />} />
-              <Route path="/recent" element={<Recent />} />
-              <Route path="/mypage" element={<MyPage />} />
-              <Route path="/mypage/edit" element={<MyInfoEdit />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/location" element={<LocationConfirm />} />
-              <Route path="/location/custom" element={<LocationSearch />} />
-              <Route path="/recommend/situation" element={<SituationSelect />} />
-              <Route path="/recommend/category" element={<CategorySelect />} />
-              <Route path="/recommend/complete" element={<CompleteSelect />} />
-              <Route path="/recommend/price" element={<PriceSelect />} />
-              <Route path="/recommend/loading" element={<RecommendLoading />} />
-              <Route path="/recommend/result" element={<RecommendResult />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/history/write" element={<Write />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/feed" element={<Feed />} />
-              <Route path="/map" element={<Map />} />
-            </Routes>
+            {/* 페이지 코드 로딩 경계 */}
+            <Suspense fallback={null}>
+              <Routes>
+                <Route path="/" element={<Intro />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/explore/:region" element={<Explore />} />
+                <Route path="/restaurant/:id" element={<Restaurant />} />
+                <Route path="/recent" element={<Recent />} />
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/mypage/edit" element={<MyInfoEdit />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/location" element={<LocationConfirm />} />
+                <Route path="/location/custom" element={<LocationSearch />} />
+                <Route path="/recommend/situation" element={<SituationSelect />} />
+                <Route path="/recommend/category" element={<CategorySelect />} />
+                <Route path="/recommend/complete" element={<CompleteSelect />} />
+                <Route path="/recommend/price" element={<PriceSelect />} />
+                <Route path="/recommend/loading" element={<RecommendLoading />} />
+                <Route path="/recommend/result" element={<RecommendResult />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/history/write" element={<Write />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/feed" element={<Feed />} />
+                <Route path="/map" element={<Map />} />
+              </Routes>
+            </Suspense>
           </BrowserRouter>
         )}
       </main>

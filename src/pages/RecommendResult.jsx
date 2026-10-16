@@ -6,6 +6,7 @@ import useRecommendation from "../hooks/useRecommendation";
 import { foodNames } from "../constants/restaurant";
 import { getNickname } from "../api/tokenStorage";
 import { formatDistance } from "../utils/distance";
+import { buildRecommendationRequest } from "../api/recommendations";
 
 const reasons = [
   ["DISTANCE_TOO_FAR", "거리가 멀어요."],
@@ -19,10 +20,41 @@ export default function RecommendResult() {
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
-  const { items, isLoading, error, isExcluding, exclude, retry } = useRecommendation(params.get("sessionId"));
+  const {
+    items,
+    radiusMeters,
+    radiusOptions = [],
+    isLoading,
+    error,
+    isExcluding,
+    isChangingRadius,
+    changeRadius: requestRadius,
+    exclude,
+    retry,
+  } = useRecommendation(params.get("sessionId"));
   const [target, setTarget] = useState(null);
   const [reason, setReason] = useState("");
   const [isDistanceOpen, setIsDistanceOpen] = useState(false);
+
+  /** 같은 조건에서 반경을 바꿔 새 추천 생성 */
+  async function changeRadius(radius) {
+    setIsDistanceOpen(false);
+    if (radius === radiusMeters) return;
+    const conditions = { ...location.state, radiusMeters: radius };
+    let body;
+    try {
+      body = buildRecommendationRequest(conditions);
+    } catch {
+      alert("위치와 추천 조건을 다시 선택해주세요.");
+      return;
+    }
+    const session = await requestRadius(body);
+    if (session) {
+      const nextParams = new URLSearchParams(params);
+      nextParams.set("sessionId", session.sessionId);
+      navigate(`${location.pathname}?${nextParams}`, { replace: true, state: conditions });
+    }
+  }
 
   /** 제외 모달 닫기 */
   function close() {
@@ -55,16 +87,18 @@ export default function RecommendResult() {
           <br />
           {location.state?.neighborhood || "선택한 지역"} 추천 맛집
         </h1>
-        {/* 거리 조건은 API 명세 확정 후 연결 */}
+        {/* 서버에서 내려준 반경 옵션 */}
         <div className="relative mt-3 flex justify-end">
           <button
             type="button"
             aria-label="추천 거리 기준"
             aria-expanded={isDistanceOpen}
+            disabled={isLoading || isExcluding || isChangingRadius || radiusOptions.length === 0}
+            aria-busy={isChangingRadius}
             onClick={() => setIsDistanceOpen(!isDistanceOpen)}
             className="flex items-center gap-1 text-[12px] font-semibold text-[#F87816]"
           >
-            500m 기준
+            {radiusMeters != null ? `${formatDistance(radiusMeters)} 기준` : "거리 기준"}
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -77,17 +111,15 @@ export default function RecommendResult() {
           </button>
           {isDistanceOpen && (
             <div className="absolute right-0 top-full z-20 mt-2 flex w-26 flex-col overflow-hidden rounded-xl border-[1.5px] border-[#F86516] bg-[#FFFDF8] shadow-lg">
-              {["500m", "1km", "2km"].map((distance) => (
+              {radiusOptions.map((distance) => (
                 <button
                   key={distance}
                   type="button"
-                  onClick={() => {
-                    setIsDistanceOpen(false);
-                    alert("거리 기준 변경은 구현 예정입니다.");
-                  }}
+                  aria-pressed={distance === radiusMeters}
+                  onClick={() => changeRadius(distance)}
                   className="border-b border-[#F86516]/30 py-2 text-[14px] font-bold text-[#F86516] last:border-0"
                 >
-                  {distance} 기준
+                  {formatDistance(distance)} 기준
                 </button>
               ))}
             </div>
@@ -95,7 +127,7 @@ export default function RecommendResult() {
         </div>
       </header>
       {/* 추천 목록 */}
-      <div className="px-6 pb-14 flex flex-col gap-4 relative">
+      <div className="px-6 pb-14 flex flex-col gap-4 relative" aria-busy={isChangingRadius}>
         {/* 로딩·오류·빈 결과 안내 */}
         {isLoading && <p role="status">추천을 불러오는 중이에요.</p>}
         {error && (
@@ -130,6 +162,7 @@ export default function RecommendResult() {
           >
             {/* 식당 사진·순위·이름 & 상세보기 */}
             <button
+              disabled={isChangingRadius}
               className="absolute inset-0 w-full text-left"
               onClick={() =>
                 navigate(
@@ -172,6 +205,7 @@ export default function RecommendResult() {
             </button>
             {/* 다른 식당 추천 버튼 */}
             <button
+              disabled={isChangingRadius}
               onClick={() => setTarget(restaurant.id)}
               className="absolute top-6 right-6 bg-[#FFFDF8] text-[#434343] text-[10px] font-medium px-3 py-1.5 rounded-full shadow-sm"
             >

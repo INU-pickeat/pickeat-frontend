@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { getRecommendation, excludeRecommendation } from "../api/recommendations";
-import { getRestaurant } from "../api/restaurants";
+import { getRecommendation, excludeRecommendation, createRecommendation } from "../api/recommendations";
 
 /** 추천 목록 조회 및 제외 */
 export default function useRecommendation(sessionId) {
   const [state, setState] = useState({ items: [], isLoading: true, error: "" });
   const [attempt, setAttempt] = useState(0);
   const [isExcluding, setIsExcluding] = useState(false);
+  const [isChangingRadius, setIsChangingRadius] = useState(false);
+  const radiusRequest = useRef(null);
+  const createdSession = useRef(null);
   const busy = useRef(false);
   const generation = useRef(0);
   const requestKey = `${sessionId}:${attempt}`;
@@ -17,9 +19,12 @@ export default function useRecommendation(sessionId) {
     async function load() {
       try {
         if (!sessionId) throw new Error("MISSING_SESSION");
-        const session = await getRecommendation(sessionId, controller.signal);
-        const items = await hydrate(session.items, controller.signal);
-        if (!controller.signal.aborted) setState({ requestKey, items, isLoading: false, error: "" });
+        const session =
+          String(createdSession.current?.sessionId) === String(sessionId)
+            ? createdSession.current
+            : await getRecommendation(sessionId, controller.signal);
+        createdSession.current = null;
+        if (!controller.signal.aborted) setState({ ...session, requestKey, isLoading: false, error: "" });
       } catch (error) {
         if (!controller.signal.aborted && generation.current === version)
           setState({ requestKey, items: [], isLoading: false, error: message(error) });
@@ -28,9 +33,35 @@ export default function useRecommendation(sessionId) {
     load();
     return () => {
       controller.abort();
+      radiusRequest.current?.abort();
       generation.current = version + 1;
     };
   }, [sessionId, requestKey]);
+
+  /** 현재 결과를 유지하면서 새 반경 세션 생성 */
+  async function changeRadius(body) {
+    if (busy.current || state.requestKey !== requestKey) return null;
+    busy.current = true;
+    setIsChangingRadius(true);
+    setState((previous) => ({ ...previous, error: "" }));
+    const controller = new AbortController();
+    radiusRequest.current = controller;
+    const version = generation.current;
+    try {
+      const session = await createRecommendation(body, controller.signal);
+      if (controller.signal.aborted || generation.current !== version) return null;
+      createdSession.current = session;
+      setState({ ...session, requestKey: `${session.sessionId}:${attempt}`, isLoading: false, error: "" });
+      return session;
+    } catch (error) {
+      if (!controller.signal.aborted && generation.current === version)
+        setState((previous) => ({ ...previous, error: message(error) }));
+      return null;
+    } finally {
+      busy.current = false;
+      setIsChangingRadius(false);
+    }
+  }
 
   /** 후보 제외 후 목록 갱신 */
   async function exclude(restaurantId, reason) {
@@ -40,9 +71,8 @@ export default function useRecommendation(sessionId) {
     const version = generation.current;
     try {
       const session = await excludeRecommendation(sessionId, restaurantId, reason);
-      const items = await hydrate(session.items);
       if (generation.current !== version) return false;
-      setState({ requestKey, items, isLoading: false, error: "" });
+      setState({ ...session, requestKey, isLoading: false, error: "" });
       return true;
     } catch (error) {
       if (generation.current === version) setState((prev) => ({ ...prev, error: message(error) }));
@@ -54,21 +84,14 @@ export default function useRecommendation(sessionId) {
   }
 
   const currentState = state.requestKey === requestKey ? state : { items: [], isLoading: true, error: "" };
-  return { ...currentState, isExcluding, exclude, retry: () => setAttempt((value) => value + 1) };
-}
-
-/** 카드 사진 조회 */
-async function hydrate(items, signal) {
-  return Promise.all(
-    items.map(async (item) => {
-      try {
-        const detail = await getRestaurant(item.restaurantId, signal);
-        return { ...detail, ...item, id: item.restaurantId };
-      } catch {
-        return { ...item, id: item.restaurantId, image: null };
-      }
-    }),
-  );
+  return {
+    ...currentState,
+    isExcluding,
+    isChangingRadius,
+    changeRadius,
+    exclude,
+    retry: () => setAttempt((value) => value + 1),
+  };
 }
 
 /** 추천 오류 안내 */
