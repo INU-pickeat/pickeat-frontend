@@ -40,16 +40,16 @@ export default function Login() {
   };
 
   return (
-    <PageTransition className="flex-1 w-full flex flex-col justify-center bg-[#FFFDF8] px-6 py-10">
-      <div className="w-full flex justify-center mt-4 mb-12">
-        <h1 className="text-2xl font-bold text-[#F86516]">로그인</h1>
+    <PageTransition className="min-h-dvh w-full flex flex-col bg-[#FFFDF8] px-[25px] pt-[113px] pb-[62px]">
+      <div className="w-full flex justify-center mb-[71px]">
+        <h1 className="text-2xl leading-[50px] font-bold text-[#F86516]">로그인</h1>
       </div>
 
       <form onSubmit={handleLogin} aria-busy={isSubmitting}>
-        <div className="w-full flex flex-col space-y-5">
+        <div className="w-full flex flex-col gap-[10px]">
           {/* 이메일 입력 */}
-          <div className="flex flex-col space-y-2">
-            <label htmlFor="login-email" className="text-[#FF8223] text-sm font-semibold ml-4">
+          <div className="flex flex-col gap-[7px]">
+            <label htmlFor="login-email" className="text-[#FF8223] text-[14px] leading-[30px] font-medium ml-5">
               이메일
             </label>
             <input
@@ -61,13 +61,13 @@ export default function Login() {
               required
               disabled={isSubmitting}
               placeholder="이메일을 입력해주세요."
-              className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
+              className="w-full h-[35px] rounded-full border-[1.5px] border-[#FF8223] px-5 text-[12px] bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
             />
           </div>
 
           {/* 비밀번호 입력 */}
-          <div className="flex flex-col space-y-2">
-            <label htmlFor="login-password" className="text-[#FF8223] text-sm font-semibold ml-4">
+          <div className="flex flex-col gap-[7px]">
+            <label htmlFor="login-password" className="text-[#FF8223] text-[14px] leading-[30px] font-medium ml-5">
               비밀번호
             </label>
             <input
@@ -79,14 +79,14 @@ export default function Login() {
               required
               disabled={isSubmitting}
               placeholder="비밀번호를 입력해주세요."
-              className="w-full h-10 rounded-full border-[1.5px] border-[#FF8223] px-5 text-sm bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
+              className="w-full h-[35px] rounded-full border-[1.5px] border-[#FF8223] px-5 text-[12px] bg-transparent placeholder-[#FFBE85] focus:outline-none focus:ring-2 focus:ring-[#f87816]/30 transition-shadow"
             />
 
             {/* 비밀번호 찾기 링크 */}
-            <div className="flex justify-end pt-1 pr-4 cursor-pointer" onClick={() => navigate("/reset-password")}>
+            <div className="flex justify-end pt-[5px] pr-4 cursor-pointer" onClick={() => navigate("/reset-password")}>
               <button
                 type="button"
-                className="text-xs text-[#f87816] hover:text-[#f87816] hover:underline transition-colors cursor-pointer"
+                className="text-[10px] leading-[14px] text-[#f87816] hover:text-[#f87816] hover:underline transition-colors cursor-pointer"
               >
                 비밀번호 찾기
               </button>
@@ -95,22 +95,22 @@ export default function Login() {
         </div>
 
         {/* 로그인 버튼 */}
-        <div className="w-full mt-8">
+        <div className="w-full mt-[26px]">
           {errorMessage && (
             <p role="alert" className="text-[#FF2339] text-xs font-medium mb-3 text-center">
               {errorMessage}
             </p>
           )}
-          <Button type="submit" disabled={isSubmitting} className="shadow-none disabled:opacity-50">
+          <Button type="submit" disabled={isSubmitting} className="h-[38px] shadow-none disabled:opacity-50">
             {isSubmitting ? "로그인 중…" : "로그인"}
           </Button>
         </div>
       </form>
 
       {/* 구분선 */}
-      <div className="flex items-center my-10">
+      <div className="flex items-center mt-[32px] mb-[65px]">
         <div className="flex-1 border border-[#FF9639]"></div>
-        <span className="px-3 text-[#FF9639] text-sm font-medium">또는</span>
+        <span className="px-3 text-[#FF9639] text-[10px] leading-[13px] font-medium">또는</span>
         <div className="flex-1 border border-[#FF9639]"></div>
       </div>
 
@@ -156,7 +156,7 @@ export default function Login() {
       </div>
 
       {/* 회원가입 문구 */}
-      <div className="w-full flex justify-center pt-6">
+      <div className="w-full flex justify-center mt-auto pt-10">
         <p className="text-sm text-[#FF8223] font-medium">
           계정이 없으신가요?{" "}
           <button

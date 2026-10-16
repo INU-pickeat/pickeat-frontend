@@ -39,7 +39,7 @@ export default function MyPage() {
 
   /** 메뉴 렌더링 */
   const renderMenu = (menuList) => (
-    <div className="w-full bg-[#FFECCD] rounded-2xl px-5 py-2 shadow-sm">
+    <div className="w-full bg-[#FFECCD] rounded-[20px] px-[29px] py-[23px]">
       {menuList.map((menu) => (
         <button
           key={menu.id}
@@ -49,7 +49,7 @@ export default function MyPage() {
               setIsLogoutOpen(true);
             } else alert("추가 예정입니다.");
           }}
-          className="w-full flex justify-between items-center py-3 active:opacity-60 transition-opacity cursor-pointer"
+          className="w-full min-h-[44px] flex justify-between items-center gap-3 py-[10px] active:opacity-60 transition-opacity cursor-pointer"
         >
           <span className="text-[15px] font-medium text-[#434343]">{menu.title}</span>
           {/* 오른쪽 화살표 아이콘 */}
@@ -71,7 +71,7 @@ export default function MyPage() {
     <>
       <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
         {/* 내부 스크롤 영역 */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide px-6 pt-16 pb-28">
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-[25px] pt-[114px] pb-32">
           {/* 상단 프로필 영역 */}
           {isLoading && (
             <p role="status" className="exception-glow mb-10 text-sm text-[#777777]">
@@ -93,9 +93,9 @@ export default function MyPage() {
             </div>
           )}
           {member && (
-            <div className="flex items-center space-x-4 mb-10">
+            <div className="flex items-center gap-5 px-[14px] mb-[44px]">
               {/* 프로필 이미지 */}
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-[#F86516] flex items-center justify-center shrink-0 shadow-sm">
+              <div className="w-[58px] h-[58px] rounded-full overflow-hidden bg-[#F86516] flex items-center justify-center shrink-0">
                 <img
                   src={member.profileImageUrl || DefaultProfile}
                   alt="프로필 이미지"
@@ -109,11 +109,13 @@ export default function MyPage() {
 
               {/* 유저 이름 및 정보 수정 */}
               <div className="min-w-0 flex flex-col justify-center">
-                <h2 className="text-[19px] font-bold text-[#F86516] mb-1">{member.nickname}님 안녕하세요.</h2>
+                <h2 className="text-[18px] leading-[25px] font-bold text-[#F87816] mb-1">
+                  {member.nickname}님 안녕하세요.
+                </h2>
                 {member.bio?.trim() && <p className="mb-2 text-[12px] leading-relaxed text-[#777777]">{member.bio}</p>}
                 <button
                   onClick={() => navigate("/mypage/edit")}
-                  className="text-[12px] text-[#FF8839] font-semibold text-left hover:underline w-fit cursor-pointer"
+                  className="text-[14px] text-[#FF9639] font-medium text-left hover:underline w-fit cursor-pointer"
                 >
                   내 정보 수정
                 </button>

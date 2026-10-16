@@ -54,7 +54,7 @@ export default function CategorySelect() {
   }, []);
 
   return (
-    <PageTransition className="h-dvh w-full flex flex-col relative overflow-hidden bg-[#FFFDF8]">
+    <PageTransition className="min-h-dvh w-full flex flex-col relative overflow-x-hidden bg-[#FFFDF8]">
       {/* 그라데이션 배경 */}
       <div
         className="absolute inset-0 w-full h-full z-0 blur-[60px] scale-125"
@@ -63,24 +63,28 @@ export default function CategorySelect() {
         }}
       />
 
-      <div className="pt-12 px-6 flex flex-col items-center relative z-10">
+      <div className="pt-[88px] px-[25px] flex flex-col items-center relative z-10 shrink-0">
         {/* 뒤로가기 버튼 */}
         <button
           onClick={() => navigate(-1)}
-          className="absolute left-3 top-9 p-3 active:scale-90 transition-transform cursor-pointer"
+          className="self-start mb-[22px] active:scale-90 transition-transform cursor-pointer"
         >
           <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6" />
         </button>
 
-        <h1 className="text-[24px] font-bold text-[#F86516] mt-8 mb-3">선호하는 음식 종류는?</h1>
-        <p className="text-[14px] font-semibold text-[#F87816]">선호하는 음식을 선택해주세요.</p>
+        <h1 className="text-[24px] leading-[50px] tracking-[-0.6px] text-center font-bold text-[#F86516]">
+          선호하는 음식 종류는?
+        </h1>
+        <p className="text-[16px] leading-[37px] text-center font-semibold text-[#F87816]">
+          선호하는 음식 선택해주세요.
+        </p>
       </div>
 
       {/* 카드 스와이프 영역 */}
-      <div className="flex-1 w-full flex flex-col justify-center relative z-10 -translate-y-2">
+      <div className="flex-1 w-full flex flex-col pt-[49px] relative z-10">
         <div
           ref={scrollRef}
-          className="flex w-full overflow-x-auto snap-x snap-mandatory gap-6 py-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none scroll-smooth"
+          className="flex w-full items-center overflow-x-auto snap-x snap-mandatory gap-[22px] py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none scroll-smooth"
           style={{ paddingLeft: "calc(50% - 112px)", paddingRight: "calc(50% - 112px)" }}
         >
           {categories.map((item, index) => {
@@ -92,15 +96,11 @@ export default function CategorySelect() {
                 data-id={item.id}
                 ref={(el) => (cardRefs.current[index] = el)}
                 onClick={() => setSelectedCategory(item.id)}
-                className={`snap-center snap-always shrink-0 w-56 aspect-[3/4.2] rounded-[30px] flex flex-col items-center justify-center transition-all duration-300 ${
-                  isSelected ? "bg-[#FFFDF8] scale-105" : "bg-[#FFFDF8] shadow-md scale-95"
+                className={`snap-center snap-always shrink-0 w-56 max-h-[42dvh] h-[328px] rounded-[30px] flex flex-col items-center justify-center transition-all duration-300 ${
+                  isSelected ? "bg-[#FFF8ED] scale-100" : "bg-[#FFECCD] scale-95"
                 }`}
               >
-                <img
-                  src={item.icon}
-                  alt={item.label}
-                  className={`w-28 h-28 object-contain mb-8 transition-transform ${isSelected ? "scale-110" : ""}`}
-                />
+                <img src={item.icon} alt={item.label} className="w-32 h-28 object-contain mb-[50px]" />
                 <span
                   className={`text-[20px] ${isSelected ? "font-bold text-[#F86516]" : "font-bold text-[#F86516]/60"}`}
                 >

@@ -40,7 +40,7 @@ export default function BottomNav() {
     // 위치 고정
     <nav
       aria-label="하단 메뉴"
-      className="fixed bottom-5 left-1/2 -translate-x-1/2 w-[calc(100%-44px)] max-w-[343px] h-[53px] bg-[#FFECCD]/90 rounded-full flex items-center justify-between px-[7px] z-50"
+      className="fixed bottom-[max(40px,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-[calc(100%-44px)] max-w-[343px] h-[53px] bg-[#FFECCD]/90 rounded-full flex items-center justify-between px-[7px] z-50"
     >
       {tabs.map((tab) => {
         const isActive = tab.activePaths.includes(location.pathname);
@@ -53,7 +53,7 @@ export default function BottomNav() {
             onClick={() => navigate(tab.path)}
             // 현재 페이지일 경우 배경색 진하게
             className={`flex flex-1 justify-center items-center h-[41px] rounded-full transition-colors text-[#F86516] ${
-              isActive ? "bg-[#FCCDA5]" : "bg-transparent"
+              isActive ? "bg-[#FED4B3]" : "bg-transparent"
             } cursor-pointer`}
           >
             {tab.icon}
