@@ -76,7 +76,7 @@ export default function CategorySelect() {
           선호하는 음식 종류는?
         </h1>
         <p className="text-[16px] leading-[37px] text-center font-semibold text-[#F87816]">
-          선호하는 음식 선택해주세요.
+          선호하는 카테고리를 선택해주세요.
         </p>
       </div>
 

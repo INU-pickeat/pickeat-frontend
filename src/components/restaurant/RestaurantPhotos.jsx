@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PhotoViewer from "./PhotoViewer";
+import usePhotoSwipe from "../../hooks/usePhotoSwipe";
 
 /** 식당 사진 넘기기 */
 export default function RestaurantPhotos({ images, name }) {
@@ -8,6 +9,12 @@ export default function RestaurantPhotos({ images, name }) {
   const [isOpen, setIsOpen] = useState(false);
   const visible = images.filter((url) => !failed.includes(url));
   const current = visible.length ? index % visible.length : 0;
+  const swipe = usePhotoSwipe(
+    (direction) => {
+      if (visible.length > 1) setIndex((current + direction + visible.length) % visible.length);
+    },
+    () => setIsOpen(true),
+  );
 
   /** 로드에 실패한 사진 제외 */
   const hideFailed = (url) => setFailed((previous) => (previous.includes(url) ? previous : [...previous, url]));
@@ -30,6 +37,8 @@ export default function RestaurantPhotos({ images, name }) {
         <button
           type="button"
           aria-label="식당 사진 전체 보기"
+          {...swipe}
+          style={{ touchAction: "pan-y pinch-zoom" }}
           onClick={() => setIsOpen(true)}
           className="absolute inset-0"
         />
