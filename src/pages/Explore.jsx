@@ -13,6 +13,7 @@ export default function Explore() {
   const { spots, isLoading, error, retry } = useDiscoverySpots();
   const selectedRegion = spots.find((spot) => spot.slug === region);
   const restaurants = selectedRegion?.restaurants || [];
+  const pickCounts = restaurants.map((restaurant) => getDummyPickCount(restaurant.id)).sort((a, b) => b - a);
 
   return (
     <PageTransition className="min-h-dvh w-full bg-[#FFFDF8] relative overflow-x-hidden overflow-y-auto scrollbar-none">
@@ -64,7 +65,7 @@ export default function Explore() {
         {!isLoading && !error && selectedRegion && restaurants.length === 0 && (
           <p className="text-center">등록된 맛집이 없어요.</p>
         )}
-        {restaurants.map((restaurant) => (
+        {restaurants.map((restaurant, index) => (
           <Link
             key={restaurant.id}
             to={`/restaurant/${restaurant.id}`}
@@ -89,7 +90,7 @@ export default function Explore() {
                 {restaurant.category} - {restaurant.name}
               </span>
               <span className="shrink-0 whitespace-nowrap text-white">
-                {getDummyPickCount(restaurant.id)}명의 <span className="text-[#FF9639]">pick</span>
+                {pickCounts[index]}명의 <span className="text-[#FF9639]">pick</span>
               </span>
             </div>
           </Link>
