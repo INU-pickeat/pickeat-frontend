@@ -63,12 +63,12 @@ export default function History() {
   return (
     <>
       <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
-        <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide pb-24">
+        <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide pb-32">
           {/* 헤더 영역 */}
-          <div className="pt-10 px-6 relative z-10">
+          <div className="pt-[80px] px-[25px] relative z-10 [&>div]:mb-[18px]">
             <button
               onClick={() => navigate("/home")}
-              className="mb-6 p-2 -ml-2 active:scale-90 transition-transform cursor-pointer"
+              className="mb-[15px] p-2 -ml-2 active:scale-90 transition-transform cursor-pointer"
             >
               <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6" />
             </button>
@@ -77,10 +77,10 @@ export default function History() {
           </div>
 
           {/* 메인 컨텐츠 영역 */}
-          <div className="px-6 relative z-10 flex-1 pb-10">
-            <div className="flex justify-between items-center mb-4">
+          <div className="px-[25px] relative z-10 flex-1 pb-10">
+            <div className="flex min-h-[50px] justify-between items-center mb-[9px]">
               {/* 기록 날짜 */}
-              <h2 className="text-[16px] font-semibold text-[#F87816] ml-3">
+              <h2 className="text-[16px] font-semibold text-[#F87816] ml-1">
                 {historyDates.length > 0 ? historyDates[0] : ""}
               </h2>
 
@@ -153,9 +153,9 @@ export default function History() {
                         <div
                           key={item.id}
                           onClick={() => setSelectedRecord(item)} // 카드 클릭 시 모달 띄우기
-                          className="w-full rounded-[24px] overflow-hidden cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-transform"
+                          className="w-full rounded-[20px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
                         >
-                          <div className="relative w-full h-36">
+                          <div className="relative w-full aspect-[340/166]">
                             {item.image && (
                               <img
                                 src={item.image}
@@ -218,7 +218,7 @@ export default function History() {
                           </div>
 
                           {/* 식당 정보 영역 */}
-                          <div className="bg-[#FFECCD] px-5 py-4 flex justify-between items-center">
+                          <div className="bg-[#FFECCD] px-[22px] py-3 min-h-16 flex justify-between items-center gap-3">
                             <h3 className="text-[#F86516] font-bold text-[16px]">{item.restaurantName}</h3>
                             <span className="text-[#F87816] font-medium text-[12px]">{item.tags}</span>
                           </div>
