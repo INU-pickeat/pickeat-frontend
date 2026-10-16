@@ -1,8 +1,12 @@
 import { useEffect, useRef } from "react";
+import usePhotoSwipe from "../../hooks/usePhotoSwipe";
 
 /** 식당 사진 전체 보기 */
 export default function PhotoViewer({ images, current, name, onChange, onClose, onError }) {
   const dialogRef = useRef(null);
+  const swipe = usePhotoSwipe((direction) => {
+    if (images.length > 1) onChange((current + direction + images.length) % images.length);
+  });
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -33,6 +37,9 @@ export default function PhotoViewer({ images, current, name, onChange, onClose, 
     >
       <div className="relative flex h-full w-full items-center justify-center">
         <img
+          {...swipe}
+          draggable={false}
+          style={{ touchAction: "pan-y pinch-zoom" }}
           src={images[current]}
           alt={`${name} 사진 ${current + 1}`}
           onError={() => onError(images[current])}
