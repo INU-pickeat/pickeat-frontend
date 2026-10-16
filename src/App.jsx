@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import Splash from "./components/common/Splash";
 import Intro from "./pages/Intro";
 
@@ -74,6 +75,7 @@ export default function App() {
           </BrowserRouter>
         )}
       </main>
+      <Analytics />
     </div>
   );
 }
