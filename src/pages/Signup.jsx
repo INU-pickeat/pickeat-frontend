@@ -200,8 +200,8 @@ export default function Signup() {
         <h1 className="text-2xl font-bold text-[#F86516]">회원가입</h1>
       </div>
 
-      <form onSubmit={handleSignup} noValidate aria-busy={isBusy}>
-        <fieldset disabled={isBusy} className="w-full flex flex-col space-y-6">
+      <form onSubmit={handleSignup} noValidate aria-busy={isBusy} className="w-full min-w-0">
+        <fieldset disabled={isBusy} className="w-full min-w-0 flex flex-col space-y-6">
           {/* 닉네임 */}
           <div className="flex flex-col space-y-2">
             <label className="text-[#FF8223] text-sm font-semibold ml-4">닉네임</label>

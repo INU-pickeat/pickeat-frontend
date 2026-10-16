@@ -9,8 +9,20 @@ for (const width of [360, 390, 430]) {
     expect(hasOverflow).toBe(false);
     await page.getByRole("button", { name: "회원가입", exact: true }).click();
     await expect(page).toHaveURL(/\/signup$/);
+    for (const input of await page.locator("input").all()) {
+      const box = await input.boundingBox();
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(width);
+    }
   });
 }
+
+test("작은 화면 로그인 기본 상태는 세로로 넘치지 않음", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto("/login");
+  await expect(page.locator("main > div").first()).toHaveCSS("opacity", "1");
+  expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight)).toBe(true);
+});
 
 for (const width of [360, 390, 430]) {
   test(`애플 로고 가운데 정렬 (${width}px)`, async ({ page }, testInfo) => {
