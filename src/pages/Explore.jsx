@@ -80,12 +80,12 @@ export default function Explore() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
             {/* 번호 */}
-            <div className="absolute top-[22px] left-[22px] w-7 h-7 bg-[#FF9639] text-white rounded-full flex items-center justify-center text-[16px] font-semibold">
+            <div className="absolute top-5 left-5 w-7 h-7 bg-[#FF9639] text-white rounded-full flex items-center justify-center text-[16px] font-semibold">
               {restaurant.rank}
             </div>
 
             {/* 식당명 */}
-            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between gap-3 text-[14px] font-semibold">
+            <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 text-[14px] font-semibold">
               <span className="min-w-0 text-white">
                 {restaurant.category} - {restaurant.name}
               </span>

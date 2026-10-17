@@ -78,7 +78,7 @@ export default function RecommendResult() {
       <div className="fixed top-1/2 left-0 w-60 h-60 bg-[#F87816] rounded-full blur-[40px] opacity-60 -translate-y-1/2 -translate-x-1/4 pointer-events-none" />
       <div className="fixed bottom-0 right-0 w-60 h-60 bg-[#F87816] rounded-full blur-[40px] opacity-60 translate-y-1/4 translate-x-1/4 pointer-events-none" />
       {/* 뒤로가기 & 추천 제목 */}
-      <header className="pt-12 px-8 pb-4 relative z-10 mb-8">
+      <header className="pt-12 px-8 pb-4 relative z-10 mb-4">
         <button onClick={() => navigate("/home")} className="mb-5">
           <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6" />
         </button>
@@ -188,10 +188,10 @@ export default function RecommendResult() {
                 />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
-              <span className="absolute top-6 left-6 w-7 h-7 bg-[#F86516] text-white rounded-full flex items-center justify-center text-[14px] font-bold">
+              <span className="absolute top-5 left-5 w-7 h-7 bg-[#F86516] text-white rounded-full flex items-center justify-center text-[14px] font-bold">
                 {restaurant.rank}
               </span>
-              <span className="absolute bottom-6 left-6 right-6 flex flex-col text-[#FFFBF2]">
+              <span className="absolute bottom-5 left-5 right-5 flex flex-col text-[#FFFBF2]">
                 <span className="text-[18px] font-extrabold mb-1">{restaurant.name}</span>
                 <span className="flex items-center justify-between gap-3 text-[12px]">
                   <span className="font-medium">{foodNames[restaurant.foodCategory] || restaurant.foodCategory}</span>
@@ -207,7 +207,7 @@ export default function RecommendResult() {
             <button
               disabled={isChangingRadius}
               onClick={() => setTarget(restaurant.id)}
-              className="absolute top-6 right-6 bg-[#FFFDF8] text-[#434343] text-[10px] font-medium px-3 py-1.5 rounded-full shadow-sm"
+              className="absolute top-5 right-5 bg-[#FFFDF8] text-[#434343] text-[10px] font-medium px-3 py-1.5 rounded-full shadow-sm"
             >
               다른 식당으로 추천
             </button>

@@ -51,7 +51,7 @@ export default function Notifications() {
   return (
     <>
       <PageTransition className="h-dvh w-full flex flex-col bg-[#FFFDF8] overflow-hidden">
-        <div className="flex-1 overflow-y-auto scrollbar-hide px-[29px] pt-[88px] pb-32">
+        <div className="flex-1 overflow-y-auto scrollbar-hide px-6 pt-10 pb-32">
           <button type="button" onClick={() => navigate("/home")} aria-label="홈으로 돌아가기" className="mb-[22px]">
             <img src={LeftArrow} alt="" className="h-6 w-6" />
           </button>
@@ -135,8 +135,13 @@ export default function Notifications() {
               >
                 <span className="min-w-0 text-[14px] leading-5 font-medium text-[#FF9639]">
                   {item.actorNickname && item.message.startsWith(item.actorNickname) ? (
-                    <><span className="text-[#F86516]">{item.actorNickname}</span>{item.message.slice(item.actorNickname.length)}</>
-                  ) : item.message}
+                    <>
+                      <span className="text-[#F86516]">{item.actorNickname}</span>
+                      {item.message.slice(item.actorNickname.length)}
+                    </>
+                  ) : (
+                    item.message
+                  )}
                 </span>
                 <img
                   src={reviewImageUrl(item.actorProfileImageUrl) || DefaultProfile}
