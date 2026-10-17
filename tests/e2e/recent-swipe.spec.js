@@ -103,7 +103,19 @@ for (const width of [360, 390, 430]) {
     }
     await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
     await expect(modal).toBeVisible();
-    await page.keyboard.press("Escape");
+    await modal.getByRole("button", { name: "아니요", exact: true }).tap();
+    await expect(modal).toHaveCount(0);
+    await expect(card).toHaveCSS("transform", "none");
+    await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
+    for (let step = 1; step <= 8; step++) {
+      await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: x - step * 12, y }] });
+      await page.evaluate(() => new Promise(requestAnimationFrame));
+    }
+    await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await expect(modal).toBeVisible();
+    await modal.getByRole("button", { name: "네", exact: true }).tap();
+    await expect(modal).toHaveCount(0);
+    await expect.poll(() => deletions).toBe(2);
     await expect(card).toHaveCSS("transform", "none");
     await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x, y }] });
     for (let step = 1; step <= 8; step++) {
