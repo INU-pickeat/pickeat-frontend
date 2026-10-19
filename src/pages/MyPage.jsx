@@ -112,7 +112,6 @@ export default function MyPage() {
                 <h2 className="text-[18px] leading-[25px] font-bold text-[#F87816] mb-1">
                   {member.nickname}님 안녕하세요.
                 </h2>
-                {member.bio?.trim() && <p className="mb-2 text-[12px] leading-relaxed text-[#777777]">{member.bio}</p>}
                 <button
                   onClick={() => navigate("/mypage/edit")}
                   className="text-[14px] text-[#FF9639] font-medium text-left hover:underline w-fit cursor-pointer"

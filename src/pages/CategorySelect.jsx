@@ -10,6 +10,7 @@ import italianIcon from "../assets/icons/Italian.svg";
 import dessertIcon from "../assets/icons/dessert.svg";
 import alcoholIcon from "../assets/icons/alcohol.svg";
 import etcIcon from "../assets/icons/etc.svg";
+import CheckIcon from "../assets/icons/check.svg";
 
 const categories = [
   { id: "korean", label: "한식", icon: koreanIcon },
@@ -25,6 +26,7 @@ export default function CategorySelect() {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isAnyCategory, setIsAnyCategory] = useState(false);
   const situation = location.state?.situation || null; // 이전 상황 선택 페이지에서 넘겨준 데이터 (선택)
 
   // 스크롤 애니메이션 관련 상태
@@ -77,7 +79,7 @@ export default function CategorySelect() {
       </div>
 
       {/* 카드 스와이프 영역 */}
-      <div className="flex-1 w-full flex flex-col justify-center relative z-10 -translate-y-2">
+      <div className="flex-1 min-h-0 w-full flex flex-col justify-center relative z-10 -translate-y-2">
         <div
           ref={scrollRef}
           className="flex w-full overflow-x-auto snap-x snap-mandatory gap-6 py-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none scroll-smooth"
@@ -92,7 +94,7 @@ export default function CategorySelect() {
                 data-id={item.id}
                 ref={(el) => (cardRefs.current[index] = el)}
                 onClick={() => setSelectedCategory(item.id)}
-                className={`snap-center snap-always shrink-0 w-56 aspect-[3/4.2] rounded-[30px] flex flex-col items-center justify-center transition-all duration-300 ${
+                className={`snap-center snap-always shrink-0 w-56 aspect-[3/4.2] max-h-[calc(100dvh-380px)] rounded-[30px] flex flex-col items-center justify-center transition-all duration-300 ${
                   isSelected ? "bg-[#FFF8ED] scale-105" : "bg-[#FFECCD] shadow-md scale-95"
                 }`}
               >
@@ -114,13 +116,28 @@ export default function CategorySelect() {
 
       {/* 하단 버튼 영역 */}
       <div className="px-6 pb-10 mt-auto z-10">
+        {/* 음식 종류 제한 없이 추천 */}
+        <label className="mb-4 flex items-center justify-between gap-3 px-2 text-[15px] font-semibold text-[#F87816] cursor-pointer">
+          음식 종류 상관없이 추천받아요
+          <input
+            type="checkbox"
+            checked={isAnyCategory}
+            onChange={(event) => setIsAnyCategory(event.target.checked)}
+            className="peer sr-only"
+          />
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFECCD] pee r-focus-visible:ring-2 peer-focus-visible:ring-[#F87816]">
+            {isAnyCategory && <img src={CheckIcon} alt="" />}
+          </span>
+        </label>
         <Button
-          disabled={!selectedCategory}
+          disabled={!selectedCategory && !isAnyCategory}
           onClick={() => {
             // 위치, 상황, 카테고리 데이터를 다음 페이지로 넘김
-            navigate("/recommend/price", { state: { ...location.state, situation, category: selectedCategory } });
+            navigate("/recommend/price", {
+              state: { ...location.state, situation, category: isAnyCategory ? "any" : selectedCategory },
+            });
           }}
-          className={!selectedCategory ? "opacity-50 cursor-not-allowed shadow-none" : "shadow-none"}
+          className={!selectedCategory && !isAnyCategory ? "opacity-50 cursor-not-allowed shadow-none" : "shadow-none"}
         >
           다음
         </Button>

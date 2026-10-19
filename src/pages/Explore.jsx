@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import PageTransition from "../components/common/PageTransition";
 import LeftArrow from "../assets/icons/arrow_left.svg";
 import useDiscoverySpots from "../hooks/useDiscoverySpots";
+import RestaurantImage from "../components/restaurant/RestaurantImage";
 
 /** 식당별 고정 더미 인원 수 */
 function getDummyPickCount(id) {
@@ -23,7 +24,7 @@ export default function Explore() {
       <div className="fixed bottom-0 right-0 w-60 h-60 bg-[#F87816] rounded-full blur-[40px] opacity-60 translate-y-1/4 translate-x-1/4 pointer-events-none z-0" />
 
       {/* 헤더 영역 */}
-      <div className="pt-[88px] px-[29px] relative z-10 mb-[26px]">
+      <div className="pt-12 px-[29px] relative z-10 mb-[26px]">
         <Link to="/home" aria-label="홈으로 돌아가기" className="w-6 h-6 mb-5 block">
           <img src={LeftArrow} alt="뒤로가기" className="w-6 h-6" />
         </Link>
@@ -33,7 +34,7 @@ export default function Explore() {
           className={`text-[26px] font-bold text-[#F86516] leading-[40px] ${!selectedRegion && !isLoading && !error ? "text-center" : ""}`}
         >
           {selectedRegion ? (
-            <>{selectedRegion.name} 인기 맛집</>
+            <>{selectedRegion.name} 인기 맛집 Top 5</>
           ) : isLoading || error ? (
             "지역별 인기 맛집"
           ) : (
@@ -72,7 +73,7 @@ export default function Explore() {
             state={{ returnTo: `/explore/${region}` }}
             className="relative block w-full aspect-[340/234] rounded-[20px] overflow-hidden group"
           >
-            <img
+            <RestaurantImage
               src={restaurant.image}
               alt={restaurant.name}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

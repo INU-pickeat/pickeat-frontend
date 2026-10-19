@@ -1,6 +1,7 @@
 import { resolveImageUrl } from "../../utils/imageUrl";
 import { Link } from "react-router-dom";
 import { foodNames } from "../../constants/restaurant";
+import RestaurantImage from "../restaurant/RestaurantImage";
 
 /** 식당별 Pick 요약 */
 export default function PickSummaryCard({ pick, to }) {
@@ -19,28 +20,28 @@ export default function PickSummaryCard({ pick, to }) {
               new Date(pick.latestPickedAt),
             )}
           </span>
-          <span>{pick.pickCount}번째 방문</span>
+          <span>{pick.pickCount}번째 선택</span>
         </div>
       </div>
 
       {/* 대표 사진 영역 */}
-      {image && (
-        <div className="relative w-[24%] min-w-20 max-w-[108px] shrink-0 bg-[#FFE0B2]">
-          <img
-            key={image}
-            src={image}
-            alt={pick.restaurantName}
-            className="absolute inset-0 h-full w-full object-cover"
-            onError={(event) => {
-              event.currentTarget.style.display = "none";
-            }}
-          />
-        </div>
-      )}
+      <div className="relative w-[24%] min-w-20 max-w-[108px] shrink-0 bg-[#FFE0B2]">
+        <RestaurantImage
+          key={image}
+          src={image}
+          alt={pick.restaurantName}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
     </>
   );
   return to ? (
-    <Link to={to} className={className}>
+    <Link
+      draggable={false}
+      to={to}
+      state={to.startsWith("/restaurant/") ? { returnTo: "/recent" } : undefined}
+      className={className}
+    >
       {content}
     </Link>
   ) : (

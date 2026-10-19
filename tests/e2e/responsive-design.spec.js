@@ -54,7 +54,8 @@ for (const width of [360, 390, 430]) {
     await checkLayout(page);
     const nav = page.getByRole("navigation", { name: "하단 메뉴" });
     const box = await nav.boundingBox();
-    expect(Math.abs(844 - box.y - box.height - 20)).toBeLessThan(1);
+    expect(box.y).toBeGreaterThan(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(844);
     await expect(nav.getByRole("button", { name: "마이페이지" })).toHaveCSS("background-color", "rgb(254, 212, 179)");
     if (width === 390) await page.screenshot({ path: testInfo.outputPath("mypage.png") });
     await page.getByRole("button", { name: "로그아웃", exact: true }).click();

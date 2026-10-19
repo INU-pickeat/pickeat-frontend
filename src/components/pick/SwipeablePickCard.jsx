@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import PickSummaryCard from "./PickSummaryCard";
 import BinIcon from "../../assets/icons/bin.svg";
@@ -8,6 +8,7 @@ const REVEAL_WIDTH = 88;
 /** 최근 Pick 삭제 스와이프 */
 export default function SwipeablePickCard({ pick, isOpen, onOpen, onClose }) {
   const controls = useAnimationControls();
+  const dragged = useRef(false);
   useEffect(() => {
     controls.start({ x: isOpen ? -REVEAL_WIDTH : 0 });
   }, [isOpen, controls]);
@@ -39,6 +40,18 @@ export default function SwipeablePickCard({ pick, isOpen, onOpen, onClose }) {
         dragConstraints={{ left: -REVEAL_WIDTH, right: 0 }}
         dragElastic={0}
         dragMomentum={false}
+        onPointerDown={() => {
+          dragged.current = false;
+        }}
+        onDragStart={() => {
+          dragged.current = true;
+        }}
+        onClickCapture={(event) => {
+          if (dragged.current) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }}
         animate={controls}
         transition={{ type: "spring", stiffness: 400, damping: 36 }}
         onDragEnd={(_, info) => {
@@ -54,7 +67,7 @@ export default function SwipeablePickCard({ pick, isOpen, onOpen, onClose }) {
         }}
         className="relative touch-pan-y select-none [&_img]:pointer-events-none"
       >
-        <PickSummaryCard pick={pick} />
+        <PickSummaryCard pick={pick} to={`/restaurant/${pick.restaurantId}`} />
       </motion.div>
     </div>
   );

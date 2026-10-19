@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PhotoViewer from "./PhotoViewer";
 import usePhotoSwipe from "../../hooks/usePhotoSwipe";
+import RestaurantImage from "./RestaurantImage";
 
 /** 식당 사진 넘기기 */
 export default function RestaurantPhotos({ images, name }) {
@@ -22,6 +23,7 @@ export default function RestaurantPhotos({ images, name }) {
   return (
     <div className="absolute inset-0" role="region" aria-label="식당 사진">
       {/* 로딩에 실패한 사진은 제외 */}
+      {visible.length === 0 && <RestaurantImage alt={`${name} 기본 사진`} className="h-full w-full object-cover" />}
       {visible.map((url, position) => (
         <img
           key={url}

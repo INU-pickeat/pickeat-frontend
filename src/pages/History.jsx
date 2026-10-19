@@ -65,7 +65,7 @@ export default function History() {
       <PageTransition className="h-dvh w-full flex flex-col relative bg-[#FFFDF8] overflow-hidden">
         <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide pb-32">
           {/* 헤더 영역 */}
-          <div className="pt-[80px] px-[25px] relative z-10 [&>div]:mb-[18px]">
+          <div className="pt-10 px-[25px] relative z-10 [&>div]:mb-[18px]">
             <button
               onClick={() => navigate("/home")}
               className="mb-[15px] p-2 -ml-2 active:scale-90 transition-transform cursor-pointer"

@@ -23,9 +23,7 @@ export function mapDiscoverySpots(data) {
           address: restaurant.address,
           openingHoursText: restaurant.openingHoursText,
           phone: restaurant.phoneNumber,
-          image: restaurant.representativeImageUrl
-            ? resolveImageUrl(restaurant.representativeImageUrl)
-            : "/assets/dummy.png",
+          image: restaurant.representativeImageUrl ? resolveImageUrl(restaurant.representativeImageUrl) : null,
         })),
     }));
 }
