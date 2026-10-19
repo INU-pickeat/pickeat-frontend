@@ -125,7 +125,7 @@ export default function CategorySelect() {
             onChange={(event) => setIsAnyCategory(event.target.checked)}
             className="peer sr-only"
           />
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFECCD] pee r-focus-visible:ring-2 peer-focus-visible:ring-[#F87816]">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-1 bg-[#FFECCD] pee r-focus-visible:ring-2 peer-focus-visible:ring-[#F87816]">
             {isAnyCategory && <img src={CheckIcon} alt="" />}
           </span>
         </label>
