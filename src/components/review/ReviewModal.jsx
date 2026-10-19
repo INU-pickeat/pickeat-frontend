@@ -1,8 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import DefaultProfile from "../../assets/profile_default.png";
+import usePhotoSwipe from "../../hooks/usePhotoSwipe";
+import { reviewImageUrl } from "../../utils/reviewDisplay";
 
-export default function ReviewModal({ review, onClose, showAuthor = true }) {
+export default function ReviewModal({ review, onClose, showAuthor = true, expandedPhotos = false }) {
   const dialogRef = useRef(null);
+  const [index, setIndex] = useState(0);
+  const images = expandedPhotos
+    ? (review.images || review.imageUrls || (review.image ? [review.image] : []))
+        .filter(Boolean)
+        .slice(0, 5)
+        .map(reviewImageUrl)
+    : review.image
+      ? [review.image]
+      : [];
+  const current = images.length ? index % images.length : 0;
+  /** 사진을 순환해서 넘기기 */
+  function changePhoto(direction) {
+    if (images.length > 1) setIndex((current + direction + images.length) % images.length);
+  }
+  const swipe = usePhotoSwipe(changePhoto);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -33,6 +50,12 @@ export default function ReviewModal({ review, onClose, showAuthor = true }) {
       ref={dialogRef}
       aria-labelledby="review-modal-title"
       aria-describedby={review.review ? "review-modal-content" : undefined}
+      onKeyDown={(event) => {
+        if (expandedPhotos && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+          event.preventDefault();
+          changePhoto(event.key === "ArrowLeft" ? -1 : 1);
+        }
+      }}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -42,9 +65,59 @@ export default function ReviewModal({ review, onClose, showAuthor = true }) {
     >
       {/* 식당 이미지 & 개요 영역 */}
       <div className="flex max-h-[85dvh] flex-col">
-        <div className={`relative ${review.image ? "h-[210px]" : "h-[120px] bg-[#FF9639]"} max-h-[40dvh] shrink-0`}>
-          {review.image && (
-            <img src={review.image} alt={review.restaurantName} className="h-full w-full object-cover" />
+        <div
+          className={`relative ${images.length ? (expandedPhotos ? "h-[320px] max-h-[55dvh]" : "h-[210px] max-h-[40dvh]") : "h-[120px] bg-[#FF9639]"} shrink-0`}
+        >
+          {images.length > 0 && (
+            <img
+              {...swipe}
+              draggable={false}
+              style={{ touchAction: "pan-y pinch-zoom" }}
+              src={images[current]}
+              alt={`${review.restaurantName} 사진 ${current + 1}`}
+              className="h-full w-full object-cover"
+            />
+          )}
+          {/* 여러 장 기록 사진 이동 */}
+          {!expandedPhotos && images.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label="이전 기록 사진"
+                onClick={() => changePhoto(-1)}
+                className="absolute left-3 top-1/2 z-10 h-9 w-9 -translate-y-1/2 rounded-full bg-black/40 text-white"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                aria-label="다음 기록 사진"
+                onClick={() => changePhoto(1)}
+                className="absolute right-3 top-1/2 z-10 h-9 w-9 -translate-y-1/2 rounded-full bg-black/40 text-white"
+              >
+                ›
+              </button>
+              <span className="absolute top-4 left-4 z-10 rounded-full bg-black/40 px-2 py-1 text-xs text-white">
+                {current + 1} / {images.length}
+              </span>
+            </>
+          )}
+          {/* 피드 상세 사진 위치 표시 */}
+          {expandedPhotos && images.length > 0 && (
+            <div
+              role="img"
+              aria-label={`사진 ${current + 1} / ${images.length}`}
+              className="absolute bottom-[20px] left-0 right-0 z-10 flex justify-center gap-2 pointer-events-none"
+            >
+              {images.map((_, position) => (
+                <span
+                  key={position}
+                  aria-hidden="true"
+                  aria-current={position === current ? "true" : undefined}
+                  className={`h-2 w-2 rounded-full ${position === current ? "bg-[#F87816]" : "bg-[#D9D9D9]"}`}
+                />
+              ))}
+            </div>
           )}
           <button
             type="button"
@@ -73,7 +146,9 @@ export default function ReviewModal({ review, onClose, showAuthor = true }) {
           )}
 
           {/* 기록 영역 */}
-          <div className="absolute bottom-5 left-6 right-6 flex items-center justify-between gap-3 text-white">
+          <div
+            className={`absolute ${expandedPhotos ? "bottom-[40px]" : "bottom-5"} left-6 right-6 flex items-center justify-between gap-3 text-white`}
+          >
             <h2 id="review-modal-title" className="min-w-0 text-[16px] font-bold">
               {review.restaurantName}
             </h2>

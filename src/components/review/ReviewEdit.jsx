@@ -91,6 +91,10 @@ function ReviewEditForm({ review }) {
   /** 변경한 기록 저장 */
   async function handleSave() {
     if (inFlight.current || !hasChanges || !content.trim()) return;
+    if (content.trim().length > 500) {
+      setError("기록 내용을 1~500자로 입력해주세요.");
+      return;
+    }
     inFlight.current = true;
     setIsSaving(true);
     setError("");
@@ -164,20 +168,20 @@ function ReviewEditForm({ review }) {
             ) : (
               <>
                 <img src={GalleryIcon} alt="사진 업로드" className="w-14 h-14 mb-3" />
-                <span className="text-[#757575] font-medium text-[12px]">사진을 업로드해주세요.</span>
+                <span className="text-[#757575] font-medium text-[12px]">사진은 5장까지 업로드 가능합니다.</span>
               </>
             )}
           </button>
 
           {/* 한줄평 입력 영역 */}
           <textarea
-            maxLength={1000}
+            maxLength={500}
             aria-label="기록 내용"
             disabled={isSaving}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             className="w-full bg-[#FFECCD] rounded-[20px] p-5 text-[14px] text-[#333333] placeholder:text-[#757575] resize-none h-32 focus:outline-none focus:ring-1 focus:ring-[#F87816] shadow-inner"
-            placeholder="간단한 기록을 남겨주세요."
+            placeholder="간단한 기록을 남겨주세요. (최대 500자)"
           ></textarea>
 
           {/* 버튼 영역 */}

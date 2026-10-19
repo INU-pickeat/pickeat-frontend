@@ -98,7 +98,15 @@ export default function Feed() {
         </div>
       </PageTransition>
       <BottomNav />
-      {selectedReview && <ReviewModal review={selectedReview} onClose={() => setSelectedReview(null)} />}
+      {selectedReview && (
+        <ReviewModal
+          key={selectedReview.id}
+          review={selectedReview}
+          showAuthor={false}
+          expandedPhotos
+          onClose={() => setSelectedReview(null)}
+        />
+      )}
     </>
   );
 }

@@ -7,6 +7,7 @@ import { foodNames } from "../constants/restaurant";
 import { getNickname } from "../api/tokenStorage";
 import { formatDistance } from "../utils/distance";
 import { buildRecommendationRequest } from "../api/recommendations";
+import RestaurantImage from "../components/restaurant/RestaurantImage";
 
 const reasons = [
   ["DISTANCE_TOO_FAR", "거리가 멀어요."],
@@ -177,16 +178,11 @@ export default function RecommendResult() {
               }
               aria-label={`${restaurant.name} 상세보기`}
             >
-              {restaurant.image && (
-                <img
-                  src={restaurant.image}
-                  alt=""
-                  onError={(event) => {
-                    event.currentTarget.style.display = "none";
-                  }}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              )}
+              <RestaurantImage
+                src={restaurant.image}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
               <span className="absolute top-5 left-5 w-7 h-7 bg-[#F86516] text-white rounded-full flex items-center justify-center text-[14px] font-bold">
                 {restaurant.rank}

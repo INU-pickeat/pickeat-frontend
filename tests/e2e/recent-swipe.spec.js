@@ -78,7 +78,7 @@ for (const width of [360, 390, 430]) {
     await modal.getByRole("button", { name: "네", exact: true }).click();
     await expect(modal).toHaveCount(0);
     await expect(first).toBeVisible();
-    await expect(first.getByText("1번째 방문", { exact: true })).toBeVisible();
+    await expect(first.getByText("1번째 선택", { exact: true })).toBeVisible();
     expect(deletions).toBe(1);
     expect(queries).toBe(2);
     await expect(card).toHaveCSS("transform", "none");

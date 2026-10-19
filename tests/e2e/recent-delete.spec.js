@@ -53,6 +53,6 @@ for (const [status, code, message] of [
     if (status === 409) await page.screenshot({ path: testInfo.outputPath("delete-conflict.png") });
     await modal.getByRole("button", { name: "아니요", exact: true }).click();
     await expect(modal).toHaveCount(0);
-    await expect(row.getByText("1번째 방문", { exact: true })).toBeVisible();
+    await expect(row.getByText("1번째 선택", { exact: true })).toBeVisible();
   });
 }

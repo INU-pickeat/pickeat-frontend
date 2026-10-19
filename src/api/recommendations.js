@@ -20,11 +20,16 @@ export function buildRecommendationRequest(state) {
     Math.abs(latitude) > 90 ||
     !Number.isFinite(longitude) ||
     Math.abs(longitude) > 180 ||
-    !foods[category] ||
+    (category !== "any" && !foods[category]) ||
     !companions[situation]
   )
     throw new Error("INVALID_RECOMMENDATION_INPUT");
-  const body = { latitude, longitude, foodCategories: [foods[category]], companionType: companions[situation] };
+  const body = {
+    latitude,
+    longitude,
+    foodCategories: category === "any" ? Object.values(foods) : [foods[category]],
+    companionType: companions[situation],
+  };
   if (radiusMeters != null) {
     if (!Number.isFinite(radiusMeters) || radiusMeters <= 0) throw new Error("INVALID_RECOMMENDATION_INPUT");
     body.radiusMeters = radiusMeters;

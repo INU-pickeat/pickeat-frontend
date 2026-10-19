@@ -63,8 +63,8 @@ function WriteDraft() {
   /** 기록 저장 */
   async function handleSave() {
     if (inFlight.current || !hasPick) return;
-    if (!reviewText.trim() || reviewText.trim().length > 1000) {
-      setError("기록 내용을 1~1000자로 입력해주세요.");
+    if (!reviewText.trim() || reviewText.trim().length > 500) {
+      setError("기록 내용을 1~500자로 입력해주세요.");
       return;
     }
     if (!foodCategory || !companionType) {
@@ -107,7 +107,7 @@ function WriteDraft() {
         </div>
 
         {/* 기록 작성 영역 */}
-        <div className="min-h-0 flex-1 bg-[#FFF5E4] rounded-t-[30px] p-7 pb-[max(16px,env(safe-area-inset-bottom))] flex flex-col">
+        <div className="min-h-0 flex-1 bg-[#FDF5E9] rounded-t-[30px] p-7 pb-[max(16px,env(safe-area-inset-bottom))] flex flex-col">
           {/* 식당 정보 */}
           <div className="flex shrink-0 justify-between items-center gap-3">
             <div className="min-w-0">
@@ -135,14 +135,14 @@ function WriteDraft() {
           <button
             disabled={isSaving}
             onClick={handleImageClick}
-            className="relative w-full min-h-0 flex-1 max-h-60 bg-[#FFFDF8] rounded-[15px] flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 active:scale-[0.98] transition-transform overflow-hidden"
+            className="relative w-full min-h-0 flex-1 max-h-50 bg-[#FFFDF8] rounded-[15px] flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 active:scale-[0.98] transition-transform overflow-hidden"
           >
             {previewImage ? (
               <img src={previewImage} alt="업로드된 사진" className="absolute inset-0 w-full h-full object-cover" />
             ) : (
               <>
                 <img src={GalleryIcon} alt="사진 업로드" className="w-14 h-14 mb-3" />
-                <span className="text-[#757575] font-medium text-[12px]">사진을 업로드해주세요.</span>
+                <span className="text-[#757575] font-medium text-[12px]">사진은 5장까지 업로드 가능합니다.</span>
               </>
             )}
           </button>
@@ -150,12 +150,12 @@ function WriteDraft() {
           {/* 한줄평 입력 영역 */}
           <textarea
             aria-label="기록 내용"
-            maxLength={1000}
+            maxLength={500}
             disabled={isSaving}
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
-            className="w-full shrink-0 bg-[#FFECCD] rounded-[20px] p-4 text-[12px] text-[#333333] placeholder:text-[#757575] resize-none h-20 overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#F87816]"
-            placeholder="간단한 기록을 남겨주세요."
+            className="w-full shrink-0 bg-[#FFECCD] rounded-[20px] p-4 text-[12px] text-[#333333] placeholder:text-[#757575] resize-none h-24 overflow-y-auto focus:outline-none focus:ring-1 focus:ring-[#F87816]"
+            placeholder="간단한 기록을 남겨주세요. (최대 500자)"
           ></textarea>
 
           {/* 피드 공유 여부 */}

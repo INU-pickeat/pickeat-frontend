@@ -123,13 +123,15 @@ function RestaurantPage({ restaurant }) {
       actions={
         !isRecommendation ? (
           <>
-            <button
-              type="button"
-              onClick={() => alert("구현 예정입니다.")}
-              className={`${actionClassName} disabled:opacity-60 disabled:cursor-default`}
-            >
-              pick 지도에 저장
-            </button>
+            {returnTo !== "/recent" && (
+              <button
+                type="button"
+                onClick={() => alert("구현 예정입니다.")}
+                className={`${actionClassName} disabled:opacity-60 disabled:cursor-default`}
+              >
+                pick 지도에 저장
+              </button>
+            )}
             <button type="button" onClick={shareRestaurant} className={actionClassName}>
               친구에게 공유
             </button>
