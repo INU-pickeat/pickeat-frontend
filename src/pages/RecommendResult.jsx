@@ -149,7 +149,7 @@ export default function RecommendResult() {
         )}
         {!isLoading && !error && items.length === 0 && (
           <div className="text-center">
-            <p>조건에 맞는 맛집이 없어요.</p>
+            <p className="exception-message">조건에 맞는 맛집이 없어요.</p>
             <button onClick={() => navigate("/location")} className="mt-3 text-[#F86516] underline">
               조건 다시 선택하기
             </button>

@@ -105,7 +105,7 @@ export default function Map() {
               )}
             </div>
           ) : picks.length === 0 ? (
-            <p className="text-center">첫 기록을 작성해보세요.</p>
+            <p className="exception-message">첫 기록을 작성해보세요.</p>
           ) : null}
           {reviewMessage && <p role="status">{reviewMessage}</p>}
         </div>

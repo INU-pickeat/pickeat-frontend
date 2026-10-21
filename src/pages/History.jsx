@@ -231,9 +231,7 @@ export default function History() {
             ) : (
               // 필터링 결과가 없을 때
               <div className="bg-[#FFFDF8] border-2 border-dashed border-[#FFECCD] rounded-[24px] p-10 flex flex-col items-center justify-center mt-4">
-                <p className="text-center text-[#F87816] font-semibold text-[14px]">
-                  {selectedFilter} 기록한 맛집이 없어요.
-                </p>
+                <p className="exception-message">{selectedFilter} 기록한 맛집이 없어요.</p>
               </div>
             )}
           </div>

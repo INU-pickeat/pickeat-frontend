@@ -29,7 +29,7 @@ export async function deleteReview(reviewId) {
 
 /** 기록 부분 수정 */
 export async function updateReview(reviewId, changes) {
-  const fields = ["content", "foodCategory", "companionType", "visibility", "imageUrls"];
+  const fields = ["content", "foodCategory", "companionType", "visibility"];
 
   const body = Object.fromEntries(
     fields.filter((field) => changes[field] !== undefined).map((field) => [field, changes[field]]),

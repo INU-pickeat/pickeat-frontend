@@ -13,6 +13,7 @@ for (const width of [360, 390, 430]) {
       foodCategory: "JAPANESE",
       companionType: "FAMILY",
       imageUrls: ["http://localhost:5173/assets/dummy.png"],
+      thumbnailUrl: "http://localhost:5173/assets/dummy.png?thumbnail=1",
       likedByMe: false,
       likeCount: 12,
     };
@@ -25,6 +26,10 @@ for (const width of [360, 390, 430]) {
     await expect(card.getByText("푸드현", { exact: true })).toBeVisible();
     await expect(page.locator("main > div").first()).toHaveCSS("opacity", "1");
     await expect(card.getByRole("img", { name: "프로필 이미지" })).toHaveAttribute("src", /profile_default/);
+    await expect(card.getByRole("img", { name: review.restaurantName, exact: true })).toHaveAttribute(
+      "src",
+      review.thumbnailUrl,
+    );
     for (const name of ["팔로우", "좋아요순"]) {
       page.once("dialog", async (dialog) => {
         expect(dialog.message()).toBe("구현 예정입니다.");
@@ -40,7 +45,24 @@ for (const width of [360, 390, 430]) {
     if (width === 390) await page.screenshot({ path: testInfo.outputPath("feed.png") });
     await card.getByRole("button", { name: /기록 보기/ }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(
+      page.getByRole("dialog").getByRole("img", { name: `${review.restaurantName} 사진 1`, exact: true }),
+    ).toHaveAttribute("src", review.imageUrls[0]);
     await page.getByRole("button", { name: "닫기", exact: true }).click();
     await expect(page.getByRole("dialog")).toHaveCount(0);
+    await page.route("**/v1/feed?*", (route) =>
+      route.fulfill({ json: { items: [{ ...review, thumbnailUrl: null }], nextCursor: null } }),
+    );
+    await page.reload();
+    await expect(card.getByRole("img", { name: review.restaurantName, exact: true })).toHaveAttribute(
+      "src",
+      review.imageUrls[0],
+    );
+    await page.route("**/v1/feed?*", (route) =>
+      route.fulfill({ json: { items: [{ ...review, thumbnailUrl: null, imageUrls: [] }], nextCursor: null } }),
+    );
+    await page.reload();
+    await expect(card.getByText(review.authorNickname, { exact: true })).toBeVisible();
+    await expect(card.getByRole("img", { name: review.restaurantName, exact: true })).toHaveCount(0);
   });
 }

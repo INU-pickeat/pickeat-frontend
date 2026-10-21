@@ -41,7 +41,7 @@ export default function Restaurant() {
   if (!restaurant) {
     return (
       <div className="min-h-dvh bg-[#FFFDF8] px-8 pt-12 text-center">
-        <h1 className="text-xl font-bold text-[#F86516]">식당 정보를 찾을 수 없어요.</h1>
+        <h1 className="exception-message">식당 정보를 찾을 수 없어요.</h1>
         <Link to="/home" className="mt-6 inline-block text-[#F86516] underline">
           홈으로 돌아가기
         </Link>

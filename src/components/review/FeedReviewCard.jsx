@@ -36,8 +36,13 @@ export default function FeedReviewCard({ review, liked, onToggleLike, onOpen, is
       </header>
 
       {/* 기록 사진 */}
-      {review.image && (
-        <img src={review.image} alt={review.restaurantName} loading="lazy" className="h-[194px] w-full object-cover" />
+      {(review.thumbnail || review.image) && (
+        <img
+          src={review.thumbnail || review.image}
+          alt={review.restaurantName}
+          loading="lazy"
+          className="h-[194px] w-full object-cover"
+        />
       )}
 
       {/* 식당 정보와 좋아요 */}

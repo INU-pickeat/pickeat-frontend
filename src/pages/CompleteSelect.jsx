@@ -94,7 +94,7 @@ export default function CompleteSelect() {
         </div>
 
         {shareMessage && (
-          <p role="status" className="w-full break-all text-center text-sm text-[#777777]">
+          <p role="status" className="w-full exception-message">
             {shareMessage}
           </p>
         )}
