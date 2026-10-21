@@ -61,12 +61,12 @@ export default function ReviewModal({ review, onClose, showAuthor = true, expand
         onClose();
       }}
       onClick={handleBackdropClick}
-      className="fixed inset-0 m-auto w-[calc(100%-32px)] max-w-[398px] max-h-[85dvh] overflow-hidden rounded-[24px] border-0 p-0 bg-[#FFECCD] backdrop:bg-black/50"
+      className="review-modal fixed inset-0 m-auto w-[calc(100%-32px)] max-w-[398px] max-h-[85dvh] overflow-hidden rounded-[24px] border-0 p-0 bg-[#FFECCD] backdrop:bg-black/50"
     >
       {/* 식당 이미지 & 개요 영역 */}
-      <div className="flex max-h-[85dvh] flex-col">
+      <div className="review-modal-body flex max-h-[85dvh] flex-col">
         <div
-          className={`relative ${images.length ? (expandedPhotos ? "h-[320px] max-h-[55dvh]" : "h-[210px] max-h-[40dvh]") : "h-[120px] bg-[#FF9639]"} shrink-0`}
+          className={`review-modal-photo ${expandedPhotos ? "expanded" : ""} relative ${images.length ? (expandedPhotos ? "h-[320px] max-h-[55dvh]" : "h-[210px] max-h-[40dvh]") : "h-[120px] bg-[#FF9639]"} shrink-0`}
         >
           {images.length > 0 && (
             <img
