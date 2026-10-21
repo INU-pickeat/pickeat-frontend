@@ -10,6 +10,7 @@ import { uploadReviewImage } from "../api/reviewImages";
 import { getApiErrorMessage } from "../utils/apiError";
 import { reviewTags } from "../utils/reviewDisplay";
 const situationCodes = { date: "DATE", family: "FAMILY", kids: "CHILDREN", solo: "SOLO", group: "GROUP", pet: "DOG" };
+const reviewImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
 export default function Write() {
   const location = useLocation();
@@ -30,39 +31,65 @@ function WriteDraft() {
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const inFlight = useRef(false);
-  const uploadedImage = useRef(null);
-  const [imageFile, setImageFile] = useState(null);
+  const uploadedImages = useRef(new Map());
+  const [photos, setPhotos] = useState([]);
+  const previewUrls = useRef(new Set());
 
   const [reviewText, setReviewText] = useState("");
 
   // 갤러리 접근 관련 상태
-  const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
   const hasPick = Number.isSafeInteger(pickId) && pickId > 0;
 
   useEffect(() => {
-    if (!previewImage) return;
-    return () => URL.revokeObjectURL(previewImage);
-  }, [previewImage]);
+    const urls = previewUrls.current;
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, []);
 
+  /** 사진 선택창 열기 */
   const handleImageClick = () => {
     fileInputRef.current.click();
   };
 
+  /** 사진 추가: 최대 5장 */
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const files = Array.from(e.target.files || []);
     e.target.value = "";
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setPreviewImage(imageUrl);
-      setImageFile(file);
-      uploadedImage.current = null;
+    if (!files.length) return;
+    if (files.some((file) => !reviewImageTypes.includes(file.type))) {
+      setError("JPEG·PNG·WebP 사진만 첨부할 수 있어요.");
+      return;
     }
+    if (photos.length + files.length > 5) {
+      setError("사진은 최대 5장까지 첨부할 수 있어요.");
+      return;
+    }
+    setError("");
+    setPhotos((current) => [
+      ...current,
+      ...files.map((file) => {
+        const preview = URL.createObjectURL(file);
+        previewUrls.current.add(preview);
+        return { file, preview };
+      }),
+    ]);
   };
+
+  /** 선택한 사진 제거 */
+  function removePhoto(photo) {
+    URL.revokeObjectURL(photo.preview);
+    previewUrls.current.delete(photo.preview);
+    uploadedImages.current.delete(photo.file);
+    setPhotos((current) => current.filter((item) => item !== photo));
+  }
 
   /** 기록 저장 */
   async function handleSave() {
     if (inFlight.current || !hasPick) return;
+    if (!photos.length) {
+      setError("사진을 1장 이상 첨부해 주세요.");
+      return;
+    }
     if (!reviewText.trim() || reviewText.trim().length > 500) {
       setError("기록 내용을 1~500자로 입력해주세요.");
       return;
@@ -75,14 +102,18 @@ function WriteDraft() {
     setIsSaving(true);
     setError("");
     try {
-      if (imageFile && !uploadedImage.current) uploadedImage.current = await uploadReviewImage(imageFile);
+      const imageUrls = [];
+      for (const { file } of photos) {
+        if (!uploadedImages.current.has(file)) uploadedImages.current.set(file, await uploadReviewImage(file));
+        imageUrls.push(uploadedImages.current.get(file));
+      }
       await createReview({
         pickId,
         content: reviewText.trim(),
         foodCategory,
         companionType,
         visibility: shareToFeed ? "PUBLIC" : "PRIVATE",
-        ...(uploadedImage.current ? { imageUrls: [uploadedImage.current] } : {}),
+        imageUrls,
       });
       navigate("/history", { replace: true });
     } catch (error) {
@@ -130,22 +161,55 @@ function WriteDraft() {
           <h3 className="shrink-0 text-[#F87816] font-semibold text-[15px] mb-3">오늘의 pick은 어땠나요?</h3>
 
           {/* 사진 업로드 영역 */}
-          <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageChange} />
-
-          <button
+          <input
+            type="file"
+            accept={reviewImageTypes.join(",")}
+            multiple
+            aria-label="기록 사진 추가"
             disabled={isSaving}
-            onClick={handleImageClick}
-            className="relative w-full min-h-0 flex-1 max-h-50 bg-[#FFFDF8] rounded-[15px] flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 active:scale-[0.98] transition-transform overflow-hidden"
-          >
-            {previewImage ? (
-              <img src={previewImage} alt="업로드된 사진" className="absolute inset-0 w-full h-full object-cover" />
-            ) : (
-              <>
-                <img src={GalleryIcon} alt="사진 업로드" className="w-14 h-14 mb-3" />
-                <span className="text-[#757575] font-medium text-[12px]">사진은 5장까지 업로드 가능합니다.</span>
-              </>
-            )}
-          </button>
+            className="hidden"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+          />
+
+          {photos.length ? (
+            <div className="w-full min-h-0 flex-1 max-h-50 mb-6 flex items-center gap-3 overflow-x-auto">
+              {photos.map((photo, index) => (
+                <div key={photo.preview} className="relative h-28 w-28 shrink-0 overflow-hidden rounded-[15px]">
+                  <img src={photo.preview} alt={`첨부 사진 ${index + 1}`} className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    disabled={isSaving}
+                    onClick={() => removePhoto(photo)}
+                    aria-label={`사진 ${index + 1} 삭제`}
+                    className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full text-white"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              {photos.length < 5 && (
+                <button
+                  type="button"
+                  disabled={isSaving}
+                  onClick={handleImageClick}
+                  aria-label="사진 더 추가"
+                  className="h-28 w-28 shrink-0 rounded-[15px] bg-[#FFFDF8] flex items-center justify-center"
+                >
+                  <img src={GalleryIcon} alt="" className="w-10 h-10" />
+                </button>
+              )}
+            </div>
+          ) : (
+            <button
+              disabled={isSaving}
+              onClick={handleImageClick}
+              className="relative w-full min-h-0 flex-1 max-h-50 bg-[#FFFDF8] rounded-[15px] flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 active:scale-[0.98] transition-transform overflow-hidden"
+            >
+              <img src={GalleryIcon} alt="사진 업로드" className="w-14 h-14 mb-3" />
+              <span className="text-[#757575] font-medium text-[12px]">사진은 5장까지 업로드 가능합니다.</span>
+            </button>
+          )}
 
           {/* 한줄평 입력 영역 */}
           <textarea

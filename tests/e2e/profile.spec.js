@@ -16,16 +16,12 @@ for (const width of [360, 390, 430]) {
       await route.fulfill({ json: profile });
     });
     await page.route("**/v1/me/profile-image/upload-url", async (route) => {
-      expect(route.request().postDataJSON()).toEqual({ contentTypes: ["image/png"] });
+      expect(route.request().postDataJSON()).toEqual({ contentType: "image/png" });
       await route.fulfill({
         json: {
-          uploads: [
-            {
-              uploadUrl: "https://uploads.example.test/profile",
-              imageUrl: "https://images.example.test/profile.png",
-              contentType: "image/png",
-            },
-          ],
+          uploadUrl: "https://uploads.example.test/profile",
+          imageUrl: "https://images.example.test/profile.png",
+          contentType: "image/png",
         },
       });
     });
@@ -47,7 +43,11 @@ for (const width of [360, 390, 430]) {
     await expect(page.getByRole("img", { name: "프로필 이미지" })).toHaveAttribute("src", /^blob:/);
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
     if (width === 390) await page.screenshot({ path: testInfo.outputPath("profile-preview.png") });
+    const confirmation = page.waitForEvent("dialog");
     await page.getByRole("button", { name: "저장", exact: true }).click();
+    const dialog = await confirmation;
+    expect(dialog.message()).toBe("내 정보가 변경되었어요.");
+    await dialog.accept();
     await expect(page).toHaveURL(/\/mypage$/);
     expect(saved).toBe(true);
   });

@@ -20,7 +20,6 @@ export async function updateMyInfo(changes, signal) {
 
 /** 프로필 사진 업로드 */
 export async function uploadProfileImage(file, signal) {
-  const { data } = await api.post("/v1/me/profile-image/upload-url", { contentTypes: [file.type] }, { signal });
-  if (!Array.isArray(data?.uploads) || data.uploads.length !== 1) throw new Error("INVALID_IMAGE_UPLOAD_RESPONSE");
-  return putImage(file, data.uploads[0], signal);
+  const { data } = await api.post("/v1/me/profile-image/upload-url", { contentType: file.type }, { signal });
+  return putImage(file, data, signal);
 }

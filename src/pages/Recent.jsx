@@ -159,7 +159,7 @@ export default function Recent() {
             </div>
           )}
           {!isLoading && !error && picksData.length === 0 && (
-            <p className="text-center text-sm text-[#777777]">선택한 기간에 Pick한 맛집이 없어요.</p>
+            <p className="exception-message">선택한 기간에 Pick한 맛집이 없어요.</p>
           )}
           {Object.entries(groupedPicks).map(([date, items], index) => (
             <div key={date} className={index > 0 ? "mt-8" : ""}>

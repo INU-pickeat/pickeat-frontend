@@ -113,7 +113,10 @@ function ProfileForm({ member }) {
         changes.profileImageUrl = uploadedPhoto.current;
       }
       await updateMyInfo(changes, controller.signal);
-      if (!controller.signal.aborted) navigate("/mypage", { replace: true });
+      if (!controller.signal.aborted) {
+        alert("내 정보가 변경되었어요.");
+        navigate("/mypage", { replace: true });
+      }
     } catch (error) {
       if (!controller.signal.aborted) alert(getApiErrorMessage(error, "내 정보를 저장하지 못했어요."));
     } finally {

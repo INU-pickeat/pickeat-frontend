@@ -91,7 +91,7 @@ export default function RecommendLoading() {
       <img src={searchingCharacter} alt="맛집을 찾는 중" className="w-[50%] relative z-10" />
       {/* 진행률별 안내 & 프로그레스 바 */}
       <div className="w-full flex flex-col items-center relative z-10 text-center">
-        <p role={error ? "alert" : "status"} className="font-bold text-[#FF9639]">
+        <p role={error ? "alert" : "status"} className="recommendation-progress font-bold text-[#FF9639]">
           {error || getStatusText(progress)}
         </p>
         {!error && (

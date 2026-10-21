@@ -68,12 +68,20 @@ textarea:disabled,
 
 /* 예외 안내 문구는 홈과 같은 스타일 사용 */
 .exception-glow,
-.exception-glow p {
+.exception-glow p,
+.exception-message,
+[role="alert"],
+[role="alert"] p,
+[role="status"]:not(.recommendation-progress) {
   color: #777777;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
   text-align: center;
+  min-width: 0;
+  max-width: 100%;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 /* 모바일 스크롤바 숨기기 */

@@ -1,5 +1,6 @@
 import { foodNames, companionNames } from "../constants/restaurant";
 import { api } from "./client";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 const feedCompanionNames = { ...companionNames, GROUP: "단체·회식" };
 
@@ -15,6 +16,7 @@ export function mapFeedPage(data) {
       author: item.authorNickname,
       avatar: item.authorProfileImageUrl,
       image: item.imageUrls?.[0] || null,
+      thumbnail: resolveImageUrl(item.thumbnailUrl || item.imageUrls?.[0]),
       images: item.imageUrls || [],
       review: item.content,
       tags: [

@@ -64,7 +64,7 @@ export default function Explore() {
           </div>
         )}
         {!isLoading && !error && selectedRegion && restaurants.length === 0 && (
-          <p className="text-center">등록된 맛집이 없어요.</p>
+          <p className="exception-message">등록된 맛집이 없어요.</p>
         )}
         {restaurants.map((restaurant, index) => (
           <Link

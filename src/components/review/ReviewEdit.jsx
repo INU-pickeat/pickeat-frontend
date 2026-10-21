@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getReview, updateReview } from "../../api/reviews";
-import { uploadReviewImage } from "../../api/reviewImages";
 import { getApiErrorMessage } from "../../utils/apiError";
 import { reviewTags, reviewImageUrl } from "../../utils/reviewDisplay";
-import GalleryIcon from "../../assets/icons/gallery.svg";
 import Button from "../common/Button";
 import PageTransition from "../common/PageTransition";
 import LeftArrow from "../../assets/icons/arrow_left.svg";
@@ -61,32 +59,12 @@ export default function ReviewEdit({ reviewId }) {
 function ReviewEditForm({ review }) {
   const navigate = useNavigate();
   const [content, setContent] = useState(review.content);
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const uploadedImage = useRef(null);
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const inFlight = useRef(false);
-  const hasChanges = content !== review.content || imageFile !== null;
-  const fileInputRef = useRef(null);
-  const displayImage = preview || reviewImageUrl(review.imageUrls?.[0]);
+  const hasChanges = content !== review.content;
+  const displayImage = reviewImageUrl(review.imageUrls?.[0]);
   const thumbnail = reviewImageUrl(review.restaurantImageUrl || review.representativeImageUrl || review.imageUrls?.[0]);
-
-  useEffect(() => {
-    if (!preview) return;
-    return () => URL.revokeObjectURL(preview);
-  }, [preview]);
-
-  /** 사진 교체 */
-  function handleImageChange(event) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-    setImageFile(file);
-    setPreview(URL.createObjectURL(file));
-    uploadedImage.current = null;
-    setError("");
-  }
 
   /** 변경한 기록 저장 */
   async function handleSave() {
@@ -101,10 +79,6 @@ function ReviewEditForm({ review }) {
     try {
       const changes = {};
       if (content !== review.content) changes.content = content.trim();
-      if (imageFile) {
-        if (!uploadedImage.current) uploadedImage.current = await uploadReviewImage(imageFile);
-        changes.imageUrls = [uploadedImage.current];
-      }
       await updateReview(review.reviewId, changes);
       navigate("/history", { replace: true });
     } catch (error) {
@@ -147,31 +121,14 @@ function ReviewEditForm({ review }) {
 
           <h3 className="text-[#F87816] font-semibold text-[15px] mb-4">오늘의 pick은 어땠나요?</h3>
 
-          {/* 사진 업로드 영역 */}
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            disabled={isSaving}
-            onChange={handleImageChange}
-          />
-
-          <button
-            type="button"
-            disabled={isSaving}
-            onClick={() => fileInputRef.current?.click()}
-            className="relative w-full h-60 bg-[#FFFDF8] rounded-[15px] py-20 flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 active:scale-[0.98] transition-transform overflow-hidden"
-          >
+          {/* 기존 사진: 수정 API에서 사진 변경 불가 */}
+          <div className="relative w-full h-60 bg-[#FFFDF8] rounded-[15px] py-20 flex flex-col items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-6 overflow-hidden">
             {displayImage ? (
               <img src={displayImage} alt="기록 사진" className="absolute inset-0 w-full h-full object-cover" />
             ) : (
-              <>
-                <img src={GalleryIcon} alt="사진 업로드" className="w-14 h-14 mb-3" />
-                <span className="text-[#757575] font-medium text-[12px]">사진은 5장까지 업로드 가능합니다.</span>
-              </>
+              <span className="exception-message">첨부된 사진이 없어요.</span>
             )}
-          </button>
+          </div>
 
           {/* 한줄평 입력 영역 */}
           <textarea
