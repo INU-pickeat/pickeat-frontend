@@ -37,8 +37,8 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-dvh w-full bg-white sm:bg-neutral-100 flex justify-center items-start sm:items-center scrollbar-hide">
-      <main className="w-full max-w-[430px] min-h-dvh bg-white sm:shadow-2xl flex flex-col relative overflow-x-hidden">
+    <div className="app-shell min-h-dvh w-full bg-white sm:bg-neutral-100 flex justify-center items-start sm:items-center scrollbar-hide">
+      <main className="app-viewport w-full max-w-[430px] min-h-dvh bg-white sm:shadow-2xl flex flex-col relative overflow-x-hidden">
         {showSplash ? (
           <Splash onFinish={() => setShowSplash(false)} />
         ) : (

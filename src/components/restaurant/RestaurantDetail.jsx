@@ -13,7 +13,7 @@ export default function RestaurantDetail({ restaurant, onBack, actions, feedback
   return (
     <PageTransition className="h-dvh w-full flex flex-col overflow-hidden bg-[#FFFDF8]">
       {/* 식당 이미지 & 뒤로가기 버튼 */}
-      <div className="relative h-[34dvh] min-h-0 shrink-0 bg-[#9A7759]">
+      <div className="restaurant-photo-viewport relative h-[34dvh] min-h-0 shrink-0 bg-[#9A7759]">
         <RestaurantPhotos key={`${restaurant.id}:${images.join(",")}`} images={images} name={restaurant.name} />
         <button
           type="button"

@@ -94,7 +94,7 @@ export default function CategorySelect() {
                 data-id={item.id}
                 ref={(el) => (cardRefs.current[index] = el)}
                 onClick={() => setSelectedCategory(item.id)}
-                className={`snap-center snap-always shrink-0 w-56 aspect-[3/4.2] max-h-[calc(100dvh-380px)] rounded-[30px] flex flex-col items-center justify-center transition-all duration-300 ${
+                className={`category-card snap-center snap-always shrink-0 w-56 aspect-[3/4.2] max-h-[calc(100dvh-380px)] rounded-[30px] flex flex-col items-center justify-center transition-all duration-300 ${
                   isSelected ? "bg-[#FFF8ED] scale-105" : "bg-[#FFECCD] shadow-md scale-95"
                 }`}
               >

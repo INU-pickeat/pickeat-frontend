@@ -45,14 +45,14 @@ export default function CompleteSelect() {
   }
 
   return (
-    <PageTransition className="min-h-dvh w-full flex flex-col bg-linear-to-b from-[#FAC598] via-[#FCEBD6] via-55% to-[#FFFDF8] to-78% pt-[12dvh] pb-[12dvh]">
+    <PageTransition className="complete-select min-h-dvh w-full flex flex-col bg-linear-to-b from-[#FAC598] via-[#FCEBD6] via-55% to-[#FFFDF8] to-78% pt-[12dvh] pb-[12dvh]">
       {/* 홈 이동 & 저장 완료 안내 */}
       <header className="px-[10%]">
         <button type="button" onClick={() => navigate("/home")} aria-label="홈으로 이동" className="block">
           <img src={SelectHome} alt="" />
         </button>
       </header>
-      <div className="flex flex-col items-center mt-[7dvh]">
+      <div className="complete-select-heading flex flex-col items-center mt-[7dvh]">
         <h2 className="text-[#F86516] text-[28px] text-center font-bold leading-snug px-6">오늘의 Pick 저장 완료!</h2>
         {restaurantName && (
           <p className="text-[#F86516] text-[16px] text-center font-semibold px-6 mt-5">{restaurantName}</p>
@@ -60,7 +60,7 @@ export default function CompleteSelect() {
         <motion.img
           src={CharacterImg}
           alt="캐릭터"
-          className="w-32 mt-[6dvh]"
+          className="complete-select-character w-32 mt-[6dvh]"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 180, damping: 15 }}
